@@ -6,6 +6,7 @@
 
 DIGIT[0-9]
 ID[a-zA-Z0-9_]*	
+COMMENTS[#][#].*
 
 %%
 
@@ -71,7 +72,7 @@ ID[a-zA-Z0-9_]*
 	/* Other */
 [ \t]+		/* ignore white space */
 "\n"		/* ignore newline */
-"##"		/* ignore comment */
+{COMMENTS}	/* ignore comments */
 .		{printf("Error: unrecognized symbol \"%s\"\n", yytext); exit(0);}
 
 
