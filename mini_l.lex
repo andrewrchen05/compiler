@@ -1,3 +1,5 @@
+	/* Harrison Yee 862023089
+	   Andrew Chen */
 %{
 
 %}
@@ -77,5 +79,7 @@ ID[a-zA-Z0-9_]*
 
 
 int main(int argc, char ** argv) {
+
 yylex();
+
 }
