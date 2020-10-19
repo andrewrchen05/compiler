@@ -1,0 +1,11 @@
+function test;
+beginparams
+endparams
+beginlocals
+n : integers;
+endlocals
+beginbody
+	read n;
+	n := n + 1?
+	write n;
+endbody
