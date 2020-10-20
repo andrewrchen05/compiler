@@ -3,12 +3,16 @@
 %{
 
 int currLine = 1, currPos = 1;
+int numNumbers = 0;
+int numOperators = 0;
+int numParens = 0;
+int numEquals = 0;
 
 %}
 
-DIGIT[0-9]
-ID[a-zA-Z0-9_]*	
-COMMENTS[#][#].*
+DIGIT	[0-9]
+ID	^[_a-zA-Z]+[a-zA-Z0-9_]*[^_]$
+COMMENTS	[#][#].*
 
 %%
 
@@ -68,15 +72,18 @@ COMMENTS[#][#].*
 "return"	{printf("RETURN\n"); currPos += yyleng;}
 
 	/* Identifiers and Numbers */
-{DIGIT}+ 	{printf("NUMBER %s\n", yytext); currPos += yyleng;}	
+(\.{DIGIT}+)|({DIGIT}+(\.{DIGIT}*)?([eE][+-]?[0-9]+)?)   {printf("NUMBER %s\n", yytext); currPos += yyleng; numNumbers++;}
 {ID}		{printf("IDENT %s\n", yytext); currPos += yyleng;}
 
 	/* Other */
 [ \t]+		{currPos += yyleng;} 	/* ignore white space */
 "\n"		{currLine++; currPos = 1;} 	/* ignore newline */
 {COMMENTS}	{currPos += yyleng;} 	/* ignore comments */
-.		{printf("Error at line %d, column %d: unrecognized symbol \"%s\"\n", currLine, currPos, yytext); exit(0);}
 
+[{DIGIT}][{ID}]* {printf("Error at line %d, column %d: identifier \"%s\"\n must begin with a letter", currLine, currPos, yytext); exit(0);}
+[{ID}][_]+ {printf("Error at line %d, column %d: identifier \"%s\"\n cannot end with an underscore", currLine, currPos, yytext); exit(0);}
+
+.		{printf("Error at line %d, column %d: unrecognized symbol \"%s\"\n", currLine, currPos, yytext); exit(0);}
 
 %%
 
