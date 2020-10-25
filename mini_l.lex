@@ -13,8 +13,8 @@ int numEquals = 0;
 DIGIT		[0-9]
 IDUNDERSCORE 	[a-zA-Z]+[a-zA-Z0-9_]*[^_]
 COMMENTS	[#][#].*
-ERRORNUM	[0-9]+[a-zA-Z]+
-ERRORSCORE	[a-zA-Z]+[a-zA-Z0-9_]*[_]
+ERRORNUM	^[0-9]+[a-zA-Z]+$
+ERRORSCORE	^[_a-zA-Z]+[a-zA-Z0-9_]*[_]$
 
 %%
 

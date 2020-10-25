@@ -13,7 +13,7 @@ beginparams
 endparams
 
 beginlocals
-2n : integer;
+n : integer;
 a : array[1000] of integer;	## prime candidates array
 i, j : integer;
 x, sqrt_n : integer;
