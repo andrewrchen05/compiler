@@ -72,9 +72,11 @@ return	{printf("RETURN\n"); currPos += yyleng;}
 
 {IDENTIFIER}		{printf("IDENT %s\n", yytext); currPos += yyleng;}
 {REG_ID}	{printf("IDENT %s\n", yytext); currPos += yyleng;}
-[0-0]{IDENTIFIER}      {printf("Error at line %d, currPos %d: Identifier \"%s\" must begin with a letter\n",currLine,currPos,yytext);currPos += yyleng;exit(0);} 
-{IDENTIFIER}[_]+               {printf("Error at line %d, currPos %d: Identifier \"%s\" cannot end with an underscore\n",currLine,currPos,yytext);currPos += yyleng;exit(0);} 
+[0-9]{IDENTIFIER}      {printf("Error at line %d, currPos %d: Identifier \"%s\" must begin with a letter\n",currLine,currPos,yytext);currPos += yyleng;exit(0);} 
+[0-9]{REG_ID}      {printf("Error at line %d, currPos %d: Identifier \"%s\" must begin with a letter\n",currLine,currPos,yytext);currPos += yyleng;exit(0);} 
 
+{REG_ID}[_]+               {printf("Error at line %d, currPos %d: Identifier \"%s\" cannot end with an underscore\n",currLine,currPos,yytext);currPos += yyleng;exit(0);} 
+{IDENTIFIER}[_]+               {printf("Error at line %d, currPos %d: Identifier \"%s\" cannot end with an underscore\n",currLine,currPos,yytext);currPos += yyleng;exit(0);} 
 
 	/* Other */
 [ \t]		{currPos += yyleng;} 	/* ignore white space */
