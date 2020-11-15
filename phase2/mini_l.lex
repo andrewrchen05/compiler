@@ -71,7 +71,7 @@ return  	{currPos += yyleng; return RETURN;}
                 /*Identifiers and Numbers*/
 {DIGIT}+                                        {printf("NUMBER %s\n",yytext);currPos += yyleng;}
 
-{IDENTIFIER}            {printf("IDENT %s\n", yytext); currPos += yyleng;}
+{IDENTIFIER}            {printf(currPos += yyleng; yylval.cval=strdup(yytext); return IDENT;}
 
 [0-9_]+{IDENTIFIER}      {printf("Error at line %d, currPos %d: Identifier \"%s\" must begin with a letter\n",currLine,currPos,yytext);currPos += yyleng;exit(0);}
 
