@@ -73,6 +73,19 @@
 %type<ival> NUMBER
 
 
+%right ASSIGN
+%left OR
+%left AND
+%right NOT
+%left LT LTE GT GTE EQ NEQ
+%left ADD SUB
+%left MULT DIV MOD
+
+/* need unary minus */
+
+%left L_SQUARE_BRACKET R_SQUARE_BRACKET
+%left L_PAREN R_PAREN
+
 %start program
 
 %%
