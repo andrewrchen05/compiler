@@ -69,6 +69,8 @@
 %token IDENT
 %token NUMBER
 
+%token ERROR
+
 %type<cval> IDENT
 %type<ival> NUMBER
 
@@ -81,7 +83,7 @@
 %left ADD SUB
 %left MULT DIV MOD
 
-/* need unary minus */
+%right '-'
 
 %left L_SQUARE_BRACKET R_SQUARE_BRACKET
 %left L_PAREN R_PAREN
