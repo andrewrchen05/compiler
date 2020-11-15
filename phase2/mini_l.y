@@ -68,7 +68,6 @@
 %token IDENT
 %token NUMBER
 
-
 %type<cval> IDENT
 %type<ival> NUMBER
 
@@ -83,7 +82,62 @@ program: /* epsilo */ {printf("program -> epsilon\n");}
 function: FUNCTION IDENT SEMICOLON {printf("function -> FUNCTION IDENT SEMICOLON\n");}
 	;
 
-ident:  IDENT {printf("ident -> IDENT %s\n", $1);}
+// ident:  IDENT {printf("ident -> IDENT %s\n", $1);}
+//      ;
+
+bool-expr: relation-and-expr {printf("bool-expr -> relation-and-expr\n");}
+         | relation-and-expr OR relation-and-expr {printf("bool-expr -> relation-and-expr OR relation-and-expr\n");}
+         ;
+
+relation-and-expr: relation-expr {printf("relation-and-expr -> relation-expr\n");}
+                 | relation-expr AND relation-expr {printf("relation-and-expr -> relation-expr AND relation-expr\n");}
+                 ;
+
+relation-expr: NOT expression comp expression {printf("relation-expr -> NOT expression comp expression\n");}
+             | NOT TRUE {printf("relation-expr -> NOT TRUE\n");}
+             | NOT FALSE {printf("relation-expr -> NOT FALSE\n");}
+             | NOT L_PAREN bool-expr R_PAREN {printf("relation-expr -> NOT L_PAREN bool-expr R_PAREN\n");}
+             | expression comp expression {printf("relation-expr -> expression comp expression\n");}
+             | TRUE {printf("relation-expr -> TRUE\n");}
+             | FALSE {printf("relation-expr -> FALSE\n");}
+             | L_PAREN bool-expr R_PAREN {printf("relation-expr -> L_PAREN bool-expr R_PAREN\n");}
+             ;
+
+comp: EQ {printf("comp -> EQ\n");}
+    | NEQ {printf("comp -> NEQ\n");}
+    | LT {printf("comp -> LT\n");}
+    | GT {printf("comp -> GT\n");}
+    | LTE {printf("comp -> LTE\n");}
+    | GTE {printf("comp -> GTE\n");}
+    ;
+
+expression: multiplicative-expr {printf("expression -> multiplicative-expr\n");}
+          | multiplicative-expr ADD multiplicative-expr {printf("expression -> multiplicative-expr ADD multiplicative-expr\n");}
+          | multiplicative-expr SUB multiplicative-expr{printf("expression -> multiplicative-expr SUB multiplicative-expr\n");}
+          ;
+
+multiplicative-expr: term {printf("multiplicative-expr -> term\n");}
+                   | term MULT term {printf("multiplicative-expr -> term MULT term\n");}
+                   | term DIV term {printf("multiplicative-expr -> term DIV term\n");}
+                   | term MOD term {printf("multiplicative-expr -> term MOD term\n");}
+                   ;
+
+term: SUB var {printf("term -> SUB var\n");}
+    | SUB NUMBER {printf("term -> SUB NUMBER\n");}
+    | SUB L_PAREN expression R_PAREN {printf("term -> SUB L_PAREN expression R_PAREN\n");}
+    | var {printf("term -> var\n");}
+    | NUMBER {printf("term -> NUMBER\n");}
+    | L_PAREN expression R_PAREN {printf("term -> L_PAREN expression R_PAREN\n");}
+    | IDENT L_PAREN expression R_PAREN {printf("term -> ident L_PAREN expression R_PAREN\n");} //check on how to do with comma
+    ;
+
+var: IDENT {printf("var -> ident\n");}
+   | IDENT L_SQUARE_BRACKET expression R_SQUARE_BRACKET {printf("var -> ident L_SQUARE_BRACKET expression R_SQUARE_BRACKET\n");}
+   ;
+
+vars: var {printf("vars -> var\n");}
+    | var COMMA vars {printf("var COMMA vars\n");}
+    ;
 
 %%
 

@@ -1,68 +1,119 @@
-Useless nonterminals
+Nonterminals useless in grammar
 
-   ident
-
-
-Terminals which are not used
-
-   BEGIN_PARAMS
-   END_PARAMS
-   BEGIN_LOCALS
-   END_LOCALS
-   BEGIN_BODY
-   END_BODY
-   INTEGER
-   ARRAY
-   OF
-   IF
-   THEN
-   ENDIF
-   ELSE
-   WHILE
-   DO
-   FOR
-   BEGINLOOP
-   ENDLOOP
-   CONTINUE
-   READ
-   WRITE
-   AND
-   OR
-   NOT
-   TRUE
-   FALSE
-   RETURN
-   SUB
-   ADD
-   MULT
-   DIV
-   MOD
-   EQ
-   NEQ
-   LT
-   GT
-   LTE
-   GTE
-   COLON
-   COMMA
-   L_PAREN
-   R_PAREN
-   L_SQUARE_BRACKET
-   R_SQUARE_BRACKET
-   ASSIGN
-   NUMBER
+    bool-expr
+    relation-and-expr
+    relation-expr
+    comp
+    expression
+    multiplicative-expr
+    term
+    var
+    vars
 
 
-Useless rules
+Terminals unused in grammar
 
-    4 ident: IDENT
+    BEGIN_PARAMS
+    END_PARAMS
+    BEGIN_LOCALS
+    END_LOCALS
+    BEGIN_BODY
+    END_BODY
+    INTEGER
+    ARRAY
+    OF
+    IF
+    THEN
+    ENDIF
+    ELSE
+    WHILE
+    DO
+    FOR
+    BEGINLOOP
+    ENDLOOP
+    CONTINUE
+    READ
+    WRITE
+    AND
+    OR
+    NOT
+    TRUE
+    FALSE
+    RETURN
+    SUB
+    ADD
+    MULT
+    DIV
+    MOD
+    EQ
+    NEQ
+    LT
+    GT
+    LTE
+    GTE
+    COLON
+    COMMA
+    L_PAREN
+    R_PAREN
+    L_SQUARE_BRACKET
+    R_SQUARE_BRACKET
+    ASSIGN
+    NUMBER
+
+
+Rules useless in grammar
+
+    4 bool-expr: relation-and-expr
+    5          | relation-and-expr OR relation-and-expr
+
+    6 relation-and-expr: relation-expr
+    7                  | relation-expr AND relation-expr
+
+    8 relation-expr: NOT expression comp expression
+    9              | NOT TRUE
+   10              | NOT FALSE
+   11              | NOT L_PAREN bool-expr R_PAREN
+   12              | expression comp expression
+   13              | TRUE
+   14              | FALSE
+   15              | L_PAREN bool-expr R_PAREN
+
+   16 comp: EQ
+   17     | NEQ
+   18     | LT
+   19     | GT
+   20     | LTE
+   21     | GTE
+
+   22 expression: multiplicative-expr
+   23           | multiplicative-expr ADD multiplicative-expr
+   24           | multiplicative-expr SUB multiplicative-expr
+
+   25 multiplicative-expr: term
+   26                    | term MULT term
+   27                    | term DIV term
+   28                    | term MOD term
+
+   29 term: SUB var
+   30     | SUB NUMBER
+   31     | SUB L_PAREN expression R_PAREN
+   32     | var
+   33     | NUMBER
+   34     | L_PAREN expression R_PAREN
+   35     | IDENT L_PAREN expression R_PAREN
+
+   36 var: IDENT
+   37    | IDENT L_SQUARE_BRACKET expression R_SQUARE_BRACKET
+
+   38 vars: var
+   39     | var COMMA vars
 
 
 Grammar
 
     0 $accept: program $end
 
-    1 program: /* empty */
+    1 program: %empty
     2        | program function
 
     3 function: FUNCTION IDENT SEMICOLON
@@ -70,70 +121,72 @@ Grammar
 
 Terminals, with rules where they appear
 
-$end (0) 0
-error (256)
-FUNCTION (258) 3
-BEGIN_PARAMS (259)
-END_PARAMS (260)
-BEGIN_LOCALS (261)
-END_LOCALS (262)
-BEGIN_BODY (263)
-END_BODY (264)
-INTEGER (265)
-ARRAY (266)
-OF (267)
-IF (268)
-THEN (269)
-ENDIF (270)
-ELSE (271)
-WHILE (272)
-DO (273)
-FOR (274)
-BEGINLOOP (275)
-ENDLOOP (276)
-CONTINUE (277)
-READ (278)
-WRITE (279)
-AND (280)
-OR (281)
-NOT (282)
-TRUE (283)
-FALSE (284)
-RETURN (285)
-SUB (286)
-ADD (287)
-MULT (288)
-DIV (289)
-MOD (290)
-EQ (291)
-NEQ (292)
-LT (293)
-GT (294)
-LTE (295)
-GTE (296)
-SEMICOLON (297) 3
-COLON (298)
-COMMA (299)
-L_PAREN (300)
-R_PAREN (301)
-L_SQUARE_BRACKET (302)
-R_SQUARE_BRACKET (303)
-ASSIGN (304)
-IDENT (305) 3
-NUMBER (306)
+    $end (0) 0
+    error (256)
+    FUNCTION (258) 3
+    BEGIN_PARAMS (259)
+    END_PARAMS (260)
+    BEGIN_LOCALS (261)
+    END_LOCALS (262)
+    BEGIN_BODY (263)
+    END_BODY (264)
+    INTEGER (265)
+    ARRAY (266)
+    OF (267)
+    IF (268)
+    THEN (269)
+    ENDIF (270)
+    ELSE (271)
+    WHILE (272)
+    DO (273)
+    FOR (274)
+    BEGINLOOP (275)
+    ENDLOOP (276)
+    CONTINUE (277)
+    READ (278)
+    WRITE (279)
+    AND (280)
+    OR (281)
+    NOT (282)
+    TRUE (283)
+    FALSE (284)
+    RETURN (285)
+    SUB (286)
+    ADD (287)
+    MULT (288)
+    DIV (289)
+    MOD (290)
+    EQ (291)
+    NEQ (292)
+    LT (293)
+    GT (294)
+    LTE (295)
+    GTE (296)
+    SEMICOLON (297) 3
+    COLON (298)
+    COMMA (299)
+    L_PAREN (300)
+    R_PAREN (301)
+    L_SQUARE_BRACKET (302)
+    R_SQUARE_BRACKET (303)
+    ASSIGN (304)
+    IDENT <cval> (305) 3
+    NUMBER <ival> (306)
 
 
 Nonterminals, with rules where they appear
 
-$accept (52)
-    on left: 0
-program (53)
-    on left: 1 2, on right: 0 2
-function (54)
-    on left: 3, on right: 2
+    $accept (52)
+        on left: 0
+    program (53)
+        on left: 1 2
+        on right: 0 2
+    function (54)
+        on left: 3
+        on right: 2
 
 
-state 0
+State 0
 
     0 $accept: . program $end
 
@@ -142,7 +195,7 @@ state 0
     program  go to state 1
 
 
-state 1
+State 1
 
     0 $accept: program . $end
     2 program: program . function
@@ -153,35 +206,35 @@ state 1
     function  go to state 4
 
 
-state 2
+State 2
 
     0 $accept: program $end .
 
     $default  accept
 
 
-state 3
+State 3
 
     3 function: FUNCTION . IDENT SEMICOLON
 
     IDENT  shift, and go to state 5
 
 
-state 4
+State 4
 
     2 program: program function .
 
     $default  reduce using rule 2 (program)
 
 
-state 5
+State 5
 
     3 function: FUNCTION IDENT . SEMICOLON
 
     SEMICOLON  shift, and go to state 6
 
 
-state 6
+State 6
 
     3 function: FUNCTION IDENT SEMICOLON .
 
