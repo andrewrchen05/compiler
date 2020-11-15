@@ -176,13 +176,11 @@
 
  #include <stdio.h>
  #include <stdlib.h>
- #include <string.h>
-
  #include "y.tab.h"
- 
+ #include <string.h>
+ void yyerror(const char *msg);
  extern int currLine;
  extern int currPos;
-void yyerror(const char *msg);
  int yylex();
 
 
@@ -206,13 +204,13 @@ void yyerror(const char *msg);
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 14 "mini_l.y"
+#line 12 "mini_l.y"
 {
   char* cval;
   int ival;
 }
 /* Line 193 of yacc.c.  */
-#line 216 "y.tab.c"
+#line 214 "y.tab.c"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
@@ -225,7 +223,7 @@ typedef union YYSTYPE
 
 
 /* Line 216 of yacc.c.  */
-#line 229 "y.tab.c"
+#line 227 "y.tab.c"
 
 #ifdef short
 # undef short
@@ -512,7 +510,7 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    81,    81,    82,    85
+       0,    80,    80,    81,    84
 };
 #endif
 
@@ -1420,23 +1418,23 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 81 "mini_l.y"
+#line 80 "mini_l.y"
     {printf("program -> epsilon\n");;}
     break;
 
   case 3:
-#line 82 "mini_l.y"
+#line 81 "mini_l.y"
     {printf("program -> program function\n");;}
     break;
 
   case 4:
-#line 85 "mini_l.y"
+#line 84 "mini_l.y"
     {printf("function -> FUNCTION IDENT SEMICOLON\n");;}
     break;
 
 
 /* Line 1267 of yacc.c.  */
-#line 1440 "y.tab.c"
+#line 1438 "y.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1650,7 +1648,7 @@ yyreturn:
 }
 
 
-#line 97 "mini_l.y"
+#line 89 "mini_l.y"
 
 
 int main(int argc, char **argv) {

@@ -69,7 +69,7 @@ return  	{currPos += yyleng; return RETURN;}
 
 
                 /*Identifiers and Numbers*/
-{DIGIT}+		{printf(currPos += yyleng; return NUMBER;}
+{DIGIT}+		{printf(currPos += yyleng); return NUMBER;}
 
 {IDENTIFIER}            {currPos += yyleng; yylval.cval-strdup(yytext); return IDENT;}
 

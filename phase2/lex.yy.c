@@ -1089,12 +1089,12 @@ YY_RULE_SETUP
 case 48:
 YY_RULE_SETUP
 #line 72 "mini_l.lex"
-{printf("NUMBER %s\n",yytext);currPos += yyleng;}
+{printf(currPos += yyleng); return NUMBER;}
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
 #line 74 "mini_l.lex"
-{printf(currPos += yyleng; yylval.cval=strdup(yytext); return IDENT;}
+{currPos += yyleng; yylval.cval-strdup(yytext); return IDENT;}
 	YY_BREAK
 case 50:
 YY_RULE_SETUP

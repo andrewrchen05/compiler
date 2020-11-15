@@ -72,6 +72,7 @@
 %type<cval> IDENT
 %type<ival> NUMBER
 
+
 %start program
 
 %%
