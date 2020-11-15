@@ -109,33 +109,33 @@ statements: /* epsilon */ {printf("statements -> epsilon\n");}
           ;
 
 statement: var ASSIGN expression {printf("statement -> var ASSIGN expression\n");}
-         | IF bool-expr THEN statements ENDIF {printf("statement -> IF bool-expr THEN statements ENDIF\n");}
-         | IF bool-expr THEN statements ELSE statements ENDIF {printf("statement -> IF bool-expr THEN statements ELSE statements ENDIF\n");}
-         | WHILE bool-expr BEGINLOOP statements ENDLOOP {printf("statement -> WHILE bool-expr BEGINLOOP statements ENDLOOP\n");}
-         | DO BEGINLOOP statements ENDLOOP WHILE bool-expr {printf("statement -> DO BEGINLOOP statements ENDLOOP WHILE bool-expr\n");}
-         | FOR var ASSIGN NUMBER SEMICOLON bool-expr SEMICOLON var ASSIGN expression BEGINLOOP statements ENDLOOP {printf("statement -> FOR var ASSIGN NUMBER SEMICOLON bool-expr SEMICOLON var ASSIGN expression BEGINLOOP statements ENDLOOP\n");}
+         | IF bool_expr THEN statements ENDIF {printf("statement -> IF bool_expr THEN statements ENDIF\n");}
+         | IF bool_expr THEN statements ELSE statements ENDIF {printf("statement -> IF bool_expr THEN statements ELSE statements ENDIF\n");}
+         | WHILE bool_expr BEGINLOOP statements ENDLOOP {printf("statement -> WHILE bool_expr BEGINLOOP statements ENDLOOP\n");}
+         | DO BEGINLOOP statements ENDLOOP WHILE bool_expr {printf("statement -> DO BEGINLOOP statements ENDLOOP WHILE bool_expr\n");}
+         | FOR var ASSIGN NUMBER SEMICOLON bool_expr SEMICOLON var ASSIGN expression BEGINLOOP statements ENDLOOP {printf("statement -> FOR var ASSIGN NUMBER SEMICOLON bool_expr SEMICOLON var ASSIGN expression BEGINLOOP statements ENDLOOP\n");}
          | READ vars {printf("READ vars\n");}
          | WRITE vars {printf("WRITE vars\n");}
          | CONTINUE {printf("CONTINUE\n");}
          | RETURN expression {printf("RETURN expression\n");}
          ;
 
-bool-expr: relation-and-expr {printf("bool-expr -> relation-and-expr\n");}
-         | relation-and-expr OR relation-and-expr {printf("bool-expr -> relation-and-expr OR relation-and-expr\n");}
+bool_expr: relation_and_expr {printf("bool_expr -> relation_and_expr\n");}
+         | relation_and_expr OR relation_and_expr {printf("bool_expr -> relation_and_expr OR relation_and_expr\n");}
          ;
 
-relation-and-expr: relation-expr {printf("relation-and-expr -> relation-expr\n");}
-                 | relation-expr AND relation-expr {printf("relation-and-expr -> relation-expr AND relation-expr\n");}
+relation_and_expr: relation_expr {printf("relation_and_expr -> relation_expr\n");}
+                 | relation_expr AND relation_expr {printf("relation_and_expr -> relation_expr AND relation_expr\n");}
                  ;
 
-relation-expr: NOT expression comp expression {printf("relation-expr -> NOT expression comp expression\n");}
-             | NOT TRUE {printf("relation-expr -> NOT TRUE\n");}
-             | NOT FALSE {printf("relation-expr -> NOT FALSE\n");}
-             | NOT L_PAREN bool-expr R_PAREN {printf("relation-expr -> NOT L_PAREN bool-expr R_PAREN\n");}
-             | expression comp expression {printf("relation-expr -> expression comp expression\n");}
-             | TRUE {printf("relation-expr -> TRUE\n");}
-             | FALSE {printf("relation-expr -> FALSE\n");}
-             | L_PAREN bool-expr R_PAREN {printf("relation-expr -> L_PAREN bool-expr R_PAREN\n");}
+relation_expr: NOT expression comp expression {printf("relation_expr -> NOT expression comp expression\n");}
+             | NOT TRUE {printf("relation_expr -> NOT TRUE\n");}
+             | NOT FALSE {printf("relation_expr -> NOT FALSE\n");}
+             | NOT L_PAREN bool_expr R_PAREN {printf("relation_expr -> NOT L_PAREN bool_expr R_PAREN\n");}
+             | expression comp expression {printf("relation_expr -> expression comp expression\n");}
+             | TRUE {printf("relation_expr -> TRUE\n");}
+             | FALSE {printf("relation_expr -> FALSE\n");}
+             | L_PAREN bool_expr R_PAREN {printf("relation_expr -> L_PAREN bool_expr R_PAREN\n");}
              ;
 
 comp: EQ {printf("comp -> EQ\n");}
@@ -146,15 +146,15 @@ comp: EQ {printf("comp -> EQ\n");}
     | GTE {printf("comp -> GTE\n");}
     ;
 
-expression: multiplicative-expr {printf("expression -> multiplicative-expr\n");}
-          | multiplicative-expr ADD multiplicative-expr {printf("expression -> multiplicative-expr ADD multiplicative-expr\n");}
-          | multiplicative-expr SUB multiplicative-expr{printf("expression -> multiplicative-expr SUB multiplicative-expr\n");}
+expression: multiplicative_expr {printf("expression -> multiplicative_expr\n");}
+          | multiplicative_expr ADD multiplicative_expr {printf("expression -> multiplicative_expr ADD multiplicative_expr\n");}
+          | multiplicative_expr SUB multiplicative_expr{printf("expression -> multiplicative_expr SUB multiplicative_expr\n");}
           ;
 
-multiplicative-expr: term {printf("multiplicative-expr -> term\n");}
-                   | term MULT term {printf("multiplicative-expr -> term MULT term\n");}
-                   | term DIV term {printf("multiplicative-expr -> term DIV term\n");}
-                   | term MOD term {printf("multiplicative-expr -> term MOD term\n");}
+multiplicative_expr: term {printf("multiplicative_expr -> term\n");}
+                   | term MULT term {printf("multiplicative_expr -> term MULT term\n");}
+                   | term DIV term {printf("multiplicative_expr -> term DIV term\n");}
+                   | term MOD term {printf("multiplicative_expr -> term MOD term\n");}
                    ;
 
 term: SUB var {printf("term -> SUB var\n");}
