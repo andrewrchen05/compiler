@@ -83,6 +83,8 @@ program: /* epsilo */ {printf("program -> epsilon\n");}
 function: FUNCTION IDENT SEMICOLON {printf("function -> FUNCTION IDENT SEMICOLON\n");}
 	;
 
+ident:  IDENT {printf("ident -> IDENT %s\n", $1);}
+
 %%
 
 int main(int argc, char **argv) {
