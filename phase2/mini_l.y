@@ -6,6 +6,7 @@
  void yyerror(const char *msg);
  extern int currLine;
  extern int currPos;
+ extern const char* yytext;
  int yylex();
 %}
 
@@ -75,15 +76,48 @@
 
 %%
 
-program: /* epsilo */ {printf("program -> epsilon\n");}
-       | program function {printf("program -> program function\n");}
+program: /* epsilon */ {printf("program -> epsilon\n");}
+       | program functions {printf("program -> program function\n");}
        ; 
 
-function: FUNCTION IDENT SEMICOLON {printf("function -> FUNCTION IDENT SEMICOLON\n");}
-	;
+functions: /* epsilon */ {printf("functions -> epsilon\n");}
+         | function functions {printf("functions -> function functions\n");}
+         ;
 
-// ident:  IDENT {printf("ident -> IDENT %s\n", $1);}
-//      ;
+function: FUNCTION IDENT SEMICOLON BEGIN_PARAMS declarations END_PARAMS BEGIN_LOCALS declarations END_LOCALS BEGIN_BODY statements END_BODY{printf("function -> FUNCTION IDENT SEMICOLON BEGIN_PARAMS declarations END_PARAMS BEGIN_LOCALS declarations END_LOCALS BEGIN_BODY statements END_BODY\n");}
+	     ;
+
+declarations: /* epsilon */ {printf("declarations -> epsilon\n");}
+            | declaration SEMICOLON declarations {printf("declarations -> declaration SEMICOLON declarations\n");}
+            ;
+
+declaration: identifiers COLON INTEGER {printf("declaration -> identifiers COLON INTEGER\n");}
+           | idtifiers COLON ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER {printf("declaration -> \n");}
+           | idtifiers COLON ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER {printf("declaration -> \n");}
+           ;
+
+identifiers: ident {printf("identifiers -> ident\n");}
+           | ident COMMA identifiers {printf("identifiers -> identifier COMMA identifiers\n");}
+           ;
+
+ident: IDENT {printf("IDENT %s\n", yytext);}
+     ;
+
+statements: /* epsilon */ {printf("statements -> epsilon\n");}
+          | statement SEMICOLON statements {printf("statements -> statement SEMICOLON statements\n");}
+          ;
+
+statement: var ASSIGN expression {printf("statement -> var ASSIGN expression\n");}
+         | IF bool-expr THEN statements ENDIF {printf("statement -> IF bool-expr THEN statements ENDIF\n");}
+         | IF bool-expr THEN statements ELSE statements ENDIF {printf("statement -> IF bool-expr THEN statements ELSE statements ENDIF\n");}
+         | WHILE bool-expr BEGINLOOP statements ENDLOOP {printf("statement -> WHILE bool-expr BEGINLOOP statements ENDLOOP\n");}
+         | do BEGINLOOP statements ENDLOOP WHILE bool-expr {printf("statement -> do BEGINLOOP statements ENDLOOP WHILE bool-expr\n");}
+         | FOR var ASSIGN NUMBER SEMICOLON bool-expr SEMICOLON var ASSIGN expression BEGINLOOP statements ENDLOOP {printf("statement -> FOR var ASSIGN NUMBER SEMICOLON bool-expr SEMICOLON var ASSIGN expression BEGINLOOP statements ENDLOOP\n");}
+         | READ vars {printf("READ vars\n");}
+         | WRITE vars {printf("WRITE vars\n");}
+         | CONTINUE {printf("CONTINUE\n");}
+         | RETURN expression {printf("RETURN expression\n");}
+         ;
 
 bool-expr: relation-and-expr {printf("bool-expr -> relation-and-expr\n");}
          | relation-and-expr OR relation-and-expr {printf("bool-expr -> relation-and-expr OR relation-and-expr\n");}
@@ -128,8 +162,12 @@ term: SUB var {printf("term -> SUB var\n");}
     | var {printf("term -> var\n");}
     | NUMBER {printf("term -> NUMBER\n");}
     | L_PAREN expression R_PAREN {printf("term -> L_PAREN expression R_PAREN\n");}
-    | IDENT L_PAREN expression R_PAREN {printf("term -> ident L_PAREN expression R_PAREN\n");} //check on how to do with comma
+    | IDENT L_PAREN expressions R_PAREN {printf("term -> ident L_PAREN expressions R_PAREN\n");}
     ;
+
+expressions: expression {printf("expressions -> expression\n");}
+          | expression COMMA expressions {printf("expressions -> expression COMMA expressions\n");}
+          ;
 
 var: IDENT {printf("var -> ident\n");}
    | IDENT L_SQUARE_BRACKET expression R_SQUARE_BRACKET {printf("var -> ident L_SQUARE_BRACKET expression R_SQUARE_BRACKET\n");}

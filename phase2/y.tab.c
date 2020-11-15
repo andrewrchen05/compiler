@@ -75,9 +75,10 @@
  void yyerror(const char *msg);
  extern int currLine;
  extern int currPos;
+ extern const char* yytext;
  int yylex();
 
-#line 81 "y.tab.c"
+#line 82 "y.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -181,12 +182,12 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 12 "mini_l.y"
+#line 13 "mini_l.y"
 
   char* cval;
   int ival;
 
-#line 190 "y.tab.c"
+#line 191 "y.tab.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -566,7 +567,7 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int8 yyrline[] =
 {
-       0,    78,    78,    79,    82
+       0,    79,    79,    80,    83
 };
 #endif
 
@@ -1362,25 +1363,25 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 78 "mini_l.y"
+#line 79 "mini_l.y"
                       {printf("program -> epsilon\n");}
-#line 1368 "y.tab.c"
+#line 1369 "y.tab.c"
     break;
 
   case 3:
-#line 79 "mini_l.y"
+#line 80 "mini_l.y"
                           {printf("program -> program function\n");}
-#line 1374 "y.tab.c"
+#line 1375 "y.tab.c"
     break;
 
   case 4:
-#line 82 "mini_l.y"
+#line 83 "mini_l.y"
                                    {printf("function -> FUNCTION IDENT SEMICOLON\n");}
-#line 1380 "y.tab.c"
+#line 1381 "y.tab.c"
     break;
 
 
-#line 1384 "y.tab.c"
+#line 1385 "y.tab.c"
 
       default: break;
     }
@@ -1612,7 +1613,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 142 "mini_l.y"
+#line 143 "mini_l.y"
 
 
 int main(int argc, char **argv) {
