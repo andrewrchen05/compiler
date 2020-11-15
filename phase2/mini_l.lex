@@ -85,16 +85,3 @@ return  	{currPos += yyleng; return RETURN;}
                 /*Unidentified Characters*/
 .               {printf("Error at line %d, currPos %d :unrecognized symbol \"%s\"\n",currLine,currPos,yytext);exit(0);}
 %%
-
-
-int main(int argc, char* argv[])
-{
-    if(argc == 2)
-    {
-        yyin = fopen(argv[1],"r");
-        yylex();
-        fclose(yyin);
-    }
-    else
-        yylex();
-}
