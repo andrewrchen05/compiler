@@ -83,7 +83,7 @@
 %left ADD SUB
 %left MULT DIV MOD
 
-%right '-'
+%right UMINUS
 
 %left L_SQUARE_BRACKET R_SQUARE_BRACKET
 %left L_PAREN R_PAREN
@@ -116,8 +116,9 @@ identifiers: ident {printf("identifiers -> ident\n");}
            | ident COMMA identifiers {printf("identifiers -> identifier COMMA identifiers\n");}
            ;
 
-ident: IDENT {printf("IDENT %s\n", yytext);}
-     ;
+
+ident:      IDENT {printf("Ident -> IDENT %s \n", $1);}
+    ;
 
 statements: /* epsilon */ {printf("statements -> epsilon\n");}
           | statement SEMICOLON statements {printf("statements -> statement SEMICOLON statements\n");}
@@ -159,6 +160,7 @@ comp: EQ {printf("comp -> EQ\n");}
     | GT {printf("comp -> GT\n");}
     | LTE {printf("comp -> LTE\n");}
     | GTE {printf("comp -> GTE\n");}
+    | error {printf("error");}
     ;
 
 expression: multiplicative_expr {printf("expression -> multiplicative_expr\n");}
