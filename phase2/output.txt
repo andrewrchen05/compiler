@@ -4,10 +4,10 @@ ident -> IDENT n
 identifiers -> ident
 declaration -> identifiers COLON INTEGER
 ident -> IDENT i 
-ident -> IDENT j 
-ident -> IDENT k 
 identifiers -> ident
+ident -> IDENT j 
 identifiers -> identifier COMMA identifiers
+ident -> IDENT k 
 identifiers -> identifier COMMA identifiers
 declaration -> identifiers COLON INTEGER
 ident -> IDENT t 

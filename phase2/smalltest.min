@@ -2,8 +2,10 @@ function main;
 beginparams
 endparams
 beginlocals
-a : integer;
+a := integer
+i, j, k: integer;
 endlocals
 beginbody
 a := -1;
+i := 2
 endbody

@@ -105,16 +105,18 @@ function: FUNCTION IDENT SEMICOLON BEGIN_PARAMS declarations END_PARAMS BEGIN_LO
 
 declarations: /* epsilon */ {printf("declarations -> epsilon\n");}
             | declaration SEMICOLON declarations {printf("declarations -> declaration SEMICOLON declarations\n");}
-            | declaration error declarations {yyerror(" expecting \";\"");}
+            | error declarations {printf("Syntax Error: expected \";\" near line %d\n", currLine);}
             ;
 
 declaration: identifiers COLON INTEGER {printf("declaration -> identifiers COLON INTEGER\n");}
            | identifiers COLON ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER {printf("declaration -> identifiers COLON ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER\n");}
            | identifiers COLON ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER {printf("declaration -> identifiers COLON ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER\n");}
+           | identifiers error INTEGER
            ;
 
 identifiers: ident {printf("identifiers -> ident\n");}
-           | ident COMMA identifiers {printf("identifiers -> identifier COMMA identifiers\n");}
+           | identifiers COMMA ident {printf("identifiers -> ident COMMA identifier\n");}
+           | identifiers error ident
            ;
 
 
@@ -123,7 +125,7 @@ ident:      IDENT {printf("ident -> IDENT %s \n", $1);}
 
 statements: /* epsilon */ {printf("statements -> epsilon\n");}
           | statement SEMICOLON statements {printf("statements -> statement SEMICOLON statements\n");}
-          | statement error statements {yyerror(" \";\" expected");}
+          | statement error statements {printf("Syntax Error: expected \";\" near line %d\n", currLine);}
           ;
 
 statement: var ASSIGN expression {printf("statement -> var ASSIGN expression\n");}
@@ -136,7 +138,7 @@ statement: var ASSIGN expression {printf("statement -> var ASSIGN expression\n")
          | WRITE vars {printf("statement -> WRITE vars\n");}
          | CONTINUE {printf("statement -> CONTINUE\n");}
          | RETURN expression {printf("statement ->RETURN expression\n");}
-         | var error expression {yyerror(" \":=\" expected");}
+         | var error expression 
          ;
 
 bool_expr: relation_and_expr {printf("bool_expr -> relation_and_expr\n");}
@@ -195,7 +197,6 @@ var: ident {printf("var -> ident\n");}
 
 vars: var {printf("vars -> var\n");}
     | var COMMA vars {printf("vars -> var COMMA vars\n");}
-    | error vars {yyerror(" expecting \",\" ");}
     ;
 
 %%
