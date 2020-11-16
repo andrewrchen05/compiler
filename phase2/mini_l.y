@@ -98,7 +98,7 @@ program: /* epsilon */ {printf("program -> epsilon\n");}
        ; 
 
 function: FUNCTION IDENT SEMICOLON BEGIN_PARAMS declarations END_PARAMS BEGIN_LOCALS declarations END_LOCALS BEGIN_BODY statements END_BODY{printf("function -> FUNCTION IDENT SEMICOLON BEGIN_PARAMS declarations END_PARAMS BEGIN_LOCALS declarations END_LOCALS BEGIN_BODY statements END_BODY\n");}
-	     ;
+	    ;
 
 declarations: /* epsilon */ {printf("declarations -> epsilon\n");}
             | declaration SEMICOLON declarations {printf("declarations -> declaration SEMICOLON declarations\n");}
@@ -135,11 +135,11 @@ statement: var ASSIGN expression {printf("statement -> var ASSIGN expression\n")
          ;
 
 bool_expr: relation_and_expr {printf("bool_expr -> relation_and_expr\n");}
-         | relation_and_expr OR relation_and_expr {printf("bool_expr -> relation_and_expr OR relation_and_expr\n");}
+         | relation_and_expr OR bool_expr {printf("bool_expr -> relation_and_expr OR bool_expr\n");}
          ;
 
 relation_and_expr: relation_expr {printf("relation_and_expr -> relation_expr\n");}
-                 | relation_expr AND relation_expr {printf("relation_and_expr -> relation_expr AND relation_expr\n");}
+                 | relation_and_expr AND relation_expr {printf("relation_and_expr -> relation_expr AND relation_expr\n");}
                  ;
 
 relation_expr: NOT expression comp expression {printf("relation_expr -> NOT expression comp expression\n");}
@@ -163,8 +163,8 @@ comp: EQ {printf("comp -> EQ\n");}
     ;
 
 expression: multiplicative_expr {printf("expression -> multiplicative_expr\n");}
-          | multiplicative_expr ADD multiplicative_expr {printf("expression -> multiplicative_expr ADD multiplicative_expr\n");}
-          | multiplicative_expr SUB multiplicative_expr{printf("expression -> multiplicative_expr SUB multiplicative_expr\n");}
+          | multiplicative_expr ADD expression {printf("expression -> multiplicative_expr ADD expression\n");}
+          | multiplicative_expr SUB expression{printf("expression -> multiplicative_expr SUB expression\n");}
           ;
 
 multiplicative_expr: term {printf("multiplicative_expr -> term\n");}
