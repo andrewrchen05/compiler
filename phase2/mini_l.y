@@ -14,6 +14,7 @@
   char* cval;
   int ival;
 }
+%error-verbose
 
 %token FUNCTION
 %token BEGIN_PARAMS
@@ -93,12 +94,8 @@
 %%
 
 program: /* epsilon */ {printf("program -> epsilon\n");}
-       | program functions {printf("program -> program function\n");}
+       | program function {printf("program -> program function\n");}
        ; 
-
-functions: /* epsilon */ {printf("functions -> epsilon\n");}
-         | function functions {printf("functions -> function functions\n");}
-         ;
 
 function: FUNCTION IDENT SEMICOLON BEGIN_PARAMS declarations END_PARAMS BEGIN_LOCALS declarations END_LOCALS BEGIN_BODY statements END_BODY{printf("function -> FUNCTION IDENT SEMICOLON BEGIN_PARAMS declarations END_PARAMS BEGIN_LOCALS declarations END_LOCALS BEGIN_BODY statements END_BODY\n");}
 	     ;
@@ -134,6 +131,7 @@ statement: var ASSIGN expression {printf("statement -> var ASSIGN expression\n")
          | WRITE vars {printf("WRITE vars\n");}
          | CONTINUE {printf("CONTINUE\n");}
          | RETURN expression {printf("RETURN expression\n");}
+         | var error expression {yyerror("error");}
          ;
 
 bool_expr: relation_and_expr {printf("bool_expr -> relation_and_expr\n");}
@@ -152,6 +150,7 @@ relation_expr: NOT expression comp expression {printf("relation_expr -> NOT expr
              | TRUE {printf("relation_expr -> TRUE\n");}
              | FALSE {printf("relation_expr -> FALSE\n");}
              | L_PAREN bool_expr R_PAREN {printf("relation_expr -> L_PAREN bool_expr R_PAREN\n");}
+             | expression error ';' {yyerrok;}
              ;
 
 comp: EQ {printf("comp -> EQ\n");}
@@ -160,7 +159,7 @@ comp: EQ {printf("comp -> EQ\n");}
     | GT {printf("comp -> GT\n");}
     | LTE {printf("comp -> LTE\n");}
     | GTE {printf("comp -> GTE\n");}
-    | error {printf("error");}
+    | error ';' {yyerrok;}
     ;
 
 expression: multiplicative_expr {printf("expression -> multiplicative_expr\n");}
@@ -174,7 +173,7 @@ multiplicative_expr: term {printf("multiplicative_expr -> term\n");}
                    | term MOD term {printf("multiplicative_expr -> term MOD term\n");}
                    ;
 
-term: SUB var {printf("term -> SUB var\n");}
+term: SUB var %prec UMINUS {printf("term -> SUB var\n");}
     | SUB NUMBER {printf("term -> SUB NUMBER\n");}
     | SUB L_PAREN expression R_PAREN {printf("term -> SUB L_PAREN expression R_PAREN\n");}
     | var {printf("term -> var\n");}

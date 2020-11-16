@@ -73,15 +73,13 @@ return  	{currPos += yyleng; return RETURN;}
 
 {IDENTIFIER}            {currPos += yyleng; yylval.cval=strdup(yytext); return IDENT;}
 
-[0-9_]+{IDENTIFIER}      {printf("Error at line %d, currPos %d: Identifier \"%s\" must begin with a letter\n",currLine,currPos,yytext);currPos += yyleng;exit(0);}
+[0-9_]+{IDENTIFIER}      {printf("Error at line %d, currPos %d: Identifier \"%s\" must begin with a letter\n",currLine,currPos,yytext);currPos += yyleng;}
 
-{IDENTIFIER}[_]+               {printf("Error at line %d, currPos %d: Identifier \"%s\" cannot end with an underscore\n",currLine,currPos,yytext);currPos += yyleng;exit(0);}
+{IDENTIFIER}[_]+               {printf("Error at line %d, currPos %d: Identifier \"%s\" cannot end with an underscore\n",currLine,currPos,yytext);currPos += yyleng;}
 
         /* Other */
 [ \t]           {currPos += yyleng;}    /* ignore white space */
 [\n]            {currLine++; currPos = 1;}      /* ignore newline */
 {COMMENTS}      {currPos += yyleng;}    /* ignore comments */
 
-                /*Unidentified Characters*/
-.               {printf("Error at line %d, currPos %d :unrecognized symbol \"%s\"\n",currLine,currPos,yytext);exit(0);}
 %%
