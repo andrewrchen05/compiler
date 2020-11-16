@@ -15,8 +15,8 @@
   int ival;
 }
 
-%define parse.error verbose
-//%error-verbose
+//%define parse.error verbose
+%error-verbose
 
 %token FUNCTION
 %token BEGIN_PARAMS
@@ -176,8 +176,8 @@ multiplicative_expr: term {printf("multiplicative_expr -> term\n");}
                    | term MOD term {printf("multiplicative_expr -> term MOD term\n");}
                    ;
 
-term: SUB var %prec UMINUS {printf("term -> SUB var\n");}
-    | SUB NUMBER {printf("term -> SUB NUMBER\n");}
+term: SUB var %prec UMINUS {printf("term -> var UMINU\n");}
+    | SUB NUMBER %prec UMINUS {printf("term-> UMINUS NUMBER\n");}
     | SUB L_PAREN expression R_PAREN {printf("term -> SUB L_PAREN expression R_PAREN\n");}
     | var {printf("term -> var\n");}
     | NUMBER {printf("term -> NUMBER\n");}
