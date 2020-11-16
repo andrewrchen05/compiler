@@ -14,7 +14,7 @@
   char* cval;
   int ival;
 }
-%define parse.error verbose
+%error-verbose
 
 %token FUNCTION
 %token BEGIN_PARAMS
@@ -98,10 +98,12 @@ program: /* epsilon */ {printf("program -> epsilon\n");}
        ; 
 
 function: FUNCTION IDENT SEMICOLON BEGIN_PARAMS declarations END_PARAMS BEGIN_LOCALS declarations END_LOCALS BEGIN_BODY statements END_BODY{printf("function -> FUNCTION IDENT SEMICOLON BEGIN_PARAMS declarations END_PARAMS BEGIN_LOCALS declarations END_LOCALS BEGIN_BODY statements END_BODY\n");}
-	    ;
+	    | FUNCTION IDENT error BEGIN_PARAMS declarations END_PARAMS BEGIN_LOCALS declarations END_LOCALS BEGIN_BODY statements END_BODY {yyerror(" \";\" expected");}
+        ;
 
 declarations: /* epsilon */ {printf("declarations -> epsilon\n");}
             | declaration SEMICOLON declarations {printf("declarations -> declaration SEMICOLON declarations\n");}
+            | declaration error declarations {yyerror(" expecting \";\"");}
             ;
 
 declaration: identifiers COLON INTEGER {printf("declaration -> identifiers COLON INTEGER\n");}
@@ -119,6 +121,7 @@ ident:      IDENT {printf("ident -> IDENT %s \n", $1);}
 
 statements: /* epsilon */ {printf("statements -> epsilon\n");}
           | statement SEMICOLON statements {printf("statements -> statement SEMICOLON statements\n");}
+          | statement error statements {yyerror(" \";\" expected");}
           ;
 
 statement: var ASSIGN expression {printf("statement -> var ASSIGN expression\n");}
@@ -131,7 +134,7 @@ statement: var ASSIGN expression {printf("statement -> var ASSIGN expression\n")
          | WRITE vars {printf("statement -> WRITE vars\n");}
          | CONTINUE {printf("statement -> CONTINUE\n");}
          | RETURN expression {printf("statement ->RETURN expression\n");}
-         | var error expression {yyerror("statement -> error");}
+         | var error expression {yyerror(" \":=\" expected");}
          ;
 
 bool_expr: relation_and_expr {printf("bool_expr -> relation_and_expr\n");}
@@ -150,7 +153,6 @@ relation_expr: NOT expression comp expression {printf("relation_expr -> NOT expr
              | TRUE {printf("relation_expr -> TRUE\n");}
              | FALSE {printf("relation_expr -> FALSE\n");}
              | L_PAREN bool_expr R_PAREN {printf("relation_expr -> L_PAREN bool_expr R_PAREN\n");}
-             | expression error ';' {yyerrok;}
              ;
 
 comp: EQ {printf("comp -> EQ\n");}
@@ -159,7 +161,6 @@ comp: EQ {printf("comp -> EQ\n");}
     | GT {printf("comp -> GT\n");}
     | LTE {printf("comp -> LTE\n");}
     | GTE {printf("comp -> GTE\n");}
-    | error ';' {yyerrok;}
     ;
 
 expression: multiplicative_expr {printf("expression -> multiplicative_expr\n");}
@@ -191,7 +192,8 @@ var: ident {printf("var -> ident\n");}
    ;
 
 vars: var {printf("vars -> var\n");}
-    | var COMMA vars {printf("vars -> var COMMA vars\n");}
+    | COMMA vars {printf("vars -> var COMMA vars\n");}
+    | error vars {yyerror(" expecting \",\" ");}
     ;
 
 %%

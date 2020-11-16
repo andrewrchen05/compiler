@@ -6,5 +6,4 @@ a : integer;
 endlocals
 beginbody
 a := 1;
-a = 2;
 endbody
