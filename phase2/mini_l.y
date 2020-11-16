@@ -14,7 +14,7 @@
   char* cval;
   int ival;
 }
-%error-verbose
+%define parse.error verbose
 
 %token FUNCTION
 %token BEGIN_PARAMS
@@ -114,7 +114,7 @@ identifiers: ident {printf("identifiers -> ident\n");}
            ;
 
 
-ident:      IDENT {printf("Ident -> IDENT %s \n", $1);}
+ident:      IDENT {printf("ident -> IDENT %s \n", $1);}
     ;
 
 statements: /* epsilon */ {printf("statements -> epsilon\n");}
@@ -127,11 +127,11 @@ statement: var ASSIGN expression {printf("statement -> var ASSIGN expression\n")
          | WHILE bool_expr BEGINLOOP statements ENDLOOP {printf("statement -> WHILE bool_expr BEGINLOOP statements ENDLOOP\n");}
          | DO BEGINLOOP statements ENDLOOP WHILE bool_expr {printf("statement -> DO BEGINLOOP statements ENDLOOP WHILE bool_expr\n");}
          | FOR var ASSIGN NUMBER SEMICOLON bool_expr SEMICOLON var ASSIGN expression BEGINLOOP statements ENDLOOP {printf("statement -> FOR var ASSIGN NUMBER SEMICOLON bool_expr SEMICOLON var ASSIGN expression BEGINLOOP statements ENDLOOP\n");}
-         | READ vars {printf("READ vars\n");}
-         | WRITE vars {printf("WRITE vars\n");}
-         | CONTINUE {printf("CONTINUE\n");}
-         | RETURN expression {printf("RETURN expression\n");}
-         | var error expression {yyerror("error");}
+         | READ vars {printf("statement -> READ vars\n");}
+         | WRITE vars {printf("statement -> WRITE vars\n");}
+         | CONTINUE {printf("statement -> CONTINUE\n");}
+         | RETURN expression {printf("statement ->RETURN expression\n");}
+         | var error expression {yyerror("statement -> error");}
          ;
 
 bool_expr: relation_and_expr {printf("bool_expr -> relation_and_expr\n");}
@@ -186,12 +186,12 @@ expressions: expression {printf("expressions -> expression\n");}
           | expression COMMA expressions {printf("expressions -> expression COMMA expressions\n");}
           ;
 
-var: IDENT {printf("var -> ident\n");}
-   | IDENT L_SQUARE_BRACKET expression R_SQUARE_BRACKET {printf("var -> ident L_SQUARE_BRACKET expression R_SQUARE_BRACKET\n");}
+var: ident {printf("var -> ident\n");}
+   | ident L_SQUARE_BRACKET expression R_SQUARE_BRACKET {printf("var -> ident L_SQUARE_BRACKET expression R_SQUARE_BRACKET\n");}
    ;
 
 vars: var {printf("vars -> var\n");}
-    | var COMMA vars {printf("var COMMA vars\n");}
+    | var COMMA vars {printf("vars -> var COMMA vars\n");}
     ;
 
 %%
