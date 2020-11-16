@@ -14,7 +14,9 @@
   char* cval;
   int ival;
 }
-%error-verbose
+
+%define parse.error verbose
+//%error-verbose
 
 %token FUNCTION
 %token BEGIN_PARAMS
@@ -192,7 +194,7 @@ var: ident {printf("var -> ident\n");}
    ;
 
 vars: var {printf("vars -> var\n");}
-    | COMMA vars {printf("vars -> var COMMA vars\n");}
+    | var COMMA vars {printf("vars -> var COMMA vars\n");}
     | error vars {yyerror(" expecting \",\" ");}
     ;
 
