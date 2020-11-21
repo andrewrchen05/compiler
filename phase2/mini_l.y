@@ -168,14 +168,14 @@ comp: EQ {printf("comp -> EQ\n");}
     ;
 
 expression: multiplicative_expr {printf("expression -> multiplicative_expr\n");}
-          | multiplicative_expr ADD expression {printf("expression -> multiplicative_expr ADD expression\n");}
-          | multiplicative_expr SUB expression{printf("expression -> multiplicative_expr SUB expression\n");}
+          | expression ADD multiplicative_expr {printf("expression -> expression ADD multiplicative_expr\n");}
+          | expression SUB multiplicative_expr {printf("expression -> expression SUB multiplicative_expr\n");}
           ;
 
 multiplicative_expr: term {printf("multiplicative_expr -> term\n");}
-                   | term MULT term {printf("multiplicative_expr -> term MULT term\n");}
-                   | term DIV term {printf("multiplicative_expr -> term DIV term\n");}
-                   | term MOD term {printf("multiplicative_expr -> term MOD term\n");}
+                   | multiplicative_expr MULT term {printf("multiplicative_expr -> term MULT term\n");}
+                   | multiplicative_expr DIV term {printf("multiplicative_expr -> term DIV term\n");}
+                   | multiplicative_expr MOD term {printf("multiplicative_expr -> term MOD term\n");}
                    ;
 
 term: SUB var %prec UMINUS {printf("term -> var UMINU\n");}
