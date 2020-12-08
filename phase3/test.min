@@ -1,1 +1,10 @@
-k := 2 + 3
+function sum;
+beginparams
+    d,e : integer;
+endparams
+beginlocals
+    a,b,c : integer;
+endlocals
+beginbody
+    c := a + c;
+endbody

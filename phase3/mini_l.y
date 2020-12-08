@@ -1,19 +1,57 @@
 %{
- #include <stdio.h>
- #include <stdlib.h>
- #include "y.tab.h"
- #include <string.h>
- void yyerror(const char *msg);
- extern int currLine;
- extern int currPos;
- extern const char* yytext;
- int yylex();
 %}
 
-%union{
-  char* cval;
-  int ival;
+%skeleton "lalr1.cc"
+%require "3.0.4"
+%defines
+%define api.token.constructor
+%define api.value.type variant
+%define parse.error verbose
+%locations
+
+%code requires
+{
+	/* you may need these header files 
+	 * add more header file if you need more
+	 */
+#include <list>
+#include <string>
+#include <functional>
+using namespace std;
+	/* define the sturctures using as types for non-terminals */
+    struct dec_type{
+        string code;
+        list<string> ids;
+    }
+	/* end the structures for non-terminal types */
 }
+
+
+%code
+{
+#include "parser.tab.hh"
+
+	/* you may need these header files 
+	 * add more header file if you need more
+	 */
+struct tests
+{
+    string name;
+    yy:location loc;
+}
+#include <sstream>
+#include <map>
+#include <regex>
+#include <set>
+yy::parser::symbol_type yylex();
+
+	/* define your symbol table, global variables,
+	 * list of keywords or any function you may need here */
+	
+	/* end of your code */
+}
+
+%token END 0 "end of file";
 
 %token FUNCTION
 %token BEGIN_PARAMS
@@ -71,8 +109,8 @@
 
 %token ERROR
 
-%type<cval> IDENT
-%type<ival> NUMBER
+%type<string> IDENT
+%type<int> NUMBER
 
 
 %right ASSIGN
@@ -88,41 +126,95 @@
 %left L_SQUARE_BRACKET R_SQUARE_BRACKET
 %left L_PAREN R_PAREN
 
+%type <string> program function ident statements
+%type <dec_type> declarations declaration
+%type <list<string>> identifiers
+
 %start program
+// %start start_prog;
 
 %%
 
-program: /* epsilon */ {printf("program -> epsilon\n");}
-       | program functions {printf("program -> program function\n");}
+// start_prog: program {
+//                         cout << $1 << endl;
+//                     }
+//         ;
+
+program: /* epsilon */ {
+                            //$$ = "";
+                            printf("program -> epsilon\n");
+                        }
+       | program function {
+                                // $$ = $1 + "\n" + $2;
+                                printf("program -> program function\n");
+                            }
        ; 
 
-functions: /* epsilon */ {printf("functions -> epsilon\n");}
-         | function functions {printf("functions -> function functions\n");}
-         ;
-
-function: FUNCTION IDENT SEMICOLON BEGIN_PARAMS declarations END_PARAMS BEGIN_LOCALS declarations END_LOCALS BEGIN_BODY statements END_BODY{printf("function -> FUNCTION IDENT SEMICOLON BEGIN_PARAMS declarations END_PARAMS BEGIN_LOCALS declarations END_LOCALS BEGIN_BODY statements END_BODY\n");}
+function: FUNCTION ident SEMICOLON BEGIN_PARAMS declarations END_PARAMS BEGIN_LOCALS declarations END_LOCALS BEGIN_BODY statements END_BODY 
+        {
+            // $$ = "func " + $2 + "\n";
+            // $$ += $5.code + "\n";
+            // int i = 0;
+            // for(list<string>::iterator it = $5.ids.begin(); it != $5.ids.end(); ++it) {
+            //     $$ += *it +  "$" + to_string(i) + "\n";
+            //     ++i;
+            // }
+            // $$ += $8.code + "\n";
+            // $$ += $11.code + "\n";
+            // $$ = += "endfunc";
+            printf("function -> FUNCTION IDENT SEMICOLON BEGIN_PARAMS declarations END_PARAMS BEGIN_LOCALS declarations END_LOCALS BEGIN_BODY statements END_BODY\n");
+        }
 	     ;
 
-declarations: /* epsilon */ {printf("declarations -> epsilon\n");}
-            | declaration SEMICOLON declarations {printf("declarations -> declaration SEMICOLON declarations\n");}
+declarations: /* epsilon is empty string */ {
+                                                // $$.code = "";
+                                                // $$.ids = list<string>();
+                                                printf("declarations -> epsilon\n");
+                                            }
+            | declaration SEMICOLON declarations {
+                // $$.code = $1.code + "\n" + $3.code;
+                // $$.ids = $1.ids;
+                // for(list<string>::iterator it = $3.ids.begin(); it != $3.ids.end(); ++it) {
+                //     $$.ids.push_back(*it);
+                // }
+                printf("declarations -> declaration SEMICOLON declarations\n");
+            }
             ;
+            
+identifiers: ident {
+                        // $$.push_back($1);
+                        printf("identifiers -> ident\n");
+                    }
+           | ident COMMA identifiers {
+            //    $$ = $3;
+            //    $$.push_front($1);
+            {printf("identifiers -> ident COMMA identifier\n");}
+           }
+           ;
 
-declaration: identifiers COLON INTEGER {printf("declaration -> identifiers COLON INTEGER\n");}
-           | identifiers COLON ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER {printf("declaration -> identifiers COLON ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER\n");}
+ident: IDENT {$$ = $1}
+     ;
+
+declaration: identifiers COLON INTEGER {
+                // for(list<string>::iterator it = $1.ids.begin(); it != $1.ids.end(); ++it) {
+                //     $$ += ". " + *it + "\n";
+                //     $$.ids.push_back(*it);
+                // }
+                printf("declaration -> identifiers COLON INTEGER\n");
+            }
+
+           | identifiers COLON ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER {
+            //    for(list<string>::iterator it = $1.ids.begin(); it != $1.ids.end(); ++it) {
+            //         $$ += ".[] " + *it + ", " + to_string($5) +  "\n"; // $5 is integer in square bracket
+            //         $$.ids.push_back(*it);
+            //     }
+                printf("declaration -> identifiers COLON ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER\n");
+           }
            | identifiers COLON ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER {printf("declaration -> identifiers COLON ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER\n");}
            ;
 
-identifiers: ident {printf("identifiers -> ident\n");}
-           | ident COMMA identifiers {printf("identifiers -> identifier COMMA identifiers\n");}
-           | ident error '\n' 
-           ;
-
-ident: IDENT {printf("IDENT %s\n", yytext);}
-     ;
-
 statements: /* epsilon */ {printf("statements -> epsilon\n");}
           | statement SEMICOLON statements {printf("statements -> statement SEMICOLON statements\n");}
-          | statement error '\n'
           ;
 
 statement: var ASSIGN expression {printf("statement -> var ASSIGN expression\n");}
