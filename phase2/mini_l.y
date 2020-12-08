@@ -83,7 +83,7 @@
 %left ADD SUB
 %left MULT DIV MOD
 
-%right '-'
+%right UMINUS
 
 %left L_SQUARE_BRACKET R_SQUARE_BRACKET
 %left L_PAREN R_PAREN
@@ -114,6 +114,7 @@ declaration: identifiers COLON INTEGER {printf("declaration -> identifiers COLON
 
 identifiers: ident {printf("identifiers -> ident\n");}
            | ident COMMA identifiers {printf("identifiers -> identifier COMMA identifiers\n");}
+           | ident error '\n' 
            ;
 
 ident: IDENT {printf("IDENT %s\n", yytext);}
@@ -121,6 +122,7 @@ ident: IDENT {printf("IDENT %s\n", yytext);}
 
 statements: /* epsilon */ {printf("statements -> epsilon\n");}
           | statement SEMICOLON statements {printf("statements -> statement SEMICOLON statements\n");}
+          | statement error '\n'
           ;
 
 statement: var ASSIGN expression {printf("statement -> var ASSIGN expression\n");}
@@ -133,6 +135,7 @@ statement: var ASSIGN expression {printf("statement -> var ASSIGN expression\n")
          | WRITE vars {printf("WRITE vars\n");}
          | CONTINUE {printf("CONTINUE\n");}
          | RETURN expression {printf("RETURN expression\n");}
+         | error {yyerror("incorrect statement");}
          ;
 
 bool_expr: relation_and_expr {printf("bool_expr -> relation_and_expr\n");}
@@ -164,6 +167,8 @@ comp: EQ {printf("comp -> EQ\n");}
 expression: multiplicative_expr {printf("expression -> multiplicative_expr\n");}
           | multiplicative_expr ADD multiplicative_expr {printf("expression -> multiplicative_expr ADD multiplicative_expr\n");}
           | multiplicative_expr SUB multiplicative_expr{printf("expression -> multiplicative_expr SUB multiplicative_expr\n");}
+          | SUB multiplicative_expr %prec UMINUS{printf("expression -> UMINUS multiplicative_expr\n");}
+          | error {yyerror("incorrect statement");}
           ;
 
 multiplicative_expr: term {printf("multiplicative_expr -> term\n");}
