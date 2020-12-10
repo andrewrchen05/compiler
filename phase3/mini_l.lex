@@ -1,14 +1,30 @@
 %{
  #include "y.tab.h"
+ #include <iostream>
+#define YY_DECL yy::parser::symbol_type yylex()
+#include "parser.tab.hh"
+
+static yy::location loc;
  int currLine = 1;
  int currPos = 1;
 %}
+
+%option noyywrap
+
+%{
+#define YY_USER_ACTION loc.columns(yyleng);
+%}
+        /* your definitions here */
 
 DIGIT           [0-9]
 IDENTIFIER      ([a-zA-Z][a-zA-Z0-9_]*[a-zA-Z0-9])|([a-zA-Z])
 COMMENTS        [#][#].*
 
 %%
+
+%{
+loc.step();
+}
 
                 /*Reserved Keywords*/
 function        {currPos += yyleng; return FUNCTION;}
@@ -84,4 +100,10 @@ return  	{currPos += yyleng; return RETURN;}
 
                 /*Unidentified Characters*/
 .               {printf("Error at line %d, currPos %d :unrecognized symbol \"%s\"\n",currLine,currPos,yytext);exit(0);}
+
+function       {return yy::parser::make_FUNCTION(loc);}
+
+ <<EOF>>	{return yy::parser::make_END(loc);}
+	/* your rules end */
+
 %%
