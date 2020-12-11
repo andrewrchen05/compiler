@@ -178,8 +178,11 @@ declarations:			/*epsilon*/ {$$.code = "";
             			;
 
 
-identifiers: ident {printf("identifiers -> ident\n");}
-           | identifiers COMMA ident {printf("identifiers -> ident COMMA identifier\n");}
+identifiers: ident {$$.push_back($1);}
+           | identifiers COMMA ident {
+			   $$ = $3;
+				$$.push_front($1);
+		   }
            | identifiers error ident
            ;
 				
