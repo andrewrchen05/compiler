@@ -1,19 +1,5 @@
 %{
-//  #include <stdio.h>
-//  #include <stdlib.h>
-//  #include "y.tab.h"
-//  #include <string.h>
-//  void yyerror(const char *msg);
-//  extern int currLine;
-//  extern int currPos;
-//  extern const char* yytext;
-//  int yylex();
 %}
-
-// %union{
-//   char* cval;
-//   int ival;
-// }
 
 %skeleton "lalr1.cc"
 %require "3.0.4"
@@ -33,30 +19,32 @@
 #include <functional>
 using namespace std;
 	/* define the sturctures using as types for non-terminals */
-    struct dec_type{
-        string code;
-        list<string> ids;
-    };
+struct dec_type{
+	string code;
+	list<string> ids;
+};
 	/* end the structures for non-terminal types */
 }
+
 
 %code
 {
 #include "parser.tab.hh"
+struct tests
+{
+	string name;
+	yy::location loc;
+};
 
 	/* you may need these header files 
 	 * add more header file if you need more
 	 */
-struct tests
-{
-    string name;
-    yy:location loc;
-}
 #include <sstream>
 #include <map>
 #include <regex>
 #include <set>
 yy::parser::symbol_type yylex();
+void yyerror(const char *msg);		/*declaration given by TA*/
 
 	/* define your symbol table, global variables,
 	 * list of keywords or any function you may need here */
@@ -64,15 +52,14 @@ yy::parser::symbol_type yylex();
 	/* end of your code */
 }
 
+
+/*Used to give tokens a type*/
+/* specify tokens, type of non-terminals and terminals here
+* end of token specifications
+* tokens, bison makes these constant variables
+*/
+
 %token END 0 "end of file";
-
-	/* specify tokens, type of non-terminals and terminals here */
-%token FUNCTION
-	/* end of token specifications */
-
-
-//%define parse.error verbose
-//%error-verbose
 
 %token FUNCTION
 %token BEGIN_PARAMS
@@ -130,8 +117,8 @@ yy::parser::symbol_type yylex();
 
 %token ERROR
 
-%type<cval> IDENT
-%type<ival> NUMBER
+%type<string> IDENT
+%type<int> NUMBER
 
 
 %right ASSIGN
@@ -147,37 +134,74 @@ yy::parser::symbol_type yylex();
 %left L_SQUARE_BRACKET R_SQUARE_BRACKET
 %left L_PAREN R_PAREN
 
-%start program
+%type <string> program function ident statements
+%type <dec_type> declarations declaration
+%type <list<string>> identifiers
+
+%start start_prog
 
 %%
 
-program: /* epsilon */ {printf("program -> epsilon\n");}
-       | program function {printf("program -> program function\n");}
-       ; 
+start_prog: program {cout << $1 << endl;}
+		  ;
 
-function: FUNCTION IDENT SEMICOLON BEGIN_PARAMS declarations END_PARAMS BEGIN_LOCALS declarations END_LOCALS BEGIN_BODY statements END_BODY{printf("function -> FUNCTION IDENT SEMICOLON BEGIN_PARAMS declarations END_PARAMS BEGIN_LOCALS declarations END_LOCALS BEGIN_BODY statements END_BODY\n");}
-	    | FUNCTION IDENT error BEGIN_PARAMS declarations END_PARAMS BEGIN_LOCALS declarations END_LOCALS BEGIN_BODY statements END_BODY {yyerror(" \";\" expected");}
-        ;
+program: 				/*epsilon*/ {$$ = "";}
+						| program function {$$ = $1 + "\n" + $2;}
+						;
 
-declarations: /* epsilon */ {printf("declarations -> epsilon\n");}
-            | declaration SEMICOLON declarations {printf("declarations -> declaration SEMICOLON declarations\n");}
-            | error declarations {printf("Syntax Error: expected \";\" near line %d\n", currLine);}
-            ;
+function: 				FUNCTION IDENT SEMICOLON BEGIN_PARAMS declarations END_PARAMS BEGIN_LOCALS declarations END_LOCALS BEGIN_BODY statements END_BODY
+						{
+							$$ = "func " + $2 + "\n";
+							$$ += $5.code;
+							int i = 0;
+							for(list<string>::iterator it = $5.ids.begin(); it != $5.ids.end(); it++){
+								$$ += *it + " $" + to_string(i) + "\n";
+								i++;
+							}
+							$$ += $8.code;
+							$$ += $11;
+							$$ += "endfunc";
+						}
+						;
+			
+declarations:			/*epsilon*/ {$$.code = "";
+									 $$.ids = list<string>();
+									}
+						| declaration SEMICOLON declarations {
+							$$.code = $1.code + "\n" + $3.code;
+							$$.ids = $1.ids;
+							for(list<string>::iterator it = $3.ids.begin(); it != $3.ids.end(); it++){
+								$$.ids.push_back(*it);
+							}
+						}
+						| error declarations {printf("Syntax Error: expected \";\" near line %d\n", currLine);}
+            			;
 
-declaration: identifiers COLON INTEGER {printf("declaration -> identifiers COLON INTEGER\n");}
-           | identifiers COLON ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER {printf("declaration -> identifiers COLON ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER\n");}
-           | identifiers COLON ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER {printf("declaration -> identifiers COLON ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER\n");}
-           | identifiers error INTEGER
-           ;
 
 identifiers: ident {printf("identifiers -> ident\n");}
            | identifiers COMMA ident {printf("identifiers -> ident COMMA identifier\n");}
            | identifiers error ident
            ;
+				
+ident:	IDENT {$$ = $1;}
+		;
 
-
-ident:      IDENT {printf("ident -> IDENT %s \n", $1);}
-    ;
+declaration:			identifiers COLON INTEGER {	
+							for(list<string>::iterator it = $1.begin(); it != $1.end(); it++){
+								$$.code += ". " + *it + "\n";
+								$$.ids.push_back(*it);
+							}
+						}
+						| identifiers COLON ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER 
+						{
+							for(list<string>::iterator it = $1.begin(); it != $1.end(); it++){
+								$$.code += ".[] " + *it + ", " + to_string($5) +"\n";
+								$$.ids.push_back(*it);
+							}	
+						}
+						| identifiers COLON ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER 
+						{printf("declaration-> ident COLON ARRAY L_SQUARE_BRACKET NUMBER %d R_SQUARE_BRACKET L_SQUARE_BRACKET NUMBER %d R_SQUARE_BRACKET OF INTEGER\n", $5, $8);}
+						;
 
 statements: /* epsilon */ {printf("statements -> epsilon\n");}
           | statement SEMICOLON statements {printf("statements -> statement SEMICOLON statements\n");}
@@ -255,13 +279,17 @@ vars: var {printf("vars -> var\n");}
     | var COMMA vars {printf("vars -> var COMMA vars\n");}
     ;
 
+					
+			
 %%
 
-int main(int argc, char **argv) {
-   yyparse(); // Calls yylex() for tokens.
-   return 0;
+int main(int argc, char *argv[])
+{
+	yy::parser p;
+	return p.parse();
 }
 
-void yyerror(const char *msg) {
-   printf("Syntax Error:in line %d, position %d:%s\n", currLine, currPos, msg);
+void yy::parser::error(const yy::location& l, const std::string& m)
+{
+	std::cerr << l << ": " << m << std::endl;
 }

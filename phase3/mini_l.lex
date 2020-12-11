@@ -1,6 +1,5 @@
 %{
- #include "y.tab.h"
- #include <iostream>
+#include <iostream>
 #define YY_DECL yy::parser::symbol_type yylex()
 #include "parser.tab.hh"
 
@@ -24,7 +23,7 @@ COMMENTS        [#][#].*
 
 %{
 loc.step();
-}
+%}
 
                 /*Reserved Keywords*/
 function        {currPos += yyleng; return FUNCTION;}
