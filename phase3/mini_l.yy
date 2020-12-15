@@ -185,6 +185,7 @@ identifiers: ident {$$.push_back($1);}
 			   $$ = $3;
 				$$.push_front($1);
 		   }
+		   | ident error identifiers
            ;
 				
 ident:	IDENT {$$ = $1;}
@@ -205,6 +206,7 @@ declaration:			identifiers COLON INTEGER {
 						}
 						| identifiers COLON ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER 
 						{printf("declaration-> ident COLON ARRAY L_SQUARE_BRACKET NUMBER %d R_SQUARE_BRACKET L_SQUARE_BRACKET NUMBER %d R_SQUARE_BRACKET OF INTEGER\n", $5, $8);}
+						| identifiers error INTEGER
 						;
 
 statements: /* epsilon */ {printf("statements -> epsilon\n");}
