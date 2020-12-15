@@ -1,5 +1,6 @@
 %{
 #include <iostream>
+#include <string>
 #define YY_DECL yy::parser::symbol_type yylex()
 #include "parser.tab.hh"
 
@@ -16,7 +17,7 @@ static yy::location loc;
         /* your definitions here */
 
 DIGIT           [0-9]
-IDENTIFIER      ([a-zA-Z][a-zA-Z0-9_]*[a-zA-Z0-9])|([a-zA-Z])
+IDENT      ([a-zA-Z][a-zA-Z0-9_]*[a-zA-Z0-9])|([a-zA-Z])
 COMMENTS        [#][#].*
 
 %%
@@ -26,71 +27,71 @@ loc.step();
 %}
 
                 /*Reserved Keywords*/
-function        {currPos += yyleng; return FUNCTION;}
-beginparams     {currPos += yyleng; return BEGIN_PARAMS;}
-endparams       {currPos += yyleng; return END_PARAMS;}
-beginlocals     {currPos += yyleng; return BEGIN_LOCALS;}
-endlocals       {currPos += yyleng; return END_LOCALS;}
-beginbody       {currPos += yyleng; return BEGIN_BODY;}
-endbody         {currPos += yyleng; return END_BODY;}
-integer         {currPos += yyleng; return INTEGER;}
-array           {currPos += yyleng; return ARRAY;}
-of              {currPos += yyleng; return OF;}
-if              {currPos += yyleng; return IF;}
-then            {currPos += yyleng; return THEN;}
-endif           {currPos += yyleng; return ENDIF;}
-else            {currPos += yyleng; return ELSE;}
-while           {currPos += yyleng; return WHILE;}
-do              {currPos += yyleng; return DO;}
-for     	{currPos += yyleng; return FOR;}
-beginloop       {currPos += yyleng; return BEGINLOOP;}
-endloop         {currPos += yyleng; return ENDLOOP;}
-continue        {currPos += yyleng; return CONTINUE;}
-read            {currPos += yyleng; return READ;}
-write           {currPos += yyleng; return WRITE;}
-and             {currPos += yyleng; return AND;}
-or              {currPos += yyleng; return OR;}
-not             {currPos += yyleng; return NOT;}
-true            {currPos += yyleng; return TRUE;}
-false           {currPos += yyleng; return FALSE;}
-return  	{currPos += yyleng; return RETURN;}
+function       {return yy::parser::make_FUNCTION(loc);}
+beginparams       {return yy::parser::make_BEGIN_PARAMS(loc);}
+endparams       {return yy::parser::make_END_PARAMS(loc);}
+beginlocals     {return yy::parser::make_BEGIN_LOCALS(loc);}
+endlocals     {return yy::parser::make_END_LOCALS(loc);}
+beginbody       {return yy::parser::make_BEGIN_BODY(loc);}
+endbody         {return yy::parser::make_END_BODY(loc);}
+integer         {return yy::parser::make_INTEGER(loc);}
+array           {return yy::parser::make_ARRAY(loc);}
+of              {return yy::parser::make_OF(loc);}
+if              {return yy::parser::make_IF(loc);}
+then            {return yy::parser::make_THEN(loc);}
+endif           {return yy::parser::make_ENDIF(loc);}
+else            {return yy::parser::make_ELSE(loc);}
+while           {return yy::parser::make_WHILE(loc);}
+do              {return yy::parser::make_DO(loc);}
+for     	{return yy::parser::make_FOR(loc);}
+beginloop       {return yy::parser::make_BEGINLOOP(loc);}
+endloop         {return yy::parser::make_ENDLOOP(loc);}
+continue        {return yy::parser::make_CONTINUE(loc);}
+read            {return yy::parser::make_READ(loc);}
+write           {return yy::parser::make_WRITE(loc);}
+and             {return yy::parser::make_AND(loc);}
+or              {return yy::parser::make_OR(loc);}
+not             {return yy::parser::make_NOT(loc);}
+true            {return yy::parser::make_TRUE(loc);}
+false           {return yy::parser::make_FALSE(loc);}
+return  	{return yy::parser::make_RETURN(loc);}
                 /*END of Reserved keywords*/
 
         /* Arithmetic Operators */
-"-"             {currPos += yyleng; return SUB;}
-"+"             {currPos += yyleng; return ADD;}
-"*"             {currPos += yyleng; return MULT;}
-"/"             {currPos += yyleng; return DIV;}
-"%"             {currPos += yyleng; return MOD;}
+"-"             {return yy::parser::make_SUB(loc);}
+"+"             {return yy::parser::make_ADD(loc);}
+"*"             {return yy::parser::make_MULT(loc);}
+"/"             {return yy::parser::make_DIV(loc);}
+"%"             {return yy::parser::make_MOD(loc);}
 
         /* Comparison Operators */
-"=="            {currPos += yyleng; return EQ;}
-"<>"            {currPos += yyleng; return NEQ;}
-"<"             {currPos += yyleng; return LT;}
-">"             {currPos += yyleng; return GT;}
-"<="            {currPos += yyleng; return LTE;}
-">="            {currPos += yyleng; return GTE;}
+"=="            {return yy::parser::make_EQ(loc);}
+"<>"            {return yy::parser::make_NEQ(loc);}
+"<"             {return yy::parser::make_LT(loc);}
+">"             {return yy::parser::make_GT(loc);}
+"<="            {return yy::parser::make_LTE(loc);}
+">="            {return yy::parser::make_GTE(loc);}
                 /*END of operands*/
 
         /* Other Special Symbols */
-";"             {currPos += yyleng; return SEMICOLON;}
-":"             {currPos += yyleng; return COLON;}
-","             {currPos += yyleng; return COMMA;}
-"("             {currPos += yyleng; return L_PAREN;}
-")"             {currPos += yyleng; return R_PAREN;}
-"["             {currPos += yyleng; return L_SQUARE_BRACKET;}
-"]"             {currPos += yyleng; return R_SQUARE_BRACKET;}
-":="            {currPos += yyleng; return ASSIGN;}
+";"             {return yy::parser::make_SEMICOLON(loc);}
+":"             {return yy::parser::make_COLON(loc);}
+","             {return yy::parser::make_COMMA(loc);}
+"("             {return yy::parser::make_L_PAREN(loc);}
+")"             {return yy::parser::make_R_PAREN(loc);}
+"["             {return yy::parser::make_L_SQUARE_BRACKET(loc);}
+"]"             {return yy::parser::make_R_SQUARE_BRACKET(loc);}
+":="            {return yy::parser::make_ASSIGN(loc);}
 
 
                 /*Identifiers and Numbers*/
-{DIGIT}+		{currPos += yyleng; return NUMBER;}
+{DIGIT}+		{currPos += yyleng; return yy::parser::make_NUMBER(std::stoi(yytext), loc);}
 
-{IDENTIFIER}            {currPos += yyleng; yylval.cval=strdup(yytext); return IDENT;}
+{IDENT}            {currPos += yyleng; /* yylval.string=strdup(yytext); */ return yy::parser::make_IDENT(yytext, loc);}
 
-[0-9_]+{IDENTIFIER}      {printf("Error at line %d, currPos %d: Identifier \"%s\" must begin with a letter\n",currLine,currPos,yytext);currPos += yyleng;exit(0);}
+[0-9_]+{IDENT}      {printf("Error at line %d, currPos %d: Identifier \"%s\" must begin with a letter\n",currLine,currPos,yytext);currPos += yyleng;exit(0);}
 
-{IDENTIFIER}[_]+               {printf("Error at line %d, currPos %d: Identifier \"%s\" cannot end with an underscore\n",currLine,currPos,yytext);currPos += yyleng;exit(0);}
+{IDENT}[_]+               {printf("Error at line %d, currPos %d: Identifier \"%s\" cannot end with an underscore\n",currLine,currPos,yytext);currPos += yyleng;exit(0);}
 
         /* Other */
 [ \t]           {currPos += yyleng;}    /* ignore white space */
@@ -99,8 +100,6 @@ return  	{currPos += yyleng; return RETURN;}
 
                 /*Unidentified Characters*/
 .               {printf("Error at line %d, currPos %d :unrecognized symbol \"%s\"\n",currLine,currPos,yytext);exit(0);}
-
-function       {return yy::parser::make_FUNCTION(loc);}
 
  <<EOF>>	{return yy::parser::make_END(loc);}
 	/* your rules end */

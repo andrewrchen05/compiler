@@ -1,4 +1,6 @@
 %{
+extern int currLine;
+extern int currPos;
 %}
 
 %skeleton "lalr1.cc"
@@ -174,16 +176,15 @@ declarations:			/*epsilon*/ {$$.code = "";
 								$$.ids.push_back(*it);
 							}
 						}
-						| error declarations {printf("Syntax Error: expected \";\" near line %d\n", currLine);}
-            			;
+						
+            			
 
 
 identifiers: ident {$$.push_back($1);}
-           | identifiers COMMA ident {
+           | ident COMMA identifiers {
 			   $$ = $3;
 				$$.push_front($1);
 		   }
-           | identifiers error ident
            ;
 				
 ident:	IDENT {$$ = $1;}
