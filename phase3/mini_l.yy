@@ -16,6 +16,8 @@ extern int currPos;
 	/* you may need these header files 
 	 * add more header file if you need more
 	 */
+#include "header.h"
+#include <iostream>
 #include <list>
 #include <string>
 #include <functional>
@@ -24,9 +26,16 @@ using namespace std;
 struct dec_type{
 	string code;
 	list<string> ids;
-	list<string>statements;
+	/*list<string>statements;*/
+};
+
+struct exp_type{
+	string code;
+	string id;
 };
 	/* end the structures for non-terminal types */
+
+
 }
 
 
@@ -42,6 +51,7 @@ struct tests
 	/* you may need these header files 
 	 * add more header file if you need more
 	 */
+#include <vector>
 #include <sstream>
 #include <map>
 #include <regex>
@@ -52,7 +62,7 @@ void yyerror(const char *msg);		/*declaration given by TA*/
 	/* define your symbol table, global variables,
 	 * list of keywords or any function you may need here */
 	
-	/* end of your code */
+ 	/* end of your code */
 }
 
 
@@ -80,7 +90,7 @@ void yyerror(const char *msg);		/*declaration given by TA*/
 %token ELSE
 %token WHILE
 %token DO
-%token FOR
+%token FOR 
 %token BEGINLOOP
 %token ENDLOOP
 %token CONTINUE
@@ -136,9 +146,11 @@ void yyerror(const char *msg);		/*declaration given by TA*/
 %left L_SQUARE_BRACKET R_SQUARE_BRACKET
 %left L_PAREN R_PAREN
 
-%type <string> program function ident statements
+%type <string> program function ident statements var statement term comp
 %type <dec_type> declarations declaration
+%type <exp_type> multiplicative_expr 
 %type <list<string>> identifiers vars
+%type <vector<exp_type>> expression
 
 %start start_prog
 
@@ -209,20 +221,18 @@ ident:					IDENT {$$ = $1;}
 						;
 
 statements: 			/* epsilon */ {
-							$$.code = "";
-							$$.statements = list<string>();
+			 				$$ = "";
 						}
 						| statement SEMICOLON statements {
-							$$.code = $1.code + "\n" + $3.code;
-							$$.statements = $1.statements;
-							for(list<string>::iterator it = $3.statements.begin(); it != $3.statements.end(); it++){
-								$$.statements.push_back(*it);
-							}
+							$$ = $1 + "\n" + $3;
 						}
 						;
 
 statement: 				var ASSIGN expression {
-
+							for (int i = 0; i < $3.size(); ++i) {
+								$$ += "= " + $1 + $3.at(i).id + "\n";
+								$$ += $3.at(i).code;
+							}
 						}
 						| IF bool_expr THEN statements ENDIF {
 
@@ -240,13 +250,16 @@ statement: 				var ASSIGN expression {
 
 						}
 						| READ vars {
-
+							for(list<string>::iterator it = $2.begin(); it != $2.end(); it++) {
+								$$ += ".< " + *it + "\n";
+							}
 						}
 						| WRITE vars {
-
+							for(list<string>::iterator it = $2.begin(); it != $2.end(); it++) {
+                                                                $$ += ">. " + *it + "\n";
+                                                        }
 						}
 						| CONTINUE {
-
 						}
 						| RETURN expression {
 
@@ -254,7 +267,6 @@ statement: 				var ASSIGN expression {
 						;
 
 bool_expr: 				relation_and_expr {
-
 						}
 						| relation_and_expr OR bool_expr {
 
@@ -316,42 +328,51 @@ comp: 					EQ {
 						;
 
 expression: 			multiplicative_expr {
-							
+						$$.push_back($1);
 						}
 						| expression ADD multiplicative_expr {
-							for(list<string>::iterator it = $1.begin(); it != $1.end(); it++){
-								$$.code += "+ " + *it + "\n";
-								$$.ids.push_back(*it);
+							for (int i = 0; i < $1.size(); ++i) {
+								exp_type newobj;
+                                                         	newobj.id = newTemp();
+                                                         	newobj.code = "";
+								newobj.code = "+ " + newobj.id + ", " + $1.at(i).id + ", " + $3.id + "\n";	
+								$$.push_back(newobj);
 							}
 						}
 						| expression SUB multiplicative_expr {
-							for(list<string>::iterator it = $1.begin(); it != $1.end(); it++){
-								$$.code += "- " + *it + "\n";
-								$$.ids.push_back(*it);
-							}
+							for (int i = 0; i < $1.size(); ++i) {
+                                                                 exp_type newobj;
+                                                                 newobj.id = newTemp();
+                                                                 newobj.code = "";
+                                                                 newobj.code = "- " + newobj.id + ", " + $1.at(i).id + ", " + $3.id     + "\n";
+                                                            	 $$.push_back(newobj);
+                                                         }
 						}
 						;
 
 multiplicative_expr:	term {
-
+				//std::string temp = newTemp();
+				$$.code = $1;
+				$$.id = newTemp();
+				
 						}
 						| multiplicative_expr MULT term {
-							for(list<string>::iterator it = $1.begin(); it != $1.end(); it++){
+							/*for(list<string>::iterator it = $1.begin(); it != $1.end(); it++){
 								$$.code += "* " + *it + "\n";
 								$$.ids.push_back(*it);
-							}
+							}*/
 						}
 						| multiplicative_expr DIV term {
-							for(list<string>::iterator it = $1.begin(); it != $1.end(); it++){
+							/*for(list<string>::iterator it = $1.begin(); it != $1.end(); it++){
 								$$.code += "/ " + *it + "\n";
 								$$.ids.push_back(*it);
-							}
+							}*/
 						}
 						| multiplicative_expr MOD term {
-							for(list<string>::iterator it = $1.begin(); it != $1.end(); it++){
+							/*for(list<string>::iterator it = $1.begin(); it != $1.end(); it++){
 								$$.code += "% " + *it + "\n";
 								$$.ids.push_back(*it);
-							}
+							}*/
 						}
 						;
 
@@ -382,36 +403,39 @@ expressions: 			expression {
 
 						}
 						| expression COMMA expressions {
-							$$.code = $1.code + "\n" + $3.code;
+							/*$$.code = $1.code + "\n" + $3.code;
 							$$.ids = $1.ids;
 							for(list<string>::iterator it = $3.ids.begin(); it != $3.ids.end(); it++){
 								$$.ids.push_back(*it);
-							}
+							}*/
 						}
 						;
 
 var: 					ident {
-							$$.push_back($1);
+							$$ = $1;;
 						}
    						| ident L_SQUARE_BRACKET expression R_SQUARE_BRACKET {
-							$$ = $3
-							$$.push_front($1);
+							//$$ = $3;
+							//$$.push_front($1);
 						}
 						;
 
 vars: 					var {
-						//$$ = $1;
+						$$.push_back($1);
 						}
 						| var COMMA vars {
-							$$.code = $1.code + "\n" + $3.code;
-							$$.ids = $1.ids;
-							for(list<string>::iterator it = $3.ids.begin(); it != $3.ids.end(); it++){
-								$$.ids.push_back(*it);
-							}
+							$$ = $3;
+                                                        $$.push_front($1);
 						}
 						;
 			
 %%
+
+std::string newTemp() {
+        static int count = 0;
+        std::string var = " ___temp___" + std::to_string(++count);
+        return var;
+}
 
 int main(int argc, char *argv[])
 {
