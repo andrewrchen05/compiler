@@ -24,6 +24,7 @@ using namespace std;
 struct dec_type{
 	string code;
 	list<string> ids;
+	list<string>statements;
 };
 	/* end the structures for non-terminal types */
 }
@@ -143,15 +144,14 @@ void yyerror(const char *msg);		/*declaration given by TA*/
 
 %%
 
-start_prog: program {cout << $1 << endl;}
-		  ;
+start_prog: 			program {cout << $1 << endl;}
+		  				;
 
 program: 				/*epsilon*/ {$$ = "";}
 						| program function {$$ = $1 + "\n" + $2;}
 						;
 
-function: 				FUNCTION ident SEMICOLON BEGIN_PARAMS declarations END_PARAMS BEGIN_LOCALS declarations END_LOCALS BEGIN_BODY statements END_BODY
-						{
+function: 				FUNCTION ident SEMICOLON BEGIN_PARAMS declarations END_PARAMS BEGIN_LOCALS declarations END_LOCALS BEGIN_BODY statements END_BODY {
 							$$ = "func " + $2 + "\n";
 							$$ += $5.code;
 							int i = 0;
@@ -165,9 +165,10 @@ function: 				FUNCTION ident SEMICOLON BEGIN_PARAMS declarations END_PARAMS BEGI
 						}
 						;
 			
-declarations:			/*epsilon*/ {$$.code = "";
-					     $$.ids = list<string>();
-					}
+declarations: 			/*epsilon*/ {
+							$$.code = "";
+							$$.ids = list<string>();
+						}
 						| declaration SEMICOLON declarations {
 							$$.code = $1.code + "\n" + $3.code;
 							$$.ids = $1.ids;
@@ -175,19 +176,7 @@ declarations:			/*epsilon*/ {$$.code = "";
 								$$.ids.push_back(*it);
 							}
 						}
-						
-            			
-
-
-identifiers: ident {$$.push_back($1);}
-           | ident COMMA identifiers {
-			   $$ = $3;
-			$$.push_front($1);
-		   }
-           ;
-				
-ident:	IDENT {$$ = $1;}
-		;
+						;
 
 declaration:			identifiers COLON INTEGER {	
 							for(list<string>::iterator it = $1.begin(); it != $1.end(); it++){
@@ -195,116 +184,232 @@ declaration:			identifiers COLON INTEGER {
 								$$.ids.push_back(*it);
 							}
 						}
-						| identifiers COLON ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER 
-						{
-							for(list<string>::iterator it = $1.begin(); it != $1.end(); it++){
+						| identifiers COLON ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER {
+							for(list<string>::iterator it = $1.begin(); it != $1.end(); it++) {
 								$$.code += ".[] " + *it + ", " + to_string($5) +"\n";
 								$$.ids.push_back(*it);
 							}	
 						}
-						| identifiers COLON ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER 
-						{
-							
-							for(list<string>::iterator it = $1.begin(); it != $1.end(); it++){
+						| identifiers COLON ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER {
+							for(list<string>::iterator it = $1.begin(); it != $1.end(); it++) {
 								$$.code += ".[] " + *it + ", " + to_string($5 * $8) +"\n";
-                                                                $$.ids.push_back(*it);		
+								$$.ids.push_back(*it);		
+							}
+						}
+						;
+						
+identifiers: 			ident {$$.push_back($1);}
+						| ident COMMA identifiers {
+							$$ = $3;
+							$$.push_front($1);
+						}
+						;
+				
+ident:					IDENT {$$ = $1;}
+						;
+
+statements: 			/* epsilon */ {
+							$$.code = "";
+							$$.statements = list<string>();
+						}
+						| statement SEMICOLON statements {
+							$$.code = $1.code + "\n" + $3.code;
+							$$.statements = $1.statements;
+							for(list<string>::iterator it = $3.statements.begin(); it != $3.statements.end(); it++){
+								$$.statements.push_back(*it);
 							}
 						}
 						;
 
-statements: /* epsilon */ {
-			$$= "";	
-			}
-          | statement SEMICOLON statements {
-						//$$ = $1 + $3			
+statement: 				var ASSIGN expression {
+
 						}
-          | statement error statements {printf("Syntax Error: expected \";\" near line %d\n", currLine);}
-          ;
+						| IF bool_expr THEN statements ENDIF {
 
-statement: var ASSIGN expression {
-					 		
-					}
-         | IF bool_expr THEN statements ENDIF {}
-         | IF bool_expr THEN statements ELSE statements ENDIF {printf("statement -> IF bool_expr THEN statements ELSE statements ENDIF\n");}
-         | WHILE bool_expr BEGINLOOP statements ENDLOOP {printf("statement -> WHILE bool_expr BEGINLOOP statements ENDLOOP\n");}
-         | DO BEGINLOOP statements ENDLOOP WHILE bool_expr {printf("statement -> DO BEGINLOOP statements ENDLOOP WHILE bool_expr\n");}
-         | FOR var ASSIGN NUMBER SEMICOLON bool_expr SEMICOLON var ASSIGN expression BEGINLOOP statements ENDLOOP {printf("statement -> FOR var ASSIGN NUMBER SEMICOLON bool_expr SEMICOLON var ASSIGN expression BEGINLOOP statements ENDLOOP\n");}
-         | READ vars {printf("statement -> READ vars\n");}
-         | WRITE vars {printf("statement -> WRITE vars\n");}
-         | CONTINUE {printf("statement -> CONTINUE\n");}
-         | RETURN expression {printf("statement ->RETURN expression\n");}
-         | var error expression 
-         ;
+						}
+						| IF bool_expr THEN statements ELSE statements ENDIF {
 
-bool_expr: relation_and_expr {printf("bool_expr -> relation_and_expr\n");}
-         | relation_and_expr OR bool_expr {printf("bool_expr -> relation_and_expr OR bool_expr\n");}
-         ;
+						}
+						| WHILE bool_expr BEGINLOOP statements ENDLOOP {
 
-relation_and_expr: relation_expr {printf("relation_and_expr -> relation_expr\n");}
-                 | relation_and_expr AND relation_expr {printf("relation_and_expr -> relation_expr AND relation_expr\n");}
-                 ;
+						}
+						| DO BEGINLOOP statements ENDLOOP WHILE bool_expr {
 
-relation_expr: NOT expression comp expression {printf("relation_expr -> NOT expression comp expression\n");}
-             | NOT TRUE {printf("relation_expr -> NOT TRUE\n");}
-             | NOT FALSE {printf("relation_expr -> NOT FALSE\n");}
-             | NOT L_PAREN bool_expr R_PAREN {printf("relation_expr -> NOT L_PAREN bool_expr R_PAREN\n");}
-             | expression comp expression {printf("relation_expr -> expression comp expression\n");}
-             | TRUE {printf("relation_expr -> TRUE\n");}
-             | FALSE {printf("relation_expr -> FALSE\n");}
-             | L_PAREN bool_expr R_PAREN {printf("relation_expr -> L_PAREN bool_expr R_PAREN\n");}
-             ;
+						}
+						| FOR var ASSIGN NUMBER SEMICOLON bool_expr SEMICOLON var ASSIGN expression BEGINLOOP statements ENDLOOP {
 
-comp: EQ {printf("comp -> EQ\n");}
-    | NEQ {printf("comp -> NEQ\n");}
-    | LT {printf("comp -> LT\n");}
-    | GT {printf("comp -> GT\n");}
-    | LTE {printf("comp -> LTE\n");}
-    | GTE {printf("comp -> GTE\n");}
-    ;
+						}
+						| READ vars {
 
-expression: multiplicative_expr {printf("expression -> multiplicative_expr\n");}
-          | expression ADD multiplicative_expr {printf("expression -> expression ADD multiplicative_expr\n");}
-          | expression SUB multiplicative_expr {printf("expression -> expression SUB multiplicative_expr\n");}
-          ;
+						}
+						| WRITE vars {
 
-multiplicative_expr: term {printf("multiplicative_expr -> term\n");}
-                   | multiplicative_expr MULT term {printf("multiplicative_expr -> term MULT term\n");}
-                   | multiplicative_expr DIV term {printf("multiplicative_expr -> term DIV term\n");}
-                   | multiplicative_expr MOD term {printf("multiplicative_expr -> term MOD term\n");}
-                   ;
+						}
+						| CONTINUE {
 
-term: SUB var %prec UMINUS {printf("term -> var UMINU\n");}
-    | SUB NUMBER %prec UMINUS {printf("term-> UMINUS NUMBER\n");}
-    | SUB L_PAREN expression R_PAREN {printf("term -> SUB L_PAREN expression R_PAREN\n");}
-    | var {printf("term -> var\n");}
-    | NUMBER {printf("term -> NUMBER\n");}
-    | L_PAREN expression R_PAREN {printf("term -> L_PAREN expression R_PAREN\n");}
-    | IDENT L_PAREN expressions R_PAREN {printf("term -> ident L_PAREN expressions R_PAREN\n");}
-    ;
+						}
+						| RETURN expression {
 
-expressions: expression {printf("expressions -> expression\n");}
-          | expression COMMA expressions {printf("expressions -> expression COMMA expressions\n");}
-          ;
+						}
+						;
 
-var: ident {
-	//$$ = $1;
-	}
-   | ident L_SQUARE_BRACKET expression R_SQUARE_BRACKET 
-	{
-		//$$ = $1 + $3;
-	}
-   ;
+bool_expr: 				relation_and_expr {
 
-vars: var {
-	//$$ = $1;
-	}
-    | var COMMA vars 
-	{
-		
-	}
-    ;
+						}
+						| relation_and_expr OR bool_expr {
 
-					
+						}
+						;
+
+relation_and_expr: 		relation_expr {
+
+						}
+						| relation_and_expr AND relation_expr {
+							
+						}
+						;
+
+relation_expr: 			NOT expression comp expression {
+
+						}
+						| NOT TRUE {
+
+						}
+						| NOT FALSE {
+
+						}
+						| NOT L_PAREN bool_expr R_PAREN {
+
+						}
+						| expression comp expression {
+
+						}
+						| TRUE {
+
+						}
+						| FALSE {
+
+						}
+						| L_PAREN bool_expr R_PAREN {
+
+						}
+						;
+
+comp: 					EQ {
+
+						}
+						| NEQ {
+
+						}
+						| LT {
+
+						}
+						| GT {
+
+						}
+						| LTE {
+
+						}
+						| GTE {
+
+						}
+						;
+
+expression: 			multiplicative_expr {
+							
+						}
+						| expression ADD multiplicative_expr {
+							for(list<string>::iterator it = $1.begin(); it != $1.end(); it++){
+								$$.code += "+ " + *it + "\n";
+								$$.ids.push_back(*it);
+							}
+						}
+						| expression SUB multiplicative_expr {
+							for(list<string>::iterator it = $1.begin(); it != $1.end(); it++){
+								$$.code += "- " + *it + "\n";
+								$$.ids.push_back(*it);
+							}
+						}
+						;
+
+multiplicative_expr:	term {
+
+						}
+						| multiplicative_expr MULT term {
+							for(list<string>::iterator it = $1.begin(); it != $1.end(); it++){
+								$$.code += "* " + *it + "\n";
+								$$.ids.push_back(*it);
+							}
+						}
+						| multiplicative_expr DIV term {
+							for(list<string>::iterator it = $1.begin(); it != $1.end(); it++){
+								$$.code += "/ " + *it + "\n";
+								$$.ids.push_back(*it);
+							}
+						}
+						| multiplicative_expr MOD term {
+							for(list<string>::iterator it = $1.begin(); it != $1.end(); it++){
+								$$.code += "% " + *it + "\n";
+								$$.ids.push_back(*it);
+							}
+						}
+						;
+
+term: 					SUB var %prec UMINUS {
+
+						}
+						| SUB NUMBER %prec UMINUS {
+
+						}
+						| SUB L_PAREN expression R_PAREN {
+
+						}
+						| var {
+
+						}
+						| NUMBER {
+
+						}
+						| L_PAREN expression R_PAREN {
+
+						}
+						| IDENT L_PAREN expressions R_PAREN {
+
+						}
+						;
+
+expressions: 			expression {
+
+						}
+						| expression COMMA expressions {
+							$$.code = $1.code + "\n" + $3.code;
+							$$.ids = $1.ids;
+							for(list<string>::iterator it = $3.ids.begin(); it != $3.ids.end(); it++){
+								$$.ids.push_back(*it);
+							}
+						}
+						;
+
+var: 					ident {
+							$$.push_back($1);
+						}
+   						| ident L_SQUARE_BRACKET expression R_SQUARE_BRACKET {
+							$$ = $3
+							$$.push_front($1);
+						}
+						;
+
+vars: 					var {
+						//$$ = $1;
+						}
+						| var COMMA vars {
+							$$.code = $1.code + "\n" + $3.code;
+							$$.ids = $1.ids;
+							for(list<string>::iterator it = $3.ids.begin(); it != $3.ids.end(); it++){
+								$$.ids.push_back(*it);
+							}
+						}
+						;
 			
 %%
 
