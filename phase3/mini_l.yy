@@ -122,7 +122,6 @@ void yyerror(const char *msg);		/*declaration given by TA*/
 %type<string> IDENT
 %type<int> NUMBER
 
-identifier
 %right ASSIGN
 %left OR
 %left AND
@@ -214,12 +213,11 @@ declaration:			identifiers COLON INTEGER {
 						;
 
 statements: /* epsilon */ {
-			$$.code= "";	
+			$$= "";	
 			}
           | statement SEMICOLON statements {
 						//$$ = $1 + $3			
 						}
-					}
           | statement error statements {printf("Syntax Error: expected \";\" near line %d\n", currLine);}
           ;
 
