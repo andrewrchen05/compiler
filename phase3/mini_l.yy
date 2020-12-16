@@ -185,7 +185,10 @@ identifiers: ident {$$.push_back($1);}
 			   $$ = $3;
 			$$.push_front($1);
 		   }
+<<<<<<< HEAD
+=======
 		   | ident error identifiers
+>>>>>>> 53b3b0e6716b45c9fb13e9a6dc8849a7efc09d45
            ;
 				
 ident:	IDENT {$$ = $1;}
@@ -209,7 +212,7 @@ declaration:			identifiers COLON INTEGER {
 							
 							for(list<string>::iterator it = $1.begin(); it != $1.end(); it++){
 								$$.code += ".[] " + *it + ", " + to_string($5 * $8) +"\n";
-                                $$.ids.push_back(*it);		
+                                                                $$.ids.push_back(*it);		
 							}
 						}
 						| identifiers error INTEGER {}
@@ -228,177 +231,66 @@ statements: /* epsilon */ {
 statement: var ASSIGN expression {
 					 		
 					}
-         | IF bool_expr THEN statements ENDIF 
-		 	{
-
-			 }
-         | IF bool_expr THEN statements ELSE statements ENDIF 
-		 	{
-
-			 }
-         | WHILE bool_expr BEGINLOOP statements ENDLOOP 
-		 	{
-
-			 }
-         | DO BEGINLOOP statements ENDLOOP WHILE bool_expr 
-		 	{
-
-			 }
-         | FOR var ASSIGN NUMBER SEMICOLON bool_expr SEMICOLON var ASSIGN expression BEGINLOOP statements ENDLOOP 
-		 	{
-
-			 }
-         | READ vars 
-		 	{
-
-			 }
-         | WRITE vars 
-		 	{
-
-			 }
-         | CONTINUE 
-		 	{
-
-			 }
-         | RETURN expression 
-		 	{
-
-			 }
+         | IF bool_expr THEN statements ENDIF {}
+         | IF bool_expr THEN statements ELSE statements ENDIF {printf("statement -> IF bool_expr THEN statements ELSE statements ENDIF\n");}
+         | WHILE bool_expr BEGINLOOP statements ENDLOOP {printf("statement -> WHILE bool_expr BEGINLOOP statements ENDLOOP\n");}
+         | DO BEGINLOOP statements ENDLOOP WHILE bool_expr {printf("statement -> DO BEGINLOOP statements ENDLOOP WHILE bool_expr\n");}
+         | FOR var ASSIGN NUMBER SEMICOLON bool_expr SEMICOLON var ASSIGN expression BEGINLOOP statements ENDLOOP {printf("statement -> FOR var ASSIGN NUMBER SEMICOLON bool_expr SEMICOLON var ASSIGN expression BEGINLOOP statements ENDLOOP\n");}
+         | READ vars {printf("statement -> READ vars\n");}
+         | WRITE vars {printf("statement -> WRITE vars\n");}
+         | CONTINUE {printf("statement -> CONTINUE\n");}
+         | RETURN expression {printf("statement ->RETURN expression\n");}
          | var error expression 
          ;
 
-bool_expr: relation_and_expr 
-			{
-
-			}
-         | relation_and_expr OR bool_expr 
-		 	{
-
-			 }
+bool_expr: relation_and_expr {printf("bool_expr -> relation_and_expr\n");}
+         | relation_and_expr OR bool_expr {printf("bool_expr -> relation_and_expr OR bool_expr\n");}
          ;
 
-relation_and_expr: relation_expr 
-					{
-
-					}
-                 | relation_and_expr AND relation_expr 
-				 	{
-
-					 }
+relation_and_expr: relation_expr {printf("relation_and_expr -> relation_expr\n");}
+                 | relation_and_expr AND relation_expr {printf("relation_and_expr -> relation_expr AND relation_expr\n");}
                  ;
 
-relation_expr: NOT expression comp expression 
-				{
-
-				}
-             | NOT TRUE 
-			 	{
-
-				 }
-             | NOT FALSE 
-			 	{
-
-				 }
-             | NOT L_PAREN bool_expr R_PAREN 
-			 	{
-
-				 }
-             | expression comp expression 
-			 	{
-
-				 }
-             | TRUE 
-			 	{
-
-				 }
-             | FALSE 
-			 	{
-
-				 }
-             | L_PAREN bool_expr R_PAREN 
-			 	{
-
-				 }
+relation_expr: NOT expression comp expression {printf("relation_expr -> NOT expression comp expression\n");}
+             | NOT TRUE {printf("relation_expr -> NOT TRUE\n");}
+             | NOT FALSE {printf("relation_expr -> NOT FALSE\n");}
+             | NOT L_PAREN bool_expr R_PAREN {printf("relation_expr -> NOT L_PAREN bool_expr R_PAREN\n");}
+             | expression comp expression {printf("relation_expr -> expression comp expression\n");}
+             | TRUE {printf("relation_expr -> TRUE\n");}
+             | FALSE {printf("relation_expr -> FALSE\n");}
+             | L_PAREN bool_expr R_PAREN {printf("relation_expr -> L_PAREN bool_expr R_PAREN\n");}
              ;
 
-comp: EQ {$$ = $1;}
-    | NEQ {$$ = $1;}
-    | LT {$$ = $1;}
-    | GT {$$ = $1;}
-    | LTE {$$ = $1;}
-    | GTE {$$ = $1;}
+comp: EQ {printf("comp -> EQ\n");}
+    | NEQ {printf("comp -> NEQ\n");}
+    | LT {printf("comp -> LT\n");}
+    | GT {printf("comp -> GT\n");}
+    | LTE {printf("comp -> LTE\n");}
+    | GTE {printf("comp -> GTE\n");}
     ;
 
-expression: multiplicative_expr 
-			{
-
-			}
-          | expression ADD multiplicative_expr 
-		  	{
-
-			  }
-          | expression SUB multiplicative_expr 
-		  	{
-
-			  }
+expression: multiplicative_expr {printf("expression -> multiplicative_expr\n");}
+          | expression ADD multiplicative_expr {printf("expression -> expression ADD multiplicative_expr\n");}
+          | expression SUB multiplicative_expr {printf("expression -> expression SUB multiplicative_expr\n");}
           ;
 
-multiplicative_expr: term 
-						{
-
-						}
-                   | multiplicative_expr MULT term 
-				   		{
-
-						   }
-                   | multiplicative_expr DIV term 
-						{
-
-						}
-                   | multiplicative_expr MOD term 
-				   		{
-
-						   }
+multiplicative_expr: term {printf("multiplicative_expr -> term\n");}
+                   | multiplicative_expr MULT term {printf("multiplicative_expr -> term MULT term\n");}
+                   | multiplicative_expr DIV term {printf("multiplicative_expr -> term DIV term\n");}
+                   | multiplicative_expr MOD term {printf("multiplicative_expr -> term MOD term\n");}
                    ;
 
-term: SUB var %prec UMINUS 
-		{
-
-		}
-    | SUB NUMBER %prec UMINUS 
-		{
-
-		}
-    | SUB L_PAREN expression R_PAREN 
-		{
-
-		}
-    | var 
-		{
-
-		}
-    | NUMBER 
-		{
-
-		}
-    | L_PAREN expression R_PAREN 
-		{
-
-		}
-    | IDENT L_PAREN expressions R_PAREN 
-		{
-
-		}
+term: SUB var %prec UMINUS {printf("term -> var UMINU\n");}
+    | SUB NUMBER %prec UMINUS {printf("term-> UMINUS NUMBER\n");}
+    | SUB L_PAREN expression R_PAREN {printf("term -> SUB L_PAREN expression R_PAREN\n");}
+    | var {printf("term -> var\n");}
+    | NUMBER {printf("term -> NUMBER\n");}
+    | L_PAREN expression R_PAREN {printf("term -> L_PAREN expression R_PAREN\n");}
+    | IDENT L_PAREN expressions R_PAREN {printf("term -> ident L_PAREN expressions R_PAREN\n");}
     ;
 
-expressions: expression 
-			{
-
-			}
-          | expression COMMA expressions 
-		  	{
-
-			  }
+expressions: expression {printf("expressions -> expression\n");}
+          | expression COMMA expressions {printf("expressions -> expression COMMA expressions\n");}
           ;
 
 var: ident {
@@ -412,11 +304,11 @@ var: ident {
 
 vars: var {
 	//$$ = $1;
-		}
+	}
     | var COMMA vars 
-		{
-			
-		}
+	{
+		
+	}
     ;
 
 					
