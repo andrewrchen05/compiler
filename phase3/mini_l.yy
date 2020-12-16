@@ -185,6 +185,10 @@ identifiers: ident {$$.push_back($1);}
 			   $$ = $3;
 			$$.push_front($1);
 		   }
+<<<<<<< HEAD
+=======
+		   | ident error identifiers
+>>>>>>> 53b3b0e6716b45c9fb13e9a6dc8849a7efc09d45
            ;
 				
 ident:	IDENT {$$ = $1;}
@@ -211,6 +215,7 @@ declaration:			identifiers COLON INTEGER {
                                                                 $$.ids.push_back(*it);		
 							}
 						}
+						| identifiers error INTEGER {}
 						;
 
 statements: /* epsilon */ {
