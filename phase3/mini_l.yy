@@ -1,4 +1,6 @@
 %{
+extern int currLine;
+extern int currPos;
 %}
 
 %skeleton "lalr1.cc"
@@ -120,7 +122,7 @@ void yyerror(const char *msg);		/*declaration given by TA*/
 %type<string> IDENT
 %type<int> NUMBER
 
-
+identifier
 %right ASSIGN
 %left OR
 %left AND
@@ -136,7 +138,7 @@ void yyerror(const char *msg);		/*declaration given by TA*/
 
 %type <string> program function ident statements
 %type <dec_type> declarations declaration
-%type <list<string>> identifiers
+%type <list<string>> identifiers vars
 
 %start start_prog
 
@@ -149,7 +151,7 @@ program: 				/*epsilon*/ {$$ = "";}
 						| program function {$$ = $1 + "\n" + $2;}
 						;
 
-function: 				FUNCTION IDENT SEMICOLON BEGIN_PARAMS declarations END_PARAMS BEGIN_LOCALS declarations END_LOCALS BEGIN_BODY statements END_BODY
+function: 				FUNCTION ident SEMICOLON BEGIN_PARAMS declarations END_PARAMS BEGIN_LOCALS declarations END_LOCALS BEGIN_BODY statements END_BODY
 						{
 							$$ = "func " + $2 + "\n";
 							$$ += $5.code;
@@ -165,8 +167,8 @@ function: 				FUNCTION IDENT SEMICOLON BEGIN_PARAMS declarations END_PARAMS BEGI
 						;
 			
 declarations:			/*epsilon*/ {$$.code = "";
-									 $$.ids = list<string>();
-									}
+					     $$.ids = list<string>();
+					}
 						| declaration SEMICOLON declarations {
 							$$.code = $1.code + "\n" + $3.code;
 							$$.ids = $1.ids;
@@ -174,16 +176,15 @@ declarations:			/*epsilon*/ {$$.code = "";
 								$$.ids.push_back(*it);
 							}
 						}
-						| error declarations {printf("Syntax Error: expected \";\" near line %d\n", currLine);}
-            			;
+						
+            			
 
 
 identifiers: ident {$$.push_back($1);}
-           | identifiers COMMA ident {
+           | ident COMMA identifiers {
 			   $$ = $3;
-				$$.push_front($1);
+			$$.push_front($1);
 		   }
-           | identifiers error ident
            ;
 				
 ident:	IDENT {$$ = $1;}
@@ -203,16 +204,29 @@ declaration:			identifiers COLON INTEGER {
 							}	
 						}
 						| identifiers COLON ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER 
-						{printf("declaration-> ident COLON ARRAY L_SQUARE_BRACKET NUMBER %d R_SQUARE_BRACKET L_SQUARE_BRACKET NUMBER %d R_SQUARE_BRACKET OF INTEGER\n", $5, $8);}
+						{
+							
+							for(list<string>::iterator it = $1.begin(); it != $1.end(); it++){
+								$$.code += ".[] " + *it + ", " + to_string($5 * $8) +"\n";
+                                                                $$.ids.push_back(*it);		
+							}
+						}
 						;
 
-statements: /* epsilon */ {printf("statements -> epsilon\n");}
-          | statement SEMICOLON statements {printf("statements -> statement SEMICOLON statements\n");}
+statements: /* epsilon */ {
+			$$.code= "";	
+			}
+          | statement SEMICOLON statements {
+						//$$ = $1 + $3			
+						}
+					}
           | statement error statements {printf("Syntax Error: expected \";\" near line %d\n", currLine);}
           ;
 
-statement: var ASSIGN expression {printf("statement -> var ASSIGN expression\n");}
-         | IF bool_expr THEN statements ENDIF {printf("statement -> IF bool_expr THEN statements ENDIF\n");}
+statement: var ASSIGN expression {
+					 		
+					}
+         | IF bool_expr THEN statements ENDIF {}
          | IF bool_expr THEN statements ELSE statements ENDIF {printf("statement -> IF bool_expr THEN statements ELSE statements ENDIF\n");}
          | WHILE bool_expr BEGINLOOP statements ENDLOOP {printf("statement -> WHILE bool_expr BEGINLOOP statements ENDLOOP\n");}
          | DO BEGINLOOP statements ENDLOOP WHILE bool_expr {printf("statement -> DO BEGINLOOP statements ENDLOOP WHILE bool_expr\n");}
@@ -274,12 +288,22 @@ expressions: expression {printf("expressions -> expression\n");}
           | expression COMMA expressions {printf("expressions -> expression COMMA expressions\n");}
           ;
 
-var: ident {printf("var -> ident\n");}
-   | ident L_SQUARE_BRACKET expression R_SQUARE_BRACKET {printf("var -> ident L_SQUARE_BRACKET expression R_SQUARE_BRACKET\n");}
+var: ident {
+	//$$ = $1;
+	}
+   | ident L_SQUARE_BRACKET expression R_SQUARE_BRACKET 
+	{
+		//$$ = $1 + $3;
+	}
    ;
 
-vars: var {printf("vars -> var\n");}
-    | var COMMA vars {printf("vars -> var COMMA vars\n");}
+vars: var {
+	//$$ = $1;
+	}
+    | var COMMA vars 
+	{
+		
+	}
     ;
 
 					
