@@ -32,6 +32,7 @@ struct dec_type{
 struct exp_type{
 	string code;
 	string id;
+/*	bool mult;*/
 };
 	/* end the structures for non-terminal types */
 
@@ -148,9 +149,9 @@ void yyerror(const char *msg);		/*declaration given by TA*/
 
 %type <string> program function ident statements statement comp var
 %type <dec_type> declarations declaration
-%type <exp_type> term 
+%type <exp_type> term multiplicative_expr
 %type <list<string>> identifiers vars
-%type <vector<exp_type>> expression multiplicative_expr
+%type <vector<exp_type>> expression /*multiplicative_expr*/
 
 %start start_prog
 
@@ -328,57 +329,59 @@ comp: 					EQ {
 						;
 
 expression: 			multiplicative_expr {
-							//$$.push_back($1);
+							$$.push_back($1);
 							
-							exp_type newobj;
-							newobj.id = newTemp();
-							newobj.code = "";
-							
-							for (int i = 0; i < $1.size(); ++i) {
-								newobj.code += $1.at(i).code;
-								//$$.push_back($1.at(i));
-							}
-							$$.push_back(newobj);
 						}
 						| expression ADD multiplicative_expr {
-							/*for (int i = 0; i < $1.size(); ++i) {
+
+							for (int i = 0; i < $1.size(); ++i) {
 								exp_type newobj;
                                                          	newobj.id = newTemp();
                                                          	newobj.code = "";
-								newobj.code = "+ " + newobj.id + ", " + $1.at(i).id + ", " + $3.id + "\n";	
+
+								newobj.code = "+ " + newobj.id + ", " + $1.at(i).id + ", " + $3.id  + "\n";	
+								
 								$$.push_back(newobj);
 
-							}*/
+							}
 						}
 						| expression SUB multiplicative_expr {
-							/*for (int i = 0; i < $1.size(); ++i) {
+							for (int i = 0; i < $1.size(); ++i) {
                                                                  exp_type newobj;
                                                                  newobj.id = newTemp();
                                                                  newobj.code = "";
                                                                  newobj.code = "- " + newobj.id + ", " + $1.at(i).id + ", " + $3.id     + "\n";
                                                             	 $$.push_back(newobj);
-                                                         }*/
+                                                         }
 						}
 						;
 
 multiplicative_expr:	term {
-				$$.push_back($1);
+				//$$.push_back($1);
+				$$ = $1;
 						}
 						| multiplicative_expr MULT term {
 							
-							for (int i = 0; i < $1.size(); ++i) {
-                                                                exp_type newobj;
+							/*for (int i = 0; i < $1.size(); ++i) {
+                                                                cout << "iter" << endl;
+								exp_type newobj;
                                                                 newobj.id = newTemp();
                                                                 newobj.code = "";
                                                                 newobj.code = "* " + newobj.id + ", " + $1.at(i).id + ", " + $3.id + "\n";
                                                                 $$.push_back(newobj);
-                                                        }
+                                                        }*/
+							$$.id = newTemp();
+							$$.code = "* " + $$.id + ", " + $1.id + ", " + $3.id + "\n";
+							
+							
 						}
 						| multiplicative_expr DIV term {
-							
+							$$.id = newTemp();
+                                                        $$.code = "/ " + $$.id + ", " + $1.id + ", " + $3.id + "\n";		
 						}
 						| multiplicative_expr MOD term {
-							
+							$$.id = newTemp();
+                                                        $$.code = "% " + $$.id + ", " + $1.id + ", " + $3.id + "\n";	
 						}
 						;
 
@@ -396,7 +399,8 @@ term: 					SUB var %prec UMINUS {
 							$$.code = $1;
 						}
 						| NUMBER {
-
+							$$.id = newTemp();
+							$$.code = $1;
 						}
 						| L_PAREN expression R_PAREN {
 

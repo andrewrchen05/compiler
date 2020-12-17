@@ -1,0 +1,34 @@
+iter
+
+func sum
+. d
+. e
+
+d $0
+e $1
+. a
+. b
+. c
+. d
+
+.[] t, 400
+
+.< a
+
+>. b
+
+= b ___temp___1
+
+= a ___temp___2
+
+= d ___temp___3
+
+= c ___temp___4
+
+= c ___temp___8
+*  ___temp___7,  ___temp___5,  ___temp___6
+
+= c ___temp___12
++  ___temp___12,  ___temp___10,  ___temp___11
+
+endfunc
