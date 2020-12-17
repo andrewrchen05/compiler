@@ -149,10 +149,9 @@ void yyerror(const char *msg);		/*declaration given by TA*/
 
 %type <string> program function ident statements statement comp var
 %type <dec_type> declarations declaration
-%type <exp_type> term multiplicative_expr expression
+%type <exp_type> term multiplicative_expr expression relation_expr relation_and_expr bool_expr
 %type <list<string>> identifiers vars
 /*%type <vector<exp_type>> expression */
-%type <vector<vector<exp_type>>> expressions
 
 %start start_prog
 
@@ -170,7 +169,7 @@ function: 				FUNCTION ident SEMICOLON BEGIN_PARAMS declarations END_PARAMS BEGI
 							$$ += $5.code;
 							int i = 0;
 							for(list<string>::iterator it = $5.ids.begin(); it != $5.ids.end(); it++){
-								$$ += *it + " $" + to_string(i) + "\n";
+								$$ += "= "  +  *it + ", $" + to_string(i) + "\n";
 								i++;
 							}
 							$$ += $8.code;
@@ -239,10 +238,24 @@ statement: 				var ASSIGN expression {
 							$$ += $3.code;
 						}
 						| IF bool_expr THEN statements ENDIF {
-
+							std::string lab1 = newLabel();
+							std::string lab2 = newLabel();
+							$$ += ":" + lab1 + "\n";
+							$$ += $2.code;
+							$$ += "?:= " + lab2 + ", " + $2.id + "\n";
+							$$ += $4;	
+							$$ += ":" + lab2 + "\n";
+							
 						}
 						| IF bool_expr THEN statements ELSE statements ENDIF {
-
+							std::string lab1 = newLabel();
+                                                        std::string lab2 = newLabel();
+                                                        $$ += ":" + lab1 + "\n";
+                                                        $$ += $2.code;
+                                                        $$ += "?:= " + lab2 + ", " + $2.id + "\n";
+                                                        $$ += $4;
+                                                        $$ += ":" + lab2 + "\n";
+							$$ += $6;
 						}
 						| WHILE bool_expr BEGINLOOP statements ENDLOOP {
 
@@ -271,17 +284,19 @@ statement: 				var ASSIGN expression {
 						;
 
 bool_expr: 				relation_and_expr {
+						$$ = $1;	
 						}
 						| relation_and_expr OR bool_expr {
-
+							
 						}
 						;
 
 relation_and_expr: 		relation_expr {
-
+					$$ = $1;
 						}
 						| relation_and_expr AND relation_expr {
-							
+							$$.id = newCond();
+							$$.code = "&& " + $$.id + ", " + $1.id + ", " + $3.id + "\n";
 						}
 						;
 
@@ -298,7 +313,8 @@ relation_expr: 			NOT expression comp expression {
 
 						}
 						| expression comp expression {
-
+							$$.id = newCond();
+							$$.code = $2 + $1.id + ", " + $3.id + "\n"; 
 						}
 						| TRUE {
 
@@ -312,22 +328,22 @@ relation_expr: 			NOT expression comp expression {
 						;
 
 comp: 					EQ {
-
+							$$ = "=";
 						}
 						| NEQ {
-
+							$$ = "!=";
 						}
 						| LT {
-
+							$$ = "<";
 						}
 						| GT {
-
+							$$ = ">";
 						}
 						| LTE {
-
+							$$ = "<=";	
 						}
 						| GTE {
-
+							$$ = ">=";
 						}
 						;
 
@@ -451,6 +467,12 @@ string newLabel() {
 	static int count = 0;
 	string var = "L" + to_string(++count);
 	return var;
+}
+
+string newCond() {
+	static int count = 0;
+        string var = "P" + to_string(++count);
+        return var;
 }
 
 int main(int argc, char *argv[])
