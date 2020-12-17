@@ -401,7 +401,8 @@ term: 					SUB var %prec UMINUS {
 							$$.code = $1;
 						}
 						| L_PAREN expression R_PAREN {
-							
+							$$.id = newTemp();
+							$$.code = "(" + $2.id + ")" + "\n" + $2.code;
 						}
 						| IDENT L_PAREN expressions R_PAREN {
 
@@ -440,10 +441,16 @@ vars: 					var {
 			
 %%
 
-std::string newTemp() {
+string newTemp() {
         static int count = 0;
-        std::string var = " ___temp___" + std::to_string(++count);
+        string var = " ___temp___" + to_string(++count);
         return var;
+}
+
+string newLabel() {
+	static int count = 0;
+	string var = "L" + to_string(++count);
+	return var;
 }
 
 int main(int argc, char *argv[])
