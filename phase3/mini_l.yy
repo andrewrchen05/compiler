@@ -32,12 +32,14 @@ struct dec_type{
 struct exp_type{
 	string code;
 	string id;
-/*	bool mult;*/
+	bool arrStatus;
 };
 	/* end the structures for non-terminal types */
 
-
-}
+struct var_type{
+	string val;
+	bool arrStatus;
+};
 
 
 %code
@@ -147,10 +149,11 @@ void yyerror(const char *msg);		/*declaration given by TA*/
 %left L_SQUARE_BRACKET R_SQUARE_BRACKET
 %left L_PAREN R_PAREN
 
-%type <string> program function ident statements statement comp var
+%type <string> program function ident statements statement comp /*var*/
 %type <dec_type> declarations declaration
 %type <exp_type> term multiplicative_expr expression expressions relation_expr relation_and_expr bool_expr
-%type <list<string>> identifiers vars
+%type <list<string>> identifiers /*vars*/
+%type <var_type> var vars
 /*%type <vector<exp_type>> expression */
 
 %start start_prog
@@ -230,8 +233,11 @@ statements: 			/* epsilon */ {
 						;
 
 statement: 				var ASSIGN expression {
+							//if ($1.arrStatus) {
+
+							//}
 							$$ += $3.code;
-							$$ += "= " + $3.id + ", " + $1;
+							$$ += "= " + $3.id + ", " + $1.val;
 						}
 						| IF bool_expr THEN statements ENDIF {
 							std::string lab1 = newLabel();
@@ -307,7 +313,7 @@ statement: 				var ASSIGN expression {
 								
 							string temp = newTemp();
                                                         $$ += ". " + temp + "\n";
-							$$ += "= " + temp + ", " + $2 + "\n";
+							$$ += "= " + temp + ", " + $2.val + "\n";
 
 							$$ += ": " + lab1 + "\n";
 							$$ += $6.code;
@@ -321,7 +327,7 @@ statement: 				var ASSIGN expression {
 							temp = newTemp();
                                                         $$ += ". " + temp + "\n";
 								
-							$$ += "= " + temp + ", " + $8 + "\n";
+							$$ += "= " + temp + ", " + $8.val + "\n";
 							$$ += $10.code;
 						
 							string statements = $12;
@@ -341,14 +347,17 @@ statement: 				var ASSIGN expression {
 							
 						}
 						| READ vars {
-							for(list<string>::iterator it = $2.begin(); it != $2.end(); it++) {
+							/*for(list<string>::iterator it = $2.begin(); it != $2.end(); it++) {
 								$$ += ".< " + *it;
-							}
+							}*/
+							$$ += ".< " + $2.val;
 						}
 						| WRITE vars {
-							for(list<string>::iterator it = $2.begin(); it != $2.end(); it++) {
-                                                                $$ += ">. " + *it;
-                                                        }
+							/*for(list<string>::iterator it = $2.begin(); it != $2.end(); it++) {
+                                                                //if  
+								$$ += ">. " + *it;
+                                                        }*/
+							$$ += ">. " + $2.val;
 						}
 						| CONTINUE {
 							$$ += "continue";
@@ -457,7 +466,6 @@ multiplicative_expr:	term {
 							$$.id = newTemp();
 							$$.code += ". " + $$.id + "\n";
 							$$.code += "* " + $$.id + ", " + $1.id + ", " + $3.id + "\n";
-							
 						}
 						| multiplicative_expr DIV term {
 							$$.id = newTemp();
@@ -492,7 +500,8 @@ term: 					SUB var %prec UMINUS {
 						| var {
 							$$.id = newTemp();
 							$$.code += ". " + $$.id + "\n";
-							$$.code += $1;
+							$$.code += $1.val;
+							$$.arrStatus = $1.arrStatus;
 						}
 						| NUMBER {
 							$$.id = newTemp();
@@ -526,21 +535,27 @@ expressions: 			expression {
 						;
 
 var: 					ident {
-							$$ = $1;
+						$$.arrStatus = false;
+						$$.val = $1;
 						}
    						| ident L_SQUARE_BRACKET expression R_SQUARE_BRACKET {
-							$$ += $3.code;
-							$$ = $1 + "[" + $3.id + "]\n";
+							$$.val += "{" + $1 + "," + $3.id; //comma separated
+							$$.arrStatus = true;
+
+							//$$.code += ".[]
 							
+							//$$.code += ". " + $$.id + "\n";
+							//$$ += $1 + "[" + $3.id + "]\n";	
 						}
 						;
 
 vars: 					var {
-							$$.push_back($1);
+							//$$.push_back($1);
+							$$ = $1;
 						}
 						| var COMMA vars {
-							$$ = $3;
-                            				$$.push_front($1);
+							//$$.code = $3.code;
+                            				$$.val += $1.val + $3.val;
 						}
 						;
 			
