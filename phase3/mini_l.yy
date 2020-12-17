@@ -149,7 +149,7 @@ void yyerror(const char *msg);		/*declaration given by TA*/
 
 %type <string> program function ident statements statement comp var
 %type <dec_type> declarations declaration
-%type <exp_type> term multiplicative_expr expression relation_expr relation_and_expr bool_expr
+%type <exp_type> term multiplicative_expr expression expressions relation_expr relation_and_expr bool_expr
 %type <list<string>> identifiers vars
 /*%type <vector<exp_type>> expression */
 
@@ -360,7 +360,6 @@ statement: 				var ASSIGN expression {
 
 bool_expr: 				relation_and_expr {
 						$$ = $1;
-						//cout << "bool expr" << $$.code << endl;	
 						}
 						| relation_and_expr OR bool_expr {
 							$$.id = newCond();
@@ -371,7 +370,7 @@ bool_expr: 				relation_and_expr {
 						;
 
 relation_and_expr: 		relation_expr {
-					$$ = $1;
+							$$ = $1;
 						}
 						| relation_and_expr AND relation_expr {
 							$$.id = newCond();
@@ -459,7 +458,6 @@ multiplicative_expr:	term {
 							$$.code += ". " + $$.id + "\n";
 							$$.code += "* " + $$.id + ", " + $1.id + ", " + $3.id + "\n";
 							
-							
 						}
 						| multiplicative_expr DIV term {
 							$$.id = newTemp();
@@ -474,13 +472,22 @@ multiplicative_expr:	term {
 						;
 
 term: 					SUB var %prec UMINUS {
-
+							$$.id = newTemp();
+							$$.code += ". " + $$.id + "\n";
+							//$$.code = "-1* " + $2 + "\n";
+							
 						}
 						| SUB NUMBER %prec UMINUS {
-
+							$$.id = newTemp();
+							$$.code += ". " + $$.id + "\n";
+							$$.code = "-1 * ";
+							$$.code += $2;
+							$$.code += "\n";
 						}
 						| SUB L_PAREN expression R_PAREN {
-
+							$$.id = newTemp();
+							$$.code += ". " + $$.id + "\n";
+							$$.code = "(" + $3.id + ")" + "\n" + $3.code;
 						}
 						| var {
 							$$.id = newTemp();
@@ -495,22 +502,26 @@ term: 					SUB var %prec UMINUS {
 						| L_PAREN expression R_PAREN {
 							$$.id = newTemp();
 							$$.code += ". " + $$.id + "\n";
-							$$.code += "(" + $2.id + ")" + "\n" + $2.code;
+							$$.code += $2.code;
 						}
 						| IDENT L_PAREN expressions R_PAREN {
-
+							$$.id = newTemp();
+							$$.code += ". " + $$.id + "\n";
+							$$.code = $1 + $3.id + $3.code;
 						}
 						;
 
 expressions: 			expression {
-					//$$	
+							$$.id = newTemp();
+							$$.code += ". " + $$.id + "\n";
+							$$.code += $1.code;
+							$$.code += "param " + $$.id + "\n";
 						}
 						| expression COMMA expressions {
-							/*$$.code = $1.code + "\n" + $3.code;
-							$$.ids = $1.ids;
-							for(list<string>::iterator it = $3.ids.begin(); it != $3.ids.end(); it++){
-								$$.ids.push_back(*it);
-							}*/
+							$$.id = newTemp();
+							$$.code += ". " + $$.id + "\n";
+							$$.code += $1.code + "\n" + $3.code;
+							$$.code += "param " + $$.id + "\n";	
 						}
 						;
 
@@ -518,17 +529,18 @@ var: 					ident {
 							$$ = $1;
 						}
    						| ident L_SQUARE_BRACKET expression R_SQUARE_BRACKET {
-							//$$ = $3;
-							//$$.push_front($1);
+							$$ += $3.code;
+							$$ = $1 + "[" + $3.id + "]\n";
+							
 						}
 						;
 
 vars: 					var {
-						$$.push_back($1);
+							$$.push_back($1);
 						}
 						| var COMMA vars {
 							$$ = $3;
-                                                        $$.push_front($1);
+                            				$$.push_front($1);
 						}
 						;
 			

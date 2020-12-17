@@ -5,7 +5,7 @@
 #include <string>
 
 std::string newTemp();
-std::string newCond();
 std::string newLabel();
+std::string newCond();
 
 #endif
