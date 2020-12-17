@@ -10,10 +10,13 @@ beginbody
     read a;
     write b;
     b := 3;
-    a := 5;
-    d := 8;
-    c := 6;
-    d := 4;
-    c := a * b;
-    c := a % b;
+    a := 4;
+    if a > b then
+    	d := 8;
+    	c := 6;
+    	d := 4;
+   else
+	c := a * b;
+    endif;
+    	c := a % b;
 endbody

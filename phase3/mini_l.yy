@@ -149,9 +149,9 @@ void yyerror(const char *msg);		/*declaration given by TA*/
 
 %type <string> program function ident statements statement comp var
 %type <dec_type> declarations declaration
-%type <exp_type> term multiplicative_expr
+%type <exp_type> term multiplicative_expr expression relation_expr relation_and_expr bool_expr
 %type <list<string>> identifiers vars
-%type <vector<exp_type>> expression 
+/*%type <vector<exp_type>> expression */
 
 %start start_prog
 
@@ -169,7 +169,7 @@ function: 				FUNCTION ident SEMICOLON BEGIN_PARAMS declarations END_PARAMS BEGI
 							$$ += $5.code;
 							int i = 0;
 							for(list<string>::iterator it = $5.ids.begin(); it != $5.ids.end(); it++){
-								$$ += *it + " $" + to_string(i) + "\n";
+								$$ += "= "  +  *it + ", $" + to_string(i) + "\n";
 								i++;
 							}
 							$$ += $8.code;
@@ -230,16 +230,32 @@ statements: 			/* epsilon */ {
 						;
 
 statement: 				var ASSIGN expression {
-							for (int i = 0; i < $3.size(); ++i) {
+							/*for (int i = 0; i < $3.size(); ++i) {
 								$$ += "= " + $1 + $3.at(i).id + "\n";
 								$$ += $3.at(i).code;
-							}
+							}*/
+							$$ += "= " + $1 + $3.id + "\n";
+							$$ += $3.code;
 						}
 						| IF bool_expr THEN statements ENDIF {
+							std::string lab1 = newLabel();
+							std::string lab2 = newLabel();
+							$$ += ":" + lab1 + "\n";
+							$$ += $2.code;
+							$$ += "?:= " + lab2 + ", " + $2.id + "\n";
+							$$ += $4;	
+							$$ += ":" + lab2 + "\n";
 							
 						}
 						| IF bool_expr THEN statements ELSE statements ENDIF {
-
+							std::string lab1 = newLabel();
+                                                        std::string lab2 = newLabel();
+                                                        $$ += ":" + lab1 + "\n";
+                                                        $$ += $2.code;
+                                                        $$ += "?:= " + lab2 + ", " + $2.id + "\n";
+                                                        $$ += $4;
+                                                        $$ += ":" + lab2 + "\n";
+							$$ += $6;
 						}
 						| WHILE bool_expr BEGINLOOP statements ENDLOOP {
 
@@ -268,24 +284,19 @@ statement: 				var ASSIGN expression {
 						;
 
 bool_expr: 				relation_and_expr {
-
+						$$ = $1;	
 						}
 						| relation_and_expr OR bool_expr {
-							for(list<string>::iterator it = $1.begin(); it != $1.end(); it++){
-								$$.code += "|| " + *it + "\n";
-								$$.ids.push_back(*it);
-							}
+							
 						}
 						;
 
 relation_and_expr: 		relation_expr {
-
+					$$ = $1;
 						}
 						| relation_and_expr AND relation_expr {
-							for(list<string>::iterator it = $1.begin(); it != $1.end(); it++){
-								$$.code += "&& " + *it + "\n";
-								$$.ids.push_back(*it);
-							}
+							$$.id = newCond();
+							$$.code = "&& " + $$.id + ", " + $1.id + ", " + $3.id + "\n";
 						}
 						;
 
@@ -302,7 +313,8 @@ relation_expr: 			NOT expression comp expression {
 
 						}
 						| expression comp expression {
-
+							$$.id = newCond();
+							$$.code = $2 + $1.id + ", " + $3.id + "\n"; 
 						}
 						| TRUE {
 
@@ -318,9 +330,9 @@ relation_expr: 			NOT expression comp expression {
 comp: 					EQ {
 							$$ = "==";
 						}
-						| NEQ {	
+						| NEQ {
 							$$ = "!=";
-						}	
+						}
 						| LT {
 							$$ = "<";
 						}
@@ -328,7 +340,7 @@ comp: 					EQ {
 							$$ = ">";
 						}
 						| LTE {
-							$$ = "<=";
+							$$ = "<=";	
 						}
 						| GTE {
 							$$ = ">=";
@@ -336,12 +348,12 @@ comp: 					EQ {
 						;
 
 expression: 			multiplicative_expr {
-							$$.push_back($1);
-							
+							//$$.push_back($1);
+							$$ = $1;	
 						}
 						| expression ADD multiplicative_expr {
 
-							for (int i = 0; i < $1.size(); ++i) {
+							/*for (int i = 0; i < $1.size(); ++i) {
 								exp_type newobj;
                                                          	newobj.id = newTemp();
                                                          	newobj.code = "";
@@ -349,17 +361,21 @@ expression: 			multiplicative_expr {
 								newobj.code = "+ " + newobj.id + ", " + $1.at(i).id + ", " + $3.id  + "\n";	
 								
 								$$.push_back(newobj);
-
-							}
+							
+							}*/
+							$$.id = newTemp();
+                                                        $$.code = " " + $$.id + ", " + $1.id + ", " + $3.id + "\n";
 						}
 						| expression SUB multiplicative_expr {
-							for (int i = 0; i < $1.size(); ++i) {
+							/*for (int i = 0; i < $1.size(); ++i) {
                                                                  exp_type newobj;
                                                                  newobj.id = newTemp();
                                                                  newobj.code = "";
                                                                  newobj.code = "- " + newobj.id + ", " + $1.at(i).id + ", " + $3.id     + "\n";
                                                             	 $$.push_back(newobj);
-                                                         }
+                                                         }*/
+							$$.id = newTemp();
+                                                        $$.code = "- " + $$.id + ", " + $1.id + ", " + $3.id + "\n";
 						}
 						;
 
@@ -368,15 +384,6 @@ multiplicative_expr:	term {
 				$$ = $1;
 						}
 						| multiplicative_expr MULT term {
-							
-							/*for (int i = 0; i < $1.size(); ++i) {
-                                                                cout << "iter" << endl;
-								exp_type newobj;
-                                                                newobj.id = newTemp();
-                                                                newobj.code = "";
-                                                                newobj.code = "* " + newobj.id + ", " + $1.at(i).id + ", " + $3.id + "\n";
-                                                                $$.push_back(newobj);
-                                                        }*/
 							$$.id = newTemp();
 							$$.code = "* " + $$.id + ", " + $1.id + ", " + $3.id + "\n";
 							
@@ -410,7 +417,8 @@ term: 					SUB var %prec UMINUS {
 							$$.code = $1;
 						}
 						| L_PAREN expression R_PAREN {
-
+							$$.id = newTemp();
+							$$.code = "(" + $2.id + ")" + "\n" + $2.code;
 						}
 						| IDENT L_PAREN expressions R_PAREN {
 
@@ -418,7 +426,7 @@ term: 					SUB var %prec UMINUS {
 						;
 
 expressions: 			expression {
-
+					//$$	
 						}
 						| expression COMMA expressions {
 							/*$$.code = $1.code + "\n" + $3.code;
@@ -449,15 +457,21 @@ vars: 					var {
 			
 %%
 
-std::string newTemp() {
-        static int tempCount = 0;
-        std::string var = " ___temp___" + std::to_string(++tempCount);
+string newTemp() {
+        static int count = 0;
+        string var = " ___temp___" + to_string(++count);
         return var;
 }
 
-std::string newLab() {
-        static int labelCount = 0;
-        std::string var = " ___label___" + std::to_string(++labelCount);
+string newLabel() {
+	static int count = 0;
+	string var = "L" + to_string(++count);
+	return var;
+}
+
+string newCond() {
+	static int count = 0;
+        string var = "P" + to_string(++count);
         return var;
 }
 
