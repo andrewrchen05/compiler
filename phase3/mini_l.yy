@@ -149,9 +149,10 @@ void yyerror(const char *msg);		/*declaration given by TA*/
 
 %type <string> program function ident statements statement comp var
 %type <dec_type> declarations declaration
-%type <exp_type> term multiplicative_expr
+%type <exp_type> term multiplicative_expr expression
 %type <list<string>> identifiers vars
-%type <vector<exp_type>> expression 
+/*%type <vector<exp_type>> expression */
+%type <vector<vector<exp_type>>> expressions
 
 %start start_prog
 
@@ -230,10 +231,12 @@ statements: 			/* epsilon */ {
 						;
 
 statement: 				var ASSIGN expression {
-							for (int i = 0; i < $3.size(); ++i) {
+							/*for (int i = 0; i < $3.size(); ++i) {
 								$$ += "= " + $1 + $3.at(i).id + "\n";
 								$$ += $3.at(i).code;
-							}
+							}*/
+							$$ += "= " + $1 + $3.id + "\n";
+							$$ += $3.code;
 						}
 						| IF bool_expr THEN statements ENDIF {
 
@@ -329,12 +332,12 @@ comp: 					EQ {
 						;
 
 expression: 			multiplicative_expr {
-							$$.push_back($1);
-							
+							//$$.push_back($1);
+							$$ = $1;	
 						}
 						| expression ADD multiplicative_expr {
 
-							for (int i = 0; i < $1.size(); ++i) {
+							/*for (int i = 0; i < $1.size(); ++i) {
 								exp_type newobj;
                                                          	newobj.id = newTemp();
                                                          	newobj.code = "";
@@ -342,17 +345,21 @@ expression: 			multiplicative_expr {
 								newobj.code = "+ " + newobj.id + ", " + $1.at(i).id + ", " + $3.id  + "\n";	
 								
 								$$.push_back(newobj);
-
-							}
+							
+							}*/
+							$$.id = newTemp();
+                                                        $$.code = " " + $$.id + ", " + $1.id + ", " + $3.id + "\n";
 						}
 						| expression SUB multiplicative_expr {
-							for (int i = 0; i < $1.size(); ++i) {
+							/*for (int i = 0; i < $1.size(); ++i) {
                                                                  exp_type newobj;
                                                                  newobj.id = newTemp();
                                                                  newobj.code = "";
                                                                  newobj.code = "- " + newobj.id + ", " + $1.at(i).id + ", " + $3.id     + "\n";
                                                             	 $$.push_back(newobj);
-                                                         }
+                                                         }*/
+							$$.id = newTemp();
+                                                        $$.code = "- " + $$.id + ", " + $1.id + ", " + $3.id + "\n";
 						}
 						;
 
@@ -361,15 +368,6 @@ multiplicative_expr:	term {
 				$$ = $1;
 						}
 						| multiplicative_expr MULT term {
-							
-							/*for (int i = 0; i < $1.size(); ++i) {
-                                                                cout << "iter" << endl;
-								exp_type newobj;
-                                                                newobj.id = newTemp();
-                                                                newobj.code = "";
-                                                                newobj.code = "* " + newobj.id + ", " + $1.at(i).id + ", " + $3.id + "\n";
-                                                                $$.push_back(newobj);
-                                                        }*/
 							$$.id = newTemp();
 							$$.code = "* " + $$.id + ", " + $1.id + ", " + $3.id + "\n";
 							
@@ -403,7 +401,7 @@ term: 					SUB var %prec UMINUS {
 							$$.code = $1;
 						}
 						| L_PAREN expression R_PAREN {
-
+							
 						}
 						| IDENT L_PAREN expressions R_PAREN {
 
@@ -411,7 +409,7 @@ term: 					SUB var %prec UMINUS {
 						;
 
 expressions: 			expression {
-
+					//$$	
 						}
 						| expression COMMA expressions {
 							/*$$.code = $1.code + "\n" + $3.code;
