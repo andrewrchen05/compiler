@@ -264,7 +264,18 @@ statement: 				var ASSIGN expression {
 							//continue?
 							$$ += ":= " + lab2 + "\n";
 							$$ += ": " + lab1 + "\n";
-							$$ += $4;
+
+							string statements = $4;
+							std::size_t found=statements.find("continue");
+							if (found!=std::string::npos) {
+								//cout << "Found at: " << found << endl;
+								$$ += statements.substr(0, found-1) + "\n";
+								$$ += ":= " + lab2;
+								$$ += statements.substr(found + 8, statements.length() - 1);
+							} else {
+								$$ += $4;
+							}
+							
 							$$ += ":= " + lab3 + "\n";
 							$$ += ": " + lab2 + "\n";	
 						}
@@ -272,10 +283,19 @@ statement: 				var ASSIGN expression {
 							std::string lab1 = newLabel();
                                                         std::string lab2 = newLabel();
 							$$ += ": " + lab2 + "\n";
-                                                        $$ += $3;
+                                                        
+							string statements = $3;
+                                                        std::size_t found=statements.find("continue");
+                                                        if (found!=std::string::npos) {
+                                                                $$ += statements.substr(0, found-1) + "\n";
+                                                                $$ += ":= " + lab1 + "\n";
+                                                                $$ += statements.substr(found, statements.length() - 1);
+                                                        } else {
+                                                                $$ += $3;
+                                                        }
+							
 							$$ += $6.code;
                                                         $$ += "?:= " + lab2 + ", " + $6.id + "\n";
-                                                        //continue?
                                                         $$ += ":= " + lab1 + "\n";
                                                         $$ += ": " + lab1 + "\n";
 						}
@@ -284,7 +304,7 @@ statement: 				var ASSIGN expression {
                                                         std::string lab2 = newLabel();
 							std::string lab3 = newLabel();
                                                         //std::string lab4 = newLabel();
-						
+								
 							string temp = newTemp();
                                                         $$ += ". " + temp + "\n";
 							$$ += "= " + temp + ", " + $2 + "\n";
@@ -303,7 +323,18 @@ statement: 				var ASSIGN expression {
 								
 							$$ += "= " + temp + ", " + $8 + "\n";
 							$$ += $10.code;
-							$$ += $12;
+						
+							string statements = $12;
+                                                        std::size_t found=statements.find("continue");	
+							if (found!=std::string::npos) {
+                                                                $$ += statements.substr(0, found-1) + "\n";
+                                                                //$$ += ":= " + lab3 + "\n";
+                                                                $$ += ":= " + lab3;
+								$$ += statements.substr(found+8, statements.length() - 1);
+                                                        } else {
+                                                                $$ += $12;
+                                                        }
+
 							$$ += ":= " + lab1 + "\n";
 							
 							$$ += ": " + lab3 + "\n"; 
@@ -320,9 +351,10 @@ statement: 				var ASSIGN expression {
                                                         }
 						}
 						| CONTINUE {
+							$$ += "continue";
 						}
 						| RETURN expression {
-
+							$$ += $2.id;
 						}
 						;
 
@@ -340,7 +372,6 @@ bool_expr: 				relation_and_expr {
 
 relation_and_expr: 		relation_expr {
 					$$ = $1;
-					//cout << "relation and expr" << $$.code;
 						}
 						| relation_and_expr AND relation_expr {
 							$$.id = newCond();
@@ -411,7 +442,7 @@ expression: 			multiplicative_expr {
 						| expression ADD multiplicative_expr {
 							$$.id = newTemp();
 							$$.code += ". " + $$.id + "\n";
-                                                        $$.code += " " + $$.id + ", " + $1.id + ", " + $3.id + "\n";
+                                                        $$.code += "+ " + $$.id + ", " + $1.id + ", " + $3.id + "\n";
 						}
 						| expression SUB multiplicative_expr {
 							$$.id = newTemp();
