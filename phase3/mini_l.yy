@@ -149,7 +149,7 @@ void yyerror(const char *msg);		/*declaration given by TA*/
 
 %type <string> program function ident statements statement comp var
 %type <dec_type> declarations declaration
-%type <exp_type> term multiplicative_expr expression relation_expr relation_and_expr bool_expr
+%type <exp_type> term multiplicative_expr expression expressions relation_expr relation_and_expr bool_expr
 %type <list<string>> identifiers vars
 /*%type <vector<exp_type>> expression */
 
@@ -249,22 +249,41 @@ statement: 				var ASSIGN expression {
 						}
 						| IF bool_expr THEN statements ELSE statements ENDIF {
 							std::string lab1 = newLabel();
-                                                        std::string lab2 = newLabel();
-                                                        $$ += ":" + lab1 + "\n";
-                                                        $$ += $2.code;
-                                                        $$ += "?:= " + lab2 + ", " + $2.id + "\n";
-                                                        $$ += $4;
-                                                        $$ += ":" + lab2 + "\n";
+                            std::string lab2 = newLabel();
+                            $$ += ":" + lab1 + "\n";
+                            $$ += $2.code;
+                            $$ += "?:= " + lab2 + ", " + $2.id + "\n";
+                        	$$ += $4;
+                            $$ += ":" + lab2 + "\n";
 							$$ += $6;
 						}
 						| WHILE bool_expr BEGINLOOP statements ENDLOOP {
+							std::string lab1 = newLabel();
+                            std::string lab2 = newLabel();
+							std::string lab3 = newLabel();
+							size_t cont_pos = $4.find("continue");
+							while(cont_pos != string::npos) {
+								$4.replace(cont_pos, 8, ":= "+lab1);
+								cont_pos = $4.find("continue");
+							}
+							$$ += ": " + lab1 + "\n";
+							$$ += $2.code;
+							$$ += "?:= " + lab2 + ", ";
+							$$ += $2.id + "\n";
+							$$ += ":= " + lab3 + "\n";
+							$$ += ": " + lab2 + "\n";
+							$$ += $4;
+							$$ += ":= " + lab1 + "\n";
+							$$ += ": " + lab3 + "\n";	
 
 						}
 						| DO BEGINLOOP statements ENDLOOP WHILE bool_expr {
-
+							std::string lab1 = newLabel();
+                            std::string lab2 = newLabel();
+							
 						}
 						| FOR var ASSIGN NUMBER SEMICOLON bool_expr SEMICOLON var ASSIGN expression BEGINLOOP statements ENDLOOP {
-
+							
 						}
 						| READ vars {
 							for(list<string>::iterator it = $2.begin(); it != $2.end(); it++) {
@@ -277,22 +296,24 @@ statement: 				var ASSIGN expression {
                             }
 						}
 						| CONTINUE {
+							$$ = "continue\n";
 						}
 						| RETURN expression {
-
+							$$ = $2.code + "ret " + $2.id + "\n";
 						}
 						;
 
 bool_expr: 				relation_and_expr {
-						$$ = $1;	
+							$$ = $1;	
 						}
 						| relation_and_expr OR bool_expr {
-							
+							$$.id = newCond();
+							$$.code = "|| " + $$.id + ", " + $1.id + ", " + $3.id + "\n";
 						}
 						;
 
 relation_and_expr: 		relation_expr {
-					$$ = $1;
+							$$ = $1;
 						}
 						| relation_and_expr AND relation_expr {
 							$$.id = newCond();
@@ -323,7 +344,8 @@ relation_expr: 			NOT expression comp expression {
 
 						}
 						| L_PAREN bool_expr R_PAREN {
-
+							$$.id = newTemp();
+							$$.code = "(" + $2.id + ")" + $2.code;
 						}
 						;
 
@@ -352,11 +374,10 @@ expression: 			multiplicative_expr {
 							$$ = $1;	
 						}
 						| expression ADD multiplicative_expr {
-
 							/*for (int i = 0; i < $1.size(); ++i) {
 								exp_type newobj;
-                                                         	newobj.id = newTemp();
-                                                         	newobj.code = "";
+                                newobj.id = newTemp();
+                                newobj.code = "";
 
 								newobj.code = "+ " + newobj.id + ", " + $1.at(i).id + ", " + $3.id  + "\n";	
 								
@@ -364,49 +385,53 @@ expression: 			multiplicative_expr {
 							
 							}*/
 							$$.id = newTemp();
-                                                        $$.code = " " + $$.id + ", " + $1.id + ", " + $3.id + "\n";
+                            $$.code = " " + $$.id + ", " + $1.id + ", " + $3.id + "\n";
 						}
 						| expression SUB multiplicative_expr {
 							/*for (int i = 0; i < $1.size(); ++i) {
-                                                                 exp_type newobj;
-                                                                 newobj.id = newTemp();
-                                                                 newobj.code = "";
-                                                                 newobj.code = "- " + newobj.id + ", " + $1.at(i).id + ", " + $3.id     + "\n";
-                                                            	 $$.push_back(newobj);
-                                                         }*/
+                                exp_type newobj;
+                                newobj.id = newTemp();
+                                newobj.code = "";
+                                newobj.code = "- " + newobj.id + ", " + $1.at(i).id + ", " + $3.id     + "\n";
+                                $$.push_back(newobj);
+                            }*/
 							$$.id = newTemp();
-                                                        $$.code = "- " + $$.id + ", " + $1.id + ", " + $3.id + "\n";
+                            $$.code = "- " + $$.id + ", " + $1.id + ", " + $3.id + "\n";
 						}
 						;
 
 multiplicative_expr:	term {
-				//$$.push_back($1);
-				$$ = $1;
+							//$$.push_back($1);
+							$$ = $1;
 						}
 						| multiplicative_expr MULT term {
 							$$.id = newTemp();
 							$$.code = "* " + $$.id + ", " + $1.id + ", " + $3.id + "\n";
 							
-							
 						}
 						| multiplicative_expr DIV term {
 							$$.id = newTemp();
-                                                        $$.code = "/ " + $$.id + ", " + $1.id + ", " + $3.id + "\n";		
+                            $$.code = "/ " + $$.id + ", " + $1.id + ", " + $3.id + "\n";		
 						}
 						| multiplicative_expr MOD term {
 							$$.id = newTemp();
-                                                        $$.code = "% " + $$.id + ", " + $1.id + ", " + $3.id + "\n";	
+                            $$.code = "% " + $$.id + ", " + $1.id + ", " + $3.id + "\n";	
 						}
 						;
 
 term: 					SUB var %prec UMINUS {
-
+							$$.id = newTemp();
+							$$.code = "-1* " + $2 + "\n";
 						}
 						| SUB NUMBER %prec UMINUS {
-
+							$$.id = newTemp();
+							$$.code = "-1 * ";
+							$$.code += $2;
+							$$.code += "\n";
 						}
 						| SUB L_PAREN expression R_PAREN {
-
+							$$.id = newTemp();
+							$$.code = "(" + $3.id + ")" + "\n" + $3.code;
 						}
 						| var {
 							$$.id = newTemp();
@@ -421,19 +446,19 @@ term: 					SUB var %prec UMINUS {
 							$$.code = "(" + $2.id + ")" + "\n" + $2.code;
 						}
 						| IDENT L_PAREN expressions R_PAREN {
-
+							$$.id = newTemp();
+							$$.code = $1 + "(" + $3.id + ")" + $3.code;
 						}
 						;
 
 expressions: 			expression {
-					//$$	
+							$$.id = newTemp();
+							$$.code = "param " + $1.code + $1.id + "\n";
 						}
 						| expression COMMA expressions {
-							/*$$.code = $1.code + "\n" + $3.code;
-							$$.ids = $1.ids;
-							for(list<string>::iterator it = $3.ids.begin(); it != $3.ids.end(); it++){
-								$$.ids.push_back(*it);
-							}*/
+							$$.id = newTemp();
+							$$.code = "param " + $1.code + $1.id + "\n";
+							$$.code += $3.code;	
 						}
 						;
 
@@ -441,8 +466,7 @@ var: 					ident {
 							$$ = $1;
 						}
    						| ident L_SQUARE_BRACKET expression R_SQUARE_BRACKET {
-							//$$ = $3;
-							//$$.push_front($1);
+							$$ = $1 + "[" + $3.id + "]" + $3.code;
 						}
 						;
 
