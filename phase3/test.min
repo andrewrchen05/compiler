@@ -11,12 +11,31 @@ beginbody
     write b;
     b := 4;
     a := 4;
-    d := 4;
+    d := 5;
     
-    if b == a and a == d  then
+    if b == a and a == d and b == d  then
 	c := a * b;
     else
 	c := a % b;
     endif;
+    do
+	beginloop
+	  b := b + 1;
+	  continue;
+   	endloop
+    while d > b;
+
+    for a := 1; a < d; a := a + 1
+	beginloop
+		d := d + 1;
+		continue;
+		d := d + 1;
+	endloop;
+
+    while d > b beginloop
+	d := d + 1;
+	continue;
+	d := d + 1;
+    endloop;
 
 endbody
