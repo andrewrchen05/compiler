@@ -3,13 +3,17 @@ beginparams
     d,e : integer;
 endparams
 beginlocals
-    a,b,c : integer;
+    a,b,c,d : integer;
     t : array [20][20] of integer;
 endlocals
 beginbody
     read a;
     write b;
-    b := 5;
+    b := 3;
     a := 5;
-    c := a - b;
+    d := 8;
+    c := 6;
+    d := 4;
+    c := a * b;
+    c := a % b;
 endbody
