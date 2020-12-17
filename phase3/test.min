@@ -9,14 +9,14 @@ endlocals
 beginbody
     read a;
     write b;
-    b := 3;
+    b := 4;
     a := 4;
-    if a > b then
-    	d := 8;
-    	c := 6;
-    	d := 4;
-   else
+    d := 4;
+    
+    if b == a and a == d  then
 	c := a * b;
+    else
+	c := a % b;
     endif;
-    	c := a % b;
+
 endbody

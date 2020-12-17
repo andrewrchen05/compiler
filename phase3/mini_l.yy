@@ -205,7 +205,7 @@ declaration:			identifiers COLON INTEGER {
 						}
 						| identifiers COLON ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER {
 							for(list<string>::iterator it = $1.begin(); it != $1.end(); it++) {
-								$$.code += ".[] " + *it + ", " + to_string($5 * $8) +"\n";
+								$$.code += ".[] " + *it + ", " + to_string($5 * $8);
 								$$.ids.push_back(*it);		
 							}
 						}
@@ -230,35 +230,32 @@ statements: 			/* epsilon */ {
 						;
 
 statement: 				var ASSIGN expression {
-							/*for (int i = 0; i < $3.size(); ++i) {
-								$$ += "= " + $1 + $3.at(i).id + "\n";
-								$$ += $3.at(i).code;
-							}*/
-							$$ += "= " + $1 + $3.id + "\n";
 							$$ += $3.code;
+							$$ += "= " + $3.id + ", " + $1;
 						}
 						| IF bool_expr THEN statements ENDIF {
 							std::string lab1 = newLabel();
 							std::string lab2 = newLabel();
-							$$ += ":" + lab1 + "\n";
 							$$ += $2.code;
-							$$ += "?:= " + lab2 + ", " + $2.id + "\n";
-							$$ += $4;	
-							$$ += ":" + lab2 + "\n";
-							
+							$$ += "?:= " + lab1 + ", " + $2.id + "\n";
+                                                        $$ += ":= " + lab2 + "\n";
+                                                        $$ += "\n:" + lab1 + "\n";
+                                                        $$ += $4;
+                                                        $$ += ":" + lab2 + "\n";	
 						}
 						| IF bool_expr THEN statements ELSE statements ENDIF {
 							std::string lab1 = newLabel();
                                                         std::string lab2 = newLabel();
-                                                        $$ += ":" + lab1 + "\n";
                                                         $$ += $2.code;
-                                                        $$ += "?:= " + lab2 + ", " + $2.id + "\n";
-                                                        $$ += $4;
-                                                        $$ += ":" + lab2 + "\n";
-							$$ += $6;
+							$$ += "?:= " + lab1 + ", " + $2.id + "\n";
+                                                        $$ += $6;
+                                                        $$ += ":= " + lab2 + "\n";
+                                                        $$ += "\n:" + lab1 + "\n";
+							$$ += $4;
+							$$ += ":" + lab2 + "\n";
 						}
 						| WHILE bool_expr BEGINLOOP statements ENDLOOP {
-
+							
 						}
 						| DO BEGINLOOP statements ENDLOOP WHILE bool_expr {
 
@@ -268,12 +265,12 @@ statement: 				var ASSIGN expression {
 						}
 						| READ vars {
 							for(list<string>::iterator it = $2.begin(); it != $2.end(); it++) {
-								$$ += ".< " + *it + "\n";
+								$$ += ".< " + *it;
 							}
 						}
 						| WRITE vars {
 							for(list<string>::iterator it = $2.begin(); it != $2.end(); it++) {
-                                                                $$ += ">. " + *it + "\n";
+                                                                $$ += ">. " + *it;
                                                         }
 						}
 						| CONTINUE {
@@ -284,24 +281,31 @@ statement: 				var ASSIGN expression {
 						;
 
 bool_expr: 				relation_and_expr {
-						$$ = $1;	
+						$$ = $1;
+						//cout << "bool expr" << $$.code << endl;	
 						}
 						| relation_and_expr OR bool_expr {
-							
+							$$.id = newCond();
+							$$.code += ". " + $$.id + "\n";
+							$$.code += $1.code + $3.code;
+							$$.code += $$.code = "|| " + $$.id + ", " + $1.id + ", " + $3.id + "\n";
 						}
 						;
 
 relation_and_expr: 		relation_expr {
 					$$ = $1;
+					//cout << "relation and expr" << $$.code;
 						}
 						| relation_and_expr AND relation_expr {
 							$$.id = newCond();
-							$$.code = "&& " + $$.id + ", " + $1.id + ", " + $3.id + "\n";
+							$$.code += ". " + $$.id + "\n";
+							$$.code += $1.code + $3.code;
+							$$.code += "&& " + $$.id + ", " + $1.id + ", " + $3.id + "\n";
 						}
 						;
 
 relation_expr: 			NOT expression comp expression {
-
+							
 						}
 						| NOT TRUE {
 
@@ -310,11 +314,16 @@ relation_expr: 			NOT expression comp expression {
 
 						}
 						| NOT L_PAREN bool_expr R_PAREN {
-
+							$$.id = newCond();
+								
+							
 						}
 						| expression comp expression {
 							$$.id = newCond();
-							$$.code = $2 + $1.id + ", " + $3.id + "\n"; 
+							$$.code += ". " + $$.id + "\n";
+							//$$.code += $1.code + $3.code + "\n";
+							$$.code += $2 + " " + $$.id + ", " + $1.id + ", " + $3.id + "\n";
+							//cout << "expr comp expr" << $$.code << endl; 
 						}
 						| TRUE {
 
@@ -323,12 +332,15 @@ relation_expr: 			NOT expression comp expression {
 
 						}
 						| L_PAREN bool_expr R_PAREN {
-
+							//$$.id = newCond();
+							//$$.id = $2.id;
+							//$$.code += 
+							$$ = $2;
 						}
 						;
 
 comp: 					EQ {
-							$$ = "=";
+							$$ = "==";
 						}
 						| NEQ {
 							$$ = "!=";
@@ -352,50 +364,36 @@ expression: 			multiplicative_expr {
 							$$ = $1;	
 						}
 						| expression ADD multiplicative_expr {
-
-							/*for (int i = 0; i < $1.size(); ++i) {
-								exp_type newobj;
-                                                         	newobj.id = newTemp();
-                                                         	newobj.code = "";
-
-								newobj.code = "+ " + newobj.id + ", " + $1.at(i).id + ", " + $3.id  + "\n";	
-								
-								$$.push_back(newobj);
-							
-							}*/
 							$$.id = newTemp();
-                                                        $$.code = " " + $$.id + ", " + $1.id + ", " + $3.id + "\n";
+							$$.code += ". " + $$.id + "\n";
+                                                        $$.code += " " + $$.id + ", " + $1.id + ", " + $3.id + "\n";
 						}
 						| expression SUB multiplicative_expr {
-							/*for (int i = 0; i < $1.size(); ++i) {
-                                                                 exp_type newobj;
-                                                                 newobj.id = newTemp();
-                                                                 newobj.code = "";
-                                                                 newobj.code = "- " + newobj.id + ", " + $1.at(i).id + ", " + $3.id     + "\n";
-                                                            	 $$.push_back(newobj);
-                                                         }*/
 							$$.id = newTemp();
-                                                        $$.code = "- " + $$.id + ", " + $1.id + ", " + $3.id + "\n";
+							$$.code += ". " + $$.id + "\n";
+                                                        $$.code += "- " + $$.id + ", " + $1.id + ", " + $3.id + "\n";
 						}
 						;
 
 multiplicative_expr:	term {
-				//$$.push_back($1);
 				$$ = $1;
 						}
 						| multiplicative_expr MULT term {
 							$$.id = newTemp();
-							$$.code = "* " + $$.id + ", " + $1.id + ", " + $3.id + "\n";
+							$$.code += ". " + $$.id + "\n";
+							$$.code += "* " + $$.id + ", " + $1.id + ", " + $3.id + "\n";
 							
 							
 						}
 						| multiplicative_expr DIV term {
 							$$.id = newTemp();
-                                                        $$.code = "/ " + $$.id + ", " + $1.id + ", " + $3.id + "\n";		
+							$$.code += ". " + $$.id + "\n";
+                                                        $$.code += "/ " + $$.id + ", " + $1.id + ", " + $3.id + "\n";		
 						}
 						| multiplicative_expr MOD term {
 							$$.id = newTemp();
-                                                        $$.code = "% " + $$.id + ", " + $1.id + ", " + $3.id + "\n";	
+                                                        $$.code += ". " + $$.id + "\n";
+							$$.code += "% " + $$.id + ", " + $1.id + ", " + $3.id + "\n";	
 						}
 						;
 
@@ -410,15 +408,18 @@ term: 					SUB var %prec UMINUS {
 						}
 						| var {
 							$$.id = newTemp();
-							$$.code = $1;
+							$$.code += ". " + $$.id + "\n";
+							$$.code += $1;
 						}
 						| NUMBER {
 							$$.id = newTemp();
-							$$.code = $1;
+							$$.code += ". " + $$.id + "\n";
+							$$.code += $1;
 						}
 						| L_PAREN expression R_PAREN {
 							$$.id = newTemp();
-							$$.code = "(" + $2.id + ")" + "\n" + $2.code;
+							$$.code += ". " + $$.id + "\n";
+							$$.code += "(" + $2.id + ")" + "\n" + $2.code;
 						}
 						| IDENT L_PAREN expressions R_PAREN {
 
