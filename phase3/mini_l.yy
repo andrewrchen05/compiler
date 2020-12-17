@@ -151,7 +151,7 @@ void yyerror(const char *msg);		/*declaration given by TA*/
 %type <dec_type> declarations declaration
 %type <exp_type> term multiplicative_expr
 %type <list<string>> identifiers vars
-%type <vector<exp_type>> expression /*multiplicative_expr*/
+%type <vector<exp_type>> expression 
 
 %start start_prog
 
