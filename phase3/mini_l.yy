@@ -235,7 +235,7 @@ statement: 				var ASSIGN expression {
 							}
 						}
 						| IF bool_expr THEN statements ENDIF {
-
+							
 						}
 						| IF bool_expr THEN statements ELSE statements ENDIF {
 
@@ -256,8 +256,8 @@ statement: 				var ASSIGN expression {
 						}
 						| WRITE vars {
 							for(list<string>::iterator it = $2.begin(); it != $2.end(); it++) {
-                                                                $$ += ">. " + *it + "\n";
-                                                        }
+                            	$$ += ">. " + *it + "\n";
+                            }
 						}
 						| CONTINUE {
 						}
@@ -267,9 +267,13 @@ statement: 				var ASSIGN expression {
 						;
 
 bool_expr: 				relation_and_expr {
+
 						}
 						| relation_and_expr OR bool_expr {
-
+							for(list<string>::iterator it = $1.begin(); it != $1.end(); it++){
+								$$.code += "|| " + *it + "\n";
+								$$.ids.push_back(*it);
+							}
 						}
 						;
 
@@ -277,7 +281,10 @@ relation_and_expr: 		relation_expr {
 
 						}
 						| relation_and_expr AND relation_expr {
-							
+							for(list<string>::iterator it = $1.begin(); it != $1.end(); it++){
+								$$.code += "&& " + *it + "\n";
+								$$.ids.push_back(*it);
+							}
 						}
 						;
 
@@ -308,22 +315,22 @@ relation_expr: 			NOT expression comp expression {
 						;
 
 comp: 					EQ {
-
+							$$ = "==";
 						}
-						| NEQ {
-
-						}
+						| NEQ {	
+							$$ = "!=";
+						}	
 						| LT {
-
+							$$ = "<";
 						}
 						| GT {
-
+							$$ = ">";
 						}
 						| LTE {
-
+							$$ = "<=";
 						}
 						| GTE {
-
+							$$ = ">=";
 						}
 						;
 
@@ -362,17 +369,17 @@ expression: 			multiplicative_expr {
 						;
 
 multiplicative_expr:	term {
-				$$.push_back($1);
+							$$.push_back($1);
 						}
 						| multiplicative_expr MULT term {
 							
 							for (int i = 0; i < $1.size(); ++i) {
-                                                                exp_type newobj;
-                                                                newobj.id = newTemp();
-                                                                newobj.code = "";
-                                                                newobj.code = "* " + newobj.id + ", " + $1.at(i).id + ", " + $3.id + "\n";
-                                                                $$.push_back(newobj);
-                                                        }
+                                exp_type newobj;
+                                newobj.id = newTemp();
+                                newobj.code = "";
+                            	newobj.code = "* " + newobj.id + ", " + $1.at(i).id + ", " + $3.id + "\n";
+                                $$.push_back(newobj);
+                            }
 						}
 						| multiplicative_expr DIV term {
 							
@@ -428,19 +435,25 @@ var: 					ident {
 						;
 
 vars: 					var {
-						$$.push_back($1);
+							$$.push_back($1);
 						}
 						| var COMMA vars {
 							$$ = $3;
-                                                        $$.push_front($1);
+                            $$.push_front($1);
 						}
 						;
 			
 %%
 
 std::string newTemp() {
-        static int count = 0;
-        std::string var = " ___temp___" + std::to_string(++count);
+        static int tempCount = 0;
+        std::string var = " ___temp___" + std::to_string(++tempCount);
+        return var;
+}
+
+std::string newLab() {
+        static int labelCount = 0;
+        std::string var = " ___label___" + std::to_string(++labelCount);
         return var;
 }
 
