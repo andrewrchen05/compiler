@@ -255,13 +255,59 @@ statement: 				var ASSIGN expression {
 							$$ += ":" + lab2 + "\n";
 						}
 						| WHILE bool_expr BEGINLOOP statements ENDLOOP {
-							
+							std::string lab1 = newLabel();
+                                                        std::string lab2 = newLabel();
+							std::string lab3 = newLabel();
+							$$ += ": " + lab3 + "\n";
+							$$ += $2.code;
+							$$ += "?:= " + lab1 + ", " + $2.id + "\n";
+							//continue?
+							$$ += ":= " + lab2 + "\n";
+							$$ += ": " + lab1 + "\n";
+							$$ += $4;
+							$$ += ":= " + lab3 + "\n";
+							$$ += ": " + lab2 + "\n";	
 						}
 						| DO BEGINLOOP statements ENDLOOP WHILE bool_expr {
-
+							std::string lab1 = newLabel();
+                                                        std::string lab2 = newLabel();
+							$$ += ": " + lab2 + "\n";
+                                                        $$ += $3;
+							$$ += $6.code;
+                                                        $$ += "?:= " + lab2 + ", " + $6.id + "\n";
+                                                        //continue?
+                                                        $$ += ":= " + lab1 + "\n";
+                                                        $$ += ": " + lab1 + "\n";
 						}
 						| FOR var ASSIGN NUMBER SEMICOLON bool_expr SEMICOLON var ASSIGN expression BEGINLOOP statements ENDLOOP {
+							std::string lab1 = newLabel();
+                                                        std::string lab2 = newLabel();
+							std::string lab3 = newLabel();
+                                                        //std::string lab4 = newLabel();
+						
+							string temp = newTemp();
+                                                        $$ += ". " + temp + "\n";
+							$$ += "= " + temp + ", " + $2 + "\n";
 
+							$$ += ": " + lab1 + "\n";
+							$$ += $6.code;
+							
+							$$ += "?:= " + lab2 + ", " + $6.id + "\n";
+							$$ += ":= " + lab3 + "\n";
+
+
+							$$ += ": " + lab2 + "\n";
+							
+							temp = newTemp();
+                                                        $$ += ". " + temp + "\n";
+								
+							$$ += "= " + temp + ", " + $8 + "\n";
+							$$ += $10.code;
+							$$ += $12;
+							$$ += ":= " + lab1 + "\n";
+							
+							$$ += ": " + lab3 + "\n"; 
+							
 						}
 						| READ vars {
 							for(list<string>::iterator it = $2.begin(); it != $2.end(); it++) {
@@ -305,36 +351,35 @@ relation_and_expr: 		relation_expr {
 						;
 
 relation_expr: 			NOT expression comp expression {
-							
+							$$.id = newCond();
+							$$.code += ". " + $$.id + "\n";
+							$$.code += $3 + " " + $$.id + ", " + $2.id + ", " + $4.id + "\n";
 						}
 						| NOT TRUE {
-
+							$$.id = newCond();
+							$$.code += "";
 						}
 						| NOT FALSE {
-
+							$$.id = newCond();
+                                                        $$.code += "";
 						}
 						| NOT L_PAREN bool_expr R_PAREN {
-							$$.id = newCond();
-								
-							
+							$$ = $3;	
 						}
 						| expression comp expression {
 							$$.id = newCond();
 							$$.code += ". " + $$.id + "\n";
-							//$$.code += $1.code + $3.code + "\n";
 							$$.code += $2 + " " + $$.id + ", " + $1.id + ", " + $3.id + "\n";
-							//cout << "expr comp expr" << $$.code << endl; 
 						}
 						| TRUE {
-
+							$$.id = newCond();
+                                                        $$.code += "";
 						}
 						| FALSE {
-
+							$$.id = newCond();
+                                                        $$.code += "";
 						}
 						| L_PAREN bool_expr R_PAREN {
-							//$$.id = newCond();
-							//$$.id = $2.id;
-							//$$.code += 
 							$$ = $2;
 						}
 						;
