@@ -1,0 +1,15 @@
+func main
+. b
+.< b
+. P1
+== P1,  ___temp___1,  ___temp___2
+?:= L1, P1
+= b, 1
+:= L2
+
+:L1
+= b, 0
+:L2
+
+.> b
+endfunc

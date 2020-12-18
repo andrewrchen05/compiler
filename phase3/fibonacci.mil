@@ -1,0 +1,22 @@
+func fibonacci
+. k
+= k, $0
+. P1
+<= P1,  ___temp___1,  ___temp___2
+?:= L1, P1
+:= L2
+
+:L1
+ ___temp___3
+:L2
+
+ ___temp___10
+endfunc
+func main
+. n
+. fib_n
+.< n
+= fib_n, 
+.> fib_n
+endfunc
+

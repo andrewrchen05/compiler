@@ -8,3 +8,13 @@ clean:
 
 oldclean:
 	rm -f lex.yy.c y.tab.* y.output *.o parser
+
+fibonacci:
+	cat fibonacci.min | ./parser > fibonacci.mil
+	echo 5 > input.txt
+	mil_run fibonacci.mil < input.txt	
+
+simple:
+	cat simple.min | ./parser > mil_code.mil
+	echo 5 > input.txt
+	mil_run mil_code.mil < input.txt

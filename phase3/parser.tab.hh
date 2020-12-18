@@ -50,24 +50,33 @@
 #include <list>
 #include <string>
 #include <functional>
+#include <vector>
 using namespace std;
 	/* define the sturctures using as types for non-terminals */
 struct dec_type{
 	string code;
-	list<string> ids;
+	vector<string> ids;
 	/*list<string>statements;*/
 };
 
 struct exp_type{
 	string code;
 	string id;
-/*	bool mult;*/
+	bool arrStatus;
+	/*string no;
+	string arr;*/
 };
 	/* end the structures for non-terminal types */
 
+struct var_type{
+	string val;
+	bool arrStatus;
+	/*string no;
+	string arr;*/
+};
 
 
-#line 71 "parser.tab.hh" // lalr1.cc:377
+#line 80 "parser.tab.hh" // lalr1.cc:377
 
 
 # include <cstdlib> // std::abort
@@ -144,7 +153,7 @@ struct exp_type{
 
 
 namespace yy {
-#line 148 "parser.tab.hh" // lalr1.cc:377
+#line 157 "parser.tab.hh" // lalr1.cc:377
 
 
 
@@ -295,17 +304,17 @@ namespace yy {
       // declaration
       char dummy1[sizeof(dec_type)];
 
+      // bool_expr
+      // relation_and_expr
+      // relation_expr
       // expression
       // multiplicative_expr
       // term
+      // expressions
       char dummy2[sizeof(exp_type)];
 
       // NUMBER
       char dummy3[sizeof(int)];
-
-      // identifiers
-      // vars
-      char dummy4[sizeof(list<string>)];
 
       // IDENT
       // program
@@ -314,11 +323,14 @@ namespace yy {
       // statements
       // statement
       // comp
-      // var
-      char dummy5[sizeof(string)];
+      char dummy4[sizeof(string)];
 
-      // expressions
-      char dummy6[sizeof(vector<vector<exp_type>>)];
+      // var
+      // vars
+      char dummy5[sizeof(var_type)];
+
+      // identifiers
+      char dummy6[sizeof(vector<string>)];
 };
 
     /// Symbol semantic values.
@@ -436,11 +448,11 @@ namespace yy {
 
   basic_symbol (typename Base::kind_type t, const int v, const location_type& l);
 
-  basic_symbol (typename Base::kind_type t, const list<string> v, const location_type& l);
-
   basic_symbol (typename Base::kind_type t, const string v, const location_type& l);
 
-  basic_symbol (typename Base::kind_type t, const vector<vector<exp_type>> v, const location_type& l);
+  basic_symbol (typename Base::kind_type t, const var_type v, const location_type& l);
+
+  basic_symbol (typename Base::kind_type t, const vector<string> v, const location_type& l);
 
 
       /// Constructor for symbols with semantic value.
@@ -1012,19 +1024,18 @@ namespace yy {
         value.copy< dec_type > (other.value);
         break;
 
+      case 64: // bool_expr
+      case 65: // relation_and_expr
+      case 66: // relation_expr
       case 68: // expression
       case 69: // multiplicative_expr
       case 70: // term
+      case 71: // expressions
         value.copy< exp_type > (other.value);
         break;
 
       case 51: // NUMBER
         value.copy< int > (other.value);
-        break;
-
-      case 60: // identifiers
-      case 73: // vars
-        value.copy< list<string> > (other.value);
         break;
 
       case 50: // IDENT
@@ -1034,12 +1045,16 @@ namespace yy {
       case 62: // statements
       case 63: // statement
       case 67: // comp
-      case 72: // var
         value.copy< string > (other.value);
         break;
 
-      case 71: // expressions
-        value.copy< vector<vector<exp_type>> > (other.value);
+      case 72: // var
+      case 73: // vars
+        value.copy< var_type > (other.value);
+        break;
+
+      case 60: // identifiers
+        value.copy< vector<string> > (other.value);
         break;
 
       default:
@@ -1064,19 +1079,18 @@ namespace yy {
         value.copy< dec_type > (v);
         break;
 
+      case 64: // bool_expr
+      case 65: // relation_and_expr
+      case 66: // relation_expr
       case 68: // expression
       case 69: // multiplicative_expr
       case 70: // term
+      case 71: // expressions
         value.copy< exp_type > (v);
         break;
 
       case 51: // NUMBER
         value.copy< int > (v);
-        break;
-
-      case 60: // identifiers
-      case 73: // vars
-        value.copy< list<string> > (v);
         break;
 
       case 50: // IDENT
@@ -1086,12 +1100,16 @@ namespace yy {
       case 62: // statements
       case 63: // statement
       case 67: // comp
-      case 72: // var
         value.copy< string > (v);
         break;
 
-      case 71: // expressions
-        value.copy< vector<vector<exp_type>> > (v);
+      case 72: // var
+      case 73: // vars
+        value.copy< var_type > (v);
+        break;
+
+      case 60: // identifiers
+        value.copy< vector<string> > (v);
         break;
 
       default:
@@ -1131,13 +1149,6 @@ namespace yy {
   {}
 
   template <typename Base>
-  parser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const list<string> v, const location_type& l)
-    : Base (t)
-    , value (v)
-    , location (l)
-  {}
-
-  template <typename Base>
   parser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const string v, const location_type& l)
     : Base (t)
     , value (v)
@@ -1145,7 +1156,14 @@ namespace yy {
   {}
 
   template <typename Base>
-  parser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const vector<vector<exp_type>> v, const location_type& l)
+  parser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const var_type v, const location_type& l)
+    : Base (t)
+    , value (v)
+    , location (l)
+  {}
+
+  template <typename Base>
+  parser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const vector<string> v, const location_type& l)
     : Base (t)
     , value (v)
     , location (l)
@@ -1182,19 +1200,18 @@ namespace yy {
         value.template destroy< dec_type > ();
         break;
 
+      case 64: // bool_expr
+      case 65: // relation_and_expr
+      case 66: // relation_expr
       case 68: // expression
       case 69: // multiplicative_expr
       case 70: // term
+      case 71: // expressions
         value.template destroy< exp_type > ();
         break;
 
       case 51: // NUMBER
         value.template destroy< int > ();
-        break;
-
-      case 60: // identifiers
-      case 73: // vars
-        value.template destroy< list<string> > ();
         break;
 
       case 50: // IDENT
@@ -1204,12 +1221,16 @@ namespace yy {
       case 62: // statements
       case 63: // statement
       case 67: // comp
-      case 72: // var
         value.template destroy< string > ();
         break;
 
-      case 71: // expressions
-        value.template destroy< vector<vector<exp_type>> > ();
+      case 72: // var
+      case 73: // vars
+        value.template destroy< var_type > ();
+        break;
+
+      case 60: // identifiers
+        value.template destroy< vector<string> > ();
         break;
 
       default:
@@ -1240,19 +1261,18 @@ namespace yy {
         value.move< dec_type > (s.value);
         break;
 
+      case 64: // bool_expr
+      case 65: // relation_and_expr
+      case 66: // relation_expr
       case 68: // expression
       case 69: // multiplicative_expr
       case 70: // term
+      case 71: // expressions
         value.move< exp_type > (s.value);
         break;
 
       case 51: // NUMBER
         value.move< int > (s.value);
-        break;
-
-      case 60: // identifiers
-      case 73: // vars
-        value.move< list<string> > (s.value);
         break;
 
       case 50: // IDENT
@@ -1262,12 +1282,16 @@ namespace yy {
       case 62: // statements
       case 63: // statement
       case 67: // comp
-      case 72: // var
         value.move< string > (s.value);
         break;
 
-      case 71: // expressions
-        value.move< vector<vector<exp_type>> > (s.value);
+      case 72: // var
+      case 73: // vars
+        value.move< var_type > (s.value);
+        break;
+
+      case 60: // identifiers
+        value.move< vector<string> > (s.value);
         break;
 
       default:
@@ -1650,7 +1674,7 @@ namespace yy {
 
 
 } // yy
-#line 1654 "parser.tab.hh" // lalr1.cc:377
+#line 1678 "parser.tab.hh" // lalr1.cc:377
 
 
 
