@@ -1,0 +1,17 @@
+func sum
+. a
+. b
+. c
+. d
+=  a, $ 0
+=  b, $ 1
+=  c, $ 2
+=  d, $ 3
+.[] t, 20
+.  ___temp___1
+=  ___temp___1, b
+.  ___temp___2
+=  ___temp___2, a
+.  ___temp___3
+=  ___temp___3, d
+endfunc
