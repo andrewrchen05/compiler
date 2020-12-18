@@ -1,0 +1,27 @@
+function sum;
+beginparams
+    d,e : integer;
+endparams
+beginlocals
+    a,b,c,d : integer;
+    t : array [20] of integer;
+endlocals
+beginbody
+    read a;
+    write b;
+    b := 4;
+    a := 4;
+    d := 5;
+
+
+    for a := 1; a < d; a := a + 1
+        beginloop
+                t[a] := d + 1;
+		write t[a];
+		read t[a];
+		b := t[a];
+                d := d + 1;
+        endloop;
+
+
+endbody

@@ -33,15 +33,19 @@ struct exp_type{
 	string code;
 	string id;
 	bool arrStatus;
+	/*string no;
+	string arr;*/
 };
 	/* end the structures for non-terminal types */
 
 struct var_type{
 	string val;
 	bool arrStatus;
+	/*string no;
+	string arr;*/
 };
 
-
+}
 %code
 {
 #include "parser.tab.hh"
@@ -233,11 +237,19 @@ statements: 			/* epsilon */ {
 						;
 
 statement: 				var ASSIGN expression {
-							//if ($1.arrStatus) {
-
-							//}
-							$$ += $3.code;
-							$$ += "= " + $3.id + ", " + $1.val;
+							//$$ += $3.code;
+							if ($1.arrStatus) {
+								$$ += $3.code;
+								$$ += "[]= " + $1.val + ", " + $3.id;
+									
+							} else if ($3.arrStatus) {
+								
+								$$ += "=[] " + $1.val + ", " + $3.code;
+							}
+							else {
+								$$ += $3.code;
+								$$ += "= " + $3.id + ", " + $1.val;
+							}
 						}
 						| IF bool_expr THEN statements ENDIF {
 							std::string lab1 = newLabel();
@@ -350,14 +362,18 @@ statement: 				var ASSIGN expression {
 							/*for(list<string>::iterator it = $2.begin(); it != $2.end(); it++) {
 								$$ += ".< " + *it;
 							}*/
-							$$ += ".< " + $2.val;
+							if ($2.arrStatus) {
+								$$ += ".[]< " + $2.val;
+							} else {
+								$$ += ".< " + $2.val;
+							}
 						}
 						| WRITE vars {
-							/*for(list<string>::iterator it = $2.begin(); it != $2.end(); it++) {
-                                                                //if  
-								$$ += ">. " + *it;
-                                                        }*/
-							$$ += ">. " + $2.val;
+							if ($2.arrStatus) {
+                                                                $$ += ".[]> " + $2.val;
+                                                        } else {
+                                                                $$ += ">. " + $2.val;
+                                                        }
 						}
 						| CONTINUE {
 							$$ += "continue";
@@ -375,6 +391,7 @@ bool_expr: 				relation_and_expr {
 							$$.code += ". " + $$.id + "\n";
 							$$.code += $1.code + $3.code;
 							$$.code += $$.code = "|| " + $$.id + ", " + $1.id + ", " + $3.id + "\n";
+							$$.arrStatus = false;
 						}
 						;
 
@@ -386,6 +403,7 @@ relation_and_expr: 		relation_expr {
 							$$.code += ". " + $$.id + "\n";
 							$$.code += $1.code + $3.code;
 							$$.code += "&& " + $$.id + ", " + $1.id + ", " + $3.id + "\n";
+							$$.arrStatus = false;
 						}
 						;
 
@@ -451,11 +469,13 @@ expression: 			multiplicative_expr {
 							$$.id = newTemp();
 							$$.code += ". " + $$.id + "\n";
                                                         $$.code += "+ " + $$.id + ", " + $1.id + ", " + $3.id + "\n";
+							$$.arrStatus = false;
 						}
 						| expression SUB multiplicative_expr {
 							$$.id = newTemp();
 							$$.code += ". " + $$.id + "\n";
                                                         $$.code += "- " + $$.id + ", " + $1.id + ", " + $3.id + "\n";
+							$$.arrStatus = false;
 						}
 						;
 
@@ -466,16 +486,19 @@ multiplicative_expr:	term {
 							$$.id = newTemp();
 							$$.code += ". " + $$.id + "\n";
 							$$.code += "* " + $$.id + ", " + $1.id + ", " + $3.id + "\n";
+							$$.arrStatus = false;
 						}
 						| multiplicative_expr DIV term {
 							$$.id = newTemp();
 							$$.code += ". " + $$.id + "\n";
                                                         $$.code += "/ " + $$.id + ", " + $1.id + ", " + $3.id + "\n";		
+							$$.arrStatus = false;
 						}
 						| multiplicative_expr MOD term {
 							$$.id = newTemp();
                                                         $$.code += ". " + $$.id + "\n";
 							$$.code += "% " + $$.id + ", " + $1.id + ", " + $3.id + "\n";	
+							$$.arrStatus = false;
 						}
 						;
 
@@ -498,15 +521,22 @@ term: 					SUB var %prec UMINUS {
 							$$.code = "(" + $3.id + ")" + "\n" + $3.code;
 						}
 						| var {
-							$$.id = newTemp();
-							$$.code += ". " + $$.id + "\n";
-							$$.code += $1.val;
-							$$.arrStatus = $1.arrStatus;
+
+							if ($1.arrStatus) {
+								$$.code += $1.val;
+								$$.arrStatus = true;
+							} else {
+								$$.id = newTemp();
+								$$.code += ". " + $$.id + "\n";
+								$$.code += $1.val;
+								$$.arrStatus = false;
+							}
 						}
 						| NUMBER {
 							$$.id = newTemp();
 							$$.code += ". " + $$.id + "\n";
 							$$.code += $1;
+							$$.arrStatus = false;
 						}
 						| L_PAREN expression R_PAREN {
 							$$.id = newTemp();
@@ -539,7 +569,8 @@ var: 					ident {
 						$$.val = $1;
 						}
    						| ident L_SQUARE_BRACKET expression R_SQUARE_BRACKET {
-							$$.val += "{" + $1 + "," + $3.id; //comma separated
+							cout << "array recognized" << endl;
+							$$.val += $1 + "," + $3.id; //comma separated
 							$$.arrStatus = true;
 
 							//$$.code += ".[]
@@ -555,7 +586,8 @@ vars: 					var {
 						}
 						| var COMMA vars {
 							//$$.code = $3.code;
-                            				$$.val += $1.val + $3.val;
+                            				$$.arrStatus = false;
+							$$.val += $1.val + $3.val;
 						}
 						;
 			
