@@ -48,7 +48,7 @@ extern int currPos;
 
 
 // Unqualified %code blocks.
-#line 47 "mini_l.yy"
+#line 53 "mini_l.yy"
 
 #include "parser.tab.hh"
 struct tests
@@ -777,7 +777,7 @@ namespace yy {
           switch (yyn)
             {
   case 2:
-#line 163 "mini_l.yy"
+#line 169 "mini_l.yy"
                                         {
 							string temp = yystack_[0].value.as < string > ();
 							checkVariables("main", 3);
@@ -790,19 +790,19 @@ namespace yy {
     break;
 
   case 3:
-#line 173 "mini_l.yy"
+#line 179 "mini_l.yy"
                                                     {yylhs.value.as < string > () = "";}
 #line 796 "parser.tab.cc"
     break;
 
   case 4:
-#line 174 "mini_l.yy"
+#line 180 "mini_l.yy"
                                                                    {yylhs.value.as < string > () = yystack_[1].value.as < string > () + yystack_[0].value.as < string > () + "\n";}
 #line 802 "parser.tab.cc"
     break;
 
   case 5:
-#line 177 "mini_l.yy"
+#line 183 "mini_l.yy"
                                                                                                                                                                           {
 							variables.push_back(yystack_[10].value.as < string > ());
 							yylhs.value.as < string > () = "func " + yystack_[10].value.as < string > () + "\n";
@@ -818,7 +818,7 @@ namespace yy {
     break;
 
   case 6:
-#line 190 "mini_l.yy"
+#line 196 "mini_l.yy"
                                             {
 							yylhs.value.as < dec_type > ().code = "";
 							yylhs.value.as < dec_type > ().ids = vector<string>();
@@ -827,7 +827,7 @@ namespace yy {
     break;
 
   case 7:
-#line 194 "mini_l.yy"
+#line 200 "mini_l.yy"
                                                                                      {
 							yylhs.value.as < dec_type > ().code = yystack_[2].value.as < dec_type > ().code + "\n" + yystack_[0].value.as < dec_type > ().code;
 							yylhs.value.as < dec_type > ().ids = yystack_[2].value.as < dec_type > ().ids;
@@ -839,7 +839,7 @@ namespace yy {
     break;
 
   case 8:
-#line 203 "mini_l.yy"
+#line 209 "mini_l.yy"
                                                           {	
 							for(unsigned int i = 0; i < yystack_[2].value.as < vector<string> > ().size(); ++i){
 								yylhs.value.as < dec_type > ().code += ". " + yystack_[2].value.as < vector<string> > ().at(i);
@@ -847,6 +847,7 @@ namespace yy {
 									yylhs.value.as < dec_type > ().code += "\n";
 								}
 								yylhs.value.as < dec_type > ().ids.push_back(yystack_[2].value.as < vector<string> > ().at(i));
+								variables.push_back(yystack_[2].value.as < vector<string> > ().at(i));
 							}
 							/*$$.code += "\n";
 							for(unsigned int i = 0; i < $1.size(); ++i){
@@ -857,11 +858,11 @@ namespace yy {
                                 $$.ids.push_back($1.at(i));
                             }*/
 						}
-#line 861 "parser.tab.cc"
+#line 862 "parser.tab.cc"
     break;
 
   case 9:
-#line 220 "mini_l.yy"
+#line 227 "mini_l.yy"
                                                                                                                               {
 							for(unsigned int i = 0; i < yystack_[7].value.as < vector<string> > ().size(); ++i){	
 								if(yystack_[3].value.as < int > () <= 0) {
@@ -872,69 +873,71 @@ namespace yy {
                                     yylhs.value.as < dec_type > ().code += "\n";
                                 }
 								yylhs.value.as < dec_type > ().ids.push_back(yystack_[7].value.as < vector<string> > ().at(i));
+								variables.push_back(yystack_[7].value.as < vector<string> > ().at(i));
 							}	
 						}
-#line 878 "parser.tab.cc"
+#line 880 "parser.tab.cc"
     break;
 
   case 10:
-#line 232 "mini_l.yy"
+#line 240 "mini_l.yy"
                                                                                                                                                                        {
 							for(unsigned int i = 0; i < yystack_[10].value.as < vector<string> > ().size(); ++i){
 								if(yystack_[6].value.as < int > () <= 0 || yystack_[3].value.as < int > () <= 0) {
 									arraySizeZero();
 								}
 								yylhs.value.as < dec_type > ().code += ".[] " + yystack_[10].value.as < vector<string> > ().at(i) + ", " + to_string(yystack_[6].value.as < int > () * yystack_[3].value.as < int > ());
-								yylhs.value.as < dec_type > ().ids.push_back(yystack_[10].value.as < vector<string> > ().at(i));		
+								yylhs.value.as < dec_type > ().ids.push_back(yystack_[10].value.as < vector<string> > ().at(i));	
+								variables.push_back(yystack_[10].value.as < vector<string> > ().at(i));	
 							}
 						}
-#line 892 "parser.tab.cc"
+#line 895 "parser.tab.cc"
     break;
 
   case 11:
-#line 243 "mini_l.yy"
+#line 252 "mini_l.yy"
                                       {
 							checkVariables(yystack_[0].value.as < string > (), 1);
 							yylhs.value.as < vector<string> > ().push_back(yystack_[0].value.as < string > ());
 						}
-#line 901 "parser.tab.cc"
+#line 904 "parser.tab.cc"
     break;
 
   case 12:
-#line 247 "mini_l.yy"
+#line 256 "mini_l.yy"
                                                                           {
 							yylhs.value.as < vector<string> > () = yystack_[0].value.as < vector<string> > ();
 							yylhs.value.as < vector<string> > ().push_back(yystack_[2].value.as < string > ());
 							std::rotate(yylhs.value.as < vector<string> > ().rbegin(), yylhs.value.as < vector<string> > ().rbegin() + 1, yylhs.value.as < vector<string> > ().rend());
 							//$$.push_front($1);
 						}
-#line 912 "parser.tab.cc"
+#line 915 "parser.tab.cc"
     break;
 
   case 13:
-#line 255 "mini_l.yy"
+#line 264 "mini_l.yy"
                                               {yylhs.value.as < string > () = yystack_[0].value.as < string > ();}
-#line 918 "parser.tab.cc"
+#line 921 "parser.tab.cc"
     break;
 
   case 14:
-#line 258 "mini_l.yy"
+#line 267 "mini_l.yy"
                                               {
 			 				yylhs.value.as < string > () = "";
 						}
-#line 926 "parser.tab.cc"
+#line 929 "parser.tab.cc"
     break;
 
   case 15:
-#line 261 "mini_l.yy"
+#line 270 "mini_l.yy"
                                                                                  {
 							yylhs.value.as < string > () = yystack_[2].value.as < string > () + "\n" + yystack_[0].value.as < string > ();
 						}
-#line 934 "parser.tab.cc"
+#line 937 "parser.tab.cc"
     break;
 
   case 16:
-#line 266 "mini_l.yy"
+#line 275 "mini_l.yy"
                                                               {
 							//$$ += $3.code;
 							if (yystack_[2].value.as < var_type > ().arrStatus) {
@@ -950,11 +953,11 @@ namespace yy {
 								yylhs.value.as < string > () += "= " + yystack_[2].value.as < var_type > ().val + ", " + yystack_[0].value.as < exp_type > ().code;
 							}
 						}
-#line 954 "parser.tab.cc"
+#line 957 "parser.tab.cc"
     break;
 
   case 17:
-#line 281 "mini_l.yy"
+#line 290 "mini_l.yy"
                                                                                      {
 							std::string lab1 = newLabel();
 							std::string lab2 = newLabel();
@@ -965,11 +968,11 @@ namespace yy {
                                                         yylhs.value.as < string > () += yystack_[1].value.as < string > ();
                                                         yylhs.value.as < string > () += ":" + lab2 + "\n";	
 						}
-#line 969 "parser.tab.cc"
+#line 972 "parser.tab.cc"
     break;
 
   case 18:
-#line 291 "mini_l.yy"
+#line 300 "mini_l.yy"
                                                                                                      {
 							std::string lab1 = newLabel();
                                                         std::string lab2 = newLabel();
@@ -981,11 +984,11 @@ namespace yy {
 							yylhs.value.as < string > () += yystack_[3].value.as < string > ();
 							yylhs.value.as < string > () += ":" + lab2 + "\n";
 						}
-#line 985 "parser.tab.cc"
+#line 988 "parser.tab.cc"
     break;
 
   case 19:
-#line 302 "mini_l.yy"
+#line 311 "mini_l.yy"
                                                                                                {
                                                         std::string lab1 = newLabel();
                                                         std::string lab2 = newLabel();
@@ -1011,11 +1014,11 @@ namespace yy {
 							yylhs.value.as < string > () += ":= " + lab3 + "\n";
 							yylhs.value.as < string > () += ": " + lab2 + "\n";	
 						}
-#line 1015 "parser.tab.cc"
+#line 1018 "parser.tab.cc"
     break;
 
   case 20:
-#line 327 "mini_l.yy"
+#line 336 "mini_l.yy"
                                                                                                   {
 							std::string lab1 = newLabel();
                                                         std::string lab2 = newLabel();
@@ -1036,11 +1039,11 @@ namespace yy {
                                                         yylhs.value.as < string > () += ":= " + lab1 + "\n";
                                                         yylhs.value.as < string > () += ": " + lab1 + "\n";
 						}
-#line 1040 "parser.tab.cc"
+#line 1043 "parser.tab.cc"
     break;
 
   case 21:
-#line 347 "mini_l.yy"
+#line 356 "mini_l.yy"
                                                                                                                                                          {
 							std::string lab1 = newLabel();
                                                         std::string lab2 = newLabel();
@@ -1082,11 +1085,11 @@ namespace yy {
 							yylhs.value.as < string > () += ": " + lab3 + "\n"; 
 							
 						}
-#line 1086 "parser.tab.cc"
+#line 1089 "parser.tab.cc"
     break;
 
   case 22:
-#line 388 "mini_l.yy"
+#line 397 "mini_l.yy"
                                                             {
 							/*for(list<string>::iterator it = $2.begin(); it != $2.end(); it++) {
 								$$ += ".< " + *it;
@@ -1097,11 +1100,11 @@ namespace yy {
 								yylhs.value.as < string > () += ".< " + yystack_[0].value.as < var_type > ().val;
 							}
 						}
-#line 1101 "parser.tab.cc"
+#line 1104 "parser.tab.cc"
     break;
 
   case 23:
-#line 398 "mini_l.yy"
+#line 407 "mini_l.yy"
                                                              {
 							if (yystack_[0].value.as < var_type > ().arrStatus) {
                                                                 yylhs.value.as < string > () += ".[]> " + yystack_[0].value.as < var_type > ().val;
@@ -1109,35 +1112,35 @@ namespace yy {
                                                                 yylhs.value.as < string > () += ".> " + yystack_[0].value.as < var_type > ().val;
                                                         }
 						}
-#line 1113 "parser.tab.cc"
+#line 1116 "parser.tab.cc"
     break;
 
   case 24:
-#line 405 "mini_l.yy"
+#line 414 "mini_l.yy"
                                                            {
 							yylhs.value.as < string > () += "continue";
 						}
-#line 1121 "parser.tab.cc"
+#line 1124 "parser.tab.cc"
     break;
 
   case 25:
-#line 408 "mini_l.yy"
+#line 417 "mini_l.yy"
                                                                     {
 							yylhs.value.as < string > () += yystack_[0].value.as < exp_type > ().id;
 						}
-#line 1129 "parser.tab.cc"
+#line 1132 "parser.tab.cc"
     break;
 
   case 26:
-#line 413 "mini_l.yy"
+#line 422 "mini_l.yy"
                                                           {
 						yylhs.value.as < exp_type > () = yystack_[0].value.as < exp_type > ();
 						}
-#line 1137 "parser.tab.cc"
+#line 1140 "parser.tab.cc"
     break;
 
   case 27:
-#line 416 "mini_l.yy"
+#line 425 "mini_l.yy"
                                                                                  {
 							yylhs.value.as < exp_type > ().id = newCond();
 							yylhs.value.as < exp_type > ().code += ". " + yylhs.value.as < exp_type > ().id + "\n";
@@ -1145,19 +1148,19 @@ namespace yy {
 							yylhs.value.as < exp_type > ().code += yylhs.value.as < exp_type > ().code = "|| " + yylhs.value.as < exp_type > ().id + ", " + yystack_[2].value.as < exp_type > ().id + ", " + yystack_[0].value.as < exp_type > ().id + "\n";
 							yylhs.value.as < exp_type > ().arrStatus = false;
 						}
-#line 1149 "parser.tab.cc"
+#line 1152 "parser.tab.cc"
     break;
 
   case 28:
-#line 425 "mini_l.yy"
+#line 434 "mini_l.yy"
                                               {
 							yylhs.value.as < exp_type > () = yystack_[0].value.as < exp_type > ();
 						}
-#line 1157 "parser.tab.cc"
+#line 1160 "parser.tab.cc"
     break;
 
   case 29:
-#line 428 "mini_l.yy"
+#line 437 "mini_l.yy"
                                                                                       {
 							yylhs.value.as < exp_type > ().id = newCond();
 							yylhs.value.as < exp_type > ().code += ". " + yylhs.value.as < exp_type > ().id + "\n";
@@ -1165,132 +1168,132 @@ namespace yy {
 							yylhs.value.as < exp_type > ().code += "&& " + yylhs.value.as < exp_type > ().id + ", " + yystack_[2].value.as < exp_type > ().id + ", " + yystack_[0].value.as < exp_type > ().id + "\n";
 							yylhs.value.as < exp_type > ().arrStatus = false;
 						}
-#line 1169 "parser.tab.cc"
+#line 1172 "parser.tab.cc"
     break;
 
   case 30:
-#line 437 "mini_l.yy"
+#line 446 "mini_l.yy"
                                                                {
 							yylhs.value.as < exp_type > ().id = newCond();
 							yylhs.value.as < exp_type > ().code += ". " + yylhs.value.as < exp_type > ().id + "\n";
 							yylhs.value.as < exp_type > ().code += yystack_[1].value.as < string > () + " " + yylhs.value.as < exp_type > ().id + ", " + yystack_[2].value.as < exp_type > ().id + ", " + yystack_[0].value.as < exp_type > ().id + "\n";
 						}
-#line 1179 "parser.tab.cc"
+#line 1182 "parser.tab.cc"
     break;
 
   case 31:
-#line 442 "mini_l.yy"
+#line 451 "mini_l.yy"
                                                            {
 							yylhs.value.as < exp_type > ().id = newCond();
 							yylhs.value.as < exp_type > ().code += "";
 						}
-#line 1188 "parser.tab.cc"
+#line 1191 "parser.tab.cc"
     break;
 
   case 32:
-#line 446 "mini_l.yy"
+#line 455 "mini_l.yy"
                                                             {
 							yylhs.value.as < exp_type > ().id = newCond();
                                                         yylhs.value.as < exp_type > ().code += "";
 						}
-#line 1197 "parser.tab.cc"
+#line 1200 "parser.tab.cc"
     break;
 
   case 33:
-#line 450 "mini_l.yy"
+#line 459 "mini_l.yy"
                                                                                 {
 							yylhs.value.as < exp_type > () = yystack_[1].value.as < exp_type > ();	
 						}
-#line 1205 "parser.tab.cc"
+#line 1208 "parser.tab.cc"
     break;
 
   case 34:
-#line 453 "mini_l.yy"
+#line 462 "mini_l.yy"
                                                                              {
 							yylhs.value.as < exp_type > ().id = newCond();
 							yylhs.value.as < exp_type > ().code += ". " + yylhs.value.as < exp_type > ().id + "\n";
 							yylhs.value.as < exp_type > ().code += yystack_[1].value.as < string > () + " " + yylhs.value.as < exp_type > ().id + ", " + yystack_[2].value.as < exp_type > ().id + ", " + yystack_[0].value.as < exp_type > ().id + "\n";
 						}
-#line 1215 "parser.tab.cc"
+#line 1218 "parser.tab.cc"
     break;
 
   case 35:
-#line 458 "mini_l.yy"
+#line 467 "mini_l.yy"
                                                        {
 							yylhs.value.as < exp_type > ().id = newCond();
                                                         yylhs.value.as < exp_type > ().code += "";
 						}
-#line 1224 "parser.tab.cc"
+#line 1227 "parser.tab.cc"
     break;
 
   case 36:
-#line 462 "mini_l.yy"
+#line 471 "mini_l.yy"
                                                         {
 							yylhs.value.as < exp_type > ().id = newCond();
                                                         yylhs.value.as < exp_type > ().code += "";
 						}
-#line 1233 "parser.tab.cc"
+#line 1236 "parser.tab.cc"
     break;
 
   case 37:
-#line 466 "mini_l.yy"
+#line 475 "mini_l.yy"
                                                                             {
 							yylhs.value.as < exp_type > () = yystack_[1].value.as < exp_type > ();
 						
 						}
-#line 1242 "parser.tab.cc"
+#line 1245 "parser.tab.cc"
     break;
 
   case 38:
-#line 472 "mini_l.yy"
+#line 481 "mini_l.yy"
                                            {
 							yylhs.value.as < string > () = "==";
 						}
-#line 1250 "parser.tab.cc"
+#line 1253 "parser.tab.cc"
     break;
 
   case 39:
-#line 475 "mini_l.yy"
+#line 484 "mini_l.yy"
                                                       {
 							yylhs.value.as < string > () = "!=";
 						}
-#line 1258 "parser.tab.cc"
+#line 1261 "parser.tab.cc"
     break;
 
   case 40:
-#line 478 "mini_l.yy"
+#line 487 "mini_l.yy"
                                                      {
 							yylhs.value.as < string > () = "<";
 						}
-#line 1266 "parser.tab.cc"
+#line 1269 "parser.tab.cc"
     break;
 
   case 41:
-#line 481 "mini_l.yy"
+#line 490 "mini_l.yy"
                                                      {
 							yylhs.value.as < string > () = ">";
 						}
-#line 1274 "parser.tab.cc"
+#line 1277 "parser.tab.cc"
     break;
 
   case 42:
-#line 484 "mini_l.yy"
+#line 493 "mini_l.yy"
                                                       {
 							yylhs.value.as < string > () = "<=";	
 						}
-#line 1282 "parser.tab.cc"
+#line 1285 "parser.tab.cc"
     break;
 
   case 43:
-#line 487 "mini_l.yy"
+#line 496 "mini_l.yy"
                                                       {
 							yylhs.value.as < string > () = ">=";
 						}
-#line 1290 "parser.tab.cc"
+#line 1293 "parser.tab.cc"
     break;
 
   case 44:
-#line 492 "mini_l.yy"
+#line 501 "mini_l.yy"
                                                     {
 							//$$.push_back($1);
 							//$$ = $1;
@@ -1298,87 +1301,87 @@ namespace yy {
 			                                yylhs.value.as < exp_type > ().code = yystack_[0].value.as < exp_type > ().code;
                         			        yylhs.value.as < exp_type > ().arrStatus = yystack_[0].value.as < exp_type > ().arrStatus;	
 						}
-#line 1302 "parser.tab.cc"
+#line 1305 "parser.tab.cc"
     break;
 
   case 45:
-#line 499 "mini_l.yy"
+#line 508 "mini_l.yy"
                                                                                      {
 							yylhs.value.as < exp_type > ().id = newTemp();
 							yylhs.value.as < exp_type > ().code += ". " + yylhs.value.as < exp_type > ().id + "\n";
                                                         yylhs.value.as < exp_type > ().code += "+ " + yylhs.value.as < exp_type > ().id + ", " + yystack_[2].value.as < exp_type > ().id + ", " + yystack_[0].value.as < exp_type > ().id + "\n";
 							yylhs.value.as < exp_type > ().arrStatus = false;
 						}
-#line 1313 "parser.tab.cc"
+#line 1316 "parser.tab.cc"
     break;
 
   case 46:
-#line 505 "mini_l.yy"
+#line 514 "mini_l.yy"
                                                                                      {
 							yylhs.value.as < exp_type > ().id = newTemp();
 							yylhs.value.as < exp_type > ().code += ". " + yylhs.value.as < exp_type > ().id + "\n";
                                                         yylhs.value.as < exp_type > ().code += "- " + yylhs.value.as < exp_type > ().id + ", " + yystack_[2].value.as < exp_type > ().id + ", " + yystack_[0].value.as < exp_type > ().id + "\n";
 							yylhs.value.as < exp_type > ().arrStatus = false;
 						}
-#line 1324 "parser.tab.cc"
+#line 1327 "parser.tab.cc"
     break;
 
   case 47:
-#line 513 "mini_l.yy"
+#line 522 "mini_l.yy"
                              {
 							yylhs.value.as < exp_type > ().id = yystack_[0].value.as < exp_type > ().id;
 							yylhs.value.as < exp_type > ().code = yystack_[0].value.as < exp_type > ().code;
 							yylhs.value.as < exp_type > ().arrStatus = yystack_[0].value.as < exp_type > ().arrStatus;
 						}
-#line 1334 "parser.tab.cc"
+#line 1337 "parser.tab.cc"
     break;
 
   case 48:
-#line 518 "mini_l.yy"
+#line 527 "mini_l.yy"
                                                                                 {
 							yylhs.value.as < exp_type > ().id = newTemp();
 							yylhs.value.as < exp_type > ().code += ". " + yylhs.value.as < exp_type > ().id + "\n";
 							yylhs.value.as < exp_type > ().code += "* " + yylhs.value.as < exp_type > ().id + ", " + yystack_[2].value.as < exp_type > ().id + ", " + yystack_[0].value.as < exp_type > ().id + "\n";
 							yylhs.value.as < exp_type > ().arrStatus = false;
 						}
-#line 1345 "parser.tab.cc"
+#line 1348 "parser.tab.cc"
     break;
 
   case 49:
-#line 524 "mini_l.yy"
+#line 533 "mini_l.yy"
                                                                                {
 							yylhs.value.as < exp_type > ().id = newTemp();
 							yylhs.value.as < exp_type > ().code += ". " + yylhs.value.as < exp_type > ().id + "\n";
                                                         yylhs.value.as < exp_type > ().code += "/ " + yylhs.value.as < exp_type > ().id + ", " + yystack_[2].value.as < exp_type > ().id + ", " + yystack_[0].value.as < exp_type > ().id + "\n";		
 							yylhs.value.as < exp_type > ().arrStatus = false;
 						}
-#line 1356 "parser.tab.cc"
+#line 1359 "parser.tab.cc"
     break;
 
   case 50:
-#line 530 "mini_l.yy"
+#line 539 "mini_l.yy"
                                                                                {
 							yylhs.value.as < exp_type > ().id = newTemp();
                                                         yylhs.value.as < exp_type > ().code += ". " + yylhs.value.as < exp_type > ().id + "\n";
 							yylhs.value.as < exp_type > ().code += "% " + yylhs.value.as < exp_type > ().id + ", " + yystack_[2].value.as < exp_type > ().id + ", " + yystack_[0].value.as < exp_type > ().id + "\n";	
 							yylhs.value.as < exp_type > ().arrStatus = false;
 						}
-#line 1367 "parser.tab.cc"
+#line 1370 "parser.tab.cc"
     break;
 
   case 51:
-#line 538 "mini_l.yy"
+#line 547 "mini_l.yy"
                                                              {
 							yylhs.value.as < exp_type > ().id = newTemp();
 							yylhs.value.as < exp_type > ().code += ". " + yylhs.value.as < exp_type > ().id + "\n";
 							//$$.code = "-1* " + $2 + "\n";
 							
 						}
-#line 1378 "parser.tab.cc"
+#line 1381 "parser.tab.cc"
     break;
 
   case 52:
-#line 544 "mini_l.yy"
+#line 553 "mini_l.yy"
                                                                           {
 							yylhs.value.as < exp_type > ().id = newTemp();
 							yylhs.value.as < exp_type > ().code += ". " + yylhs.value.as < exp_type > ().id + "\n";
@@ -1387,21 +1390,21 @@ namespace yy {
 							yylhs.value.as < exp_type > ().code += "\n";
 						
 						}
-#line 1391 "parser.tab.cc"
+#line 1394 "parser.tab.cc"
     break;
 
   case 53:
-#line 552 "mini_l.yy"
+#line 561 "mini_l.yy"
                                                                                  {
 							/*$$.id = newTemp();
 							$$.code += ". " + $$.id + "\n";
 							$$.code = "(" + $3.id + ")" + "\n" + $3.code;*/
 						}
-#line 1401 "parser.tab.cc"
+#line 1404 "parser.tab.cc"
     break;
 
   case 54:
-#line 557 "mini_l.yy"
+#line 566 "mini_l.yy"
                                                       {
 
 							if (yystack_[0].value.as < var_type > ().arrStatus) {
@@ -1414,11 +1417,11 @@ namespace yy {
 							yylhs.value.as < exp_type > ().arrStatus = false;
 							}
 						}
-#line 1418 "parser.tab.cc"
+#line 1421 "parser.tab.cc"
     break;
 
   case 55:
-#line 569 "mini_l.yy"
+#line 578 "mini_l.yy"
                                                          {
 							int num = int(yystack_[0].value.as < int > ());
 							yylhs.value.as < exp_type > ().id = newTemp();
@@ -1427,63 +1430,63 @@ namespace yy {
 							yylhs.value.as < exp_type > ().code += to_string(num);
 							yylhs.value.as < exp_type > ().arrStatus = false;
 						}
-#line 1431 "parser.tab.cc"
+#line 1434 "parser.tab.cc"
     break;
 
   case 56:
-#line 577 "mini_l.yy"
+#line 586 "mini_l.yy"
                                                                              {
 							yylhs.value.as < exp_type > ().id = newTemp();
 							yylhs.value.as < exp_type > ().code += ". " + yylhs.value.as < exp_type > ().id + "\n";
 							yylhs.value.as < exp_type > ().code += yystack_[1].value.as < exp_type > ().code;
 						}
-#line 1441 "parser.tab.cc"
+#line 1444 "parser.tab.cc"
     break;
 
   case 57:
-#line 582 "mini_l.yy"
+#line 591 "mini_l.yy"
                                                                                     {
 							yylhs.value.as < exp_type > ().id = newTemp();
 							yylhs.value.as < exp_type > ().code += ". " + yylhs.value.as < exp_type > ().id + "\n";
 							yylhs.value.as < exp_type > ().code = yystack_[3].value.as < string > () + yystack_[1].value.as < exp_type > ().id + yystack_[1].value.as < exp_type > ().code;
 						}
-#line 1451 "parser.tab.cc"
+#line 1454 "parser.tab.cc"
     break;
 
   case 58:
-#line 589 "mini_l.yy"
+#line 598 "mini_l.yy"
                                            {
 							yylhs.value.as < exp_type > ().id = newTemp();
 							yylhs.value.as < exp_type > ().code += ". " + yylhs.value.as < exp_type > ().id + "\n";
 							yylhs.value.as < exp_type > ().code += yystack_[0].value.as < exp_type > ().code;
 							yylhs.value.as < exp_type > ().code += "param " + yylhs.value.as < exp_type > ().id + "\n";
 						}
-#line 1462 "parser.tab.cc"
+#line 1465 "parser.tab.cc"
     break;
 
   case 59:
-#line 595 "mini_l.yy"
+#line 604 "mini_l.yy"
                                                                                {
 							yylhs.value.as < exp_type > ().id = newTemp();
 							yylhs.value.as < exp_type > ().code += ". " + yylhs.value.as < exp_type > ().id + "\n";
 							yylhs.value.as < exp_type > ().code += yystack_[2].value.as < exp_type > ().code + "\n" + yystack_[0].value.as < exp_type > ().code;
 							yylhs.value.as < exp_type > ().code += "param " + yylhs.value.as < exp_type > ().id + "\n";	
 						}
-#line 1473 "parser.tab.cc"
+#line 1476 "parser.tab.cc"
     break;
 
   case 60:
-#line 603 "mini_l.yy"
+#line 612 "mini_l.yy"
                                               {
 							checkVariables(yystack_[0].value.as < string > (), 0);
 							yylhs.value.as < var_type > ().arrStatus = false;
 							yylhs.value.as < var_type > ().val = yystack_[0].value.as < string > ();
 						}
-#line 1483 "parser.tab.cc"
+#line 1486 "parser.tab.cc"
     break;
 
   case 61:
-#line 608 "mini_l.yy"
+#line 617 "mini_l.yy"
                                                                                                      {
 							cout << "array recognized" << endl;
 							yylhs.value.as < var_type > ().val += yystack_[3].value.as < string > () + "," + yystack_[1].value.as < exp_type > ().id; //comma separated
@@ -1494,31 +1497,31 @@ namespace yy {
 							//$$.code += ". " + $$.id + "\n";
 							//$$ += $1 + "[" + $3.id + "]\n";	
 						}
-#line 1498 "parser.tab.cc"
+#line 1501 "parser.tab.cc"
     break;
 
   case 62:
-#line 620 "mini_l.yy"
+#line 629 "mini_l.yy"
                                             {
 							//$$.push_back($1);
 							//$$ = $1;
 							yylhs.value.as < var_type > ().arrStatus = false;
 							yylhs.value.as < var_type > ().val = yystack_[0].value.as < var_type > ().val;
 						}
-#line 1509 "parser.tab.cc"
+#line 1512 "parser.tab.cc"
     break;
 
   case 63:
-#line 626 "mini_l.yy"
+#line 635 "mini_l.yy"
                                                                  {
                             				yylhs.value.as < var_type > ().arrStatus = false;
 							yylhs.value.as < var_type > ().val += yystack_[2].value.as < var_type > ().val + yystack_[0].value.as < var_type > ().val;
 						}
-#line 1518 "parser.tab.cc"
+#line 1521 "parser.tab.cc"
     break;
 
 
-#line 1522 "parser.tab.cc"
+#line 1525 "parser.tab.cc"
 
             default:
               break;
@@ -1962,13 +1965,13 @@ namespace yy {
   const short
   parser::yyrline_[] =
   {
-       0,   163,   163,   173,   174,   177,   190,   194,   203,   220,
-     232,   243,   247,   255,   258,   261,   266,   281,   291,   302,
-     327,   347,   388,   398,   405,   408,   413,   416,   425,   428,
-     437,   442,   446,   450,   453,   458,   462,   466,   472,   475,
-     478,   481,   484,   487,   492,   499,   505,   513,   518,   524,
-     530,   538,   544,   552,   557,   569,   577,   582,   589,   595,
-     603,   608,   620,   626
+       0,   169,   169,   179,   180,   183,   196,   200,   209,   227,
+     240,   252,   256,   264,   267,   270,   275,   290,   300,   311,
+     336,   356,   397,   407,   414,   417,   422,   425,   434,   437,
+     446,   451,   455,   459,   462,   467,   471,   475,   481,   484,
+     487,   490,   493,   496,   501,   508,   514,   522,   527,   533,
+     539,   547,   553,   561,   566,   578,   586,   591,   598,   604,
+     612,   617,   629,   635
   };
 
   // Print the state stack on the debug stream.
@@ -2002,9 +2005,9 @@ namespace yy {
 
 
 } // yy
-#line 2006 "parser.tab.cc"
+#line 2009 "parser.tab.cc"
 
-#line 632 "mini_l.yy"
+#line 641 "mini_l.yy"
 
 
 string newTemp() {

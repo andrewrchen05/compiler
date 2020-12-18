@@ -213,6 +213,7 @@ declaration:			identifiers COLON INTEGER {
 									$$.code += "\n";
 								}
 								$$.ids.push_back($1.at(i));
+								variables.push_back($1.at(i));
 							}
 							/*$$.code += "\n";
 							for(unsigned int i = 0; i < $1.size(); ++i){
@@ -233,6 +234,7 @@ declaration:			identifiers COLON INTEGER {
                                     $$.code += "\n";
                                 }
 								$$.ids.push_back($1.at(i));
+								variables.push_back($1.at(i));
 							}	
 						}
 						| identifiers COLON ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER {
@@ -241,7 +243,8 @@ declaration:			identifiers COLON INTEGER {
 									arraySizeZero();
 								}
 								$$.code += ".[] " + $1.at(i) + ", " + to_string($5 * $8);
-								$$.ids.push_back($1.at(i));		
+								$$.ids.push_back($1.at(i));	
+								variables.push_back($1.at(i));	
 							}
 						}
 						;
