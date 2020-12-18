@@ -1,6 +1,5 @@
 function sum;
 beginparams
-    d,e : integer;
 endparams
 beginlocals
     a,b,c,d : integer;
@@ -16,7 +15,7 @@ beginbody
 
     for a := 1; a < d; a := a + 1
         beginloop
-                t[a] := d + 1;
+                t[a] := 5;
 		write t[a];
 		read t[a];
 		b := t[a];

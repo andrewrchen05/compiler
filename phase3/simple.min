@@ -9,7 +9,5 @@ beginbody
     b := 4;
     a := 4;
     d := 5;
-
     write a;
-
 endbody
