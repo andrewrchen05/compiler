@@ -693,6 +693,7 @@ void checkVariables(string checkVar, int bitCheck) {
 		cout << "Error line " << currLine << ": symbol \"" << checkVar << "\" is multiply-defined.\n";
 	}
 	else if(bitCheck == 3) { //no main function
+		errorCheck = true;
 		cout << "Error: main function undefined.\n";
 	}
 
