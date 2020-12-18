@@ -32,7 +32,7 @@
 
 
 /**
- ** \file parser.tab.hh
+ ** \file y.tab.hh
  ** Define the yy::parser class.
  */
 
@@ -41,8 +41,8 @@
 // Undocumented macros, especially those whose name start with YY_,
 // are private implementation details.  Do not rely on them.
 
-#ifndef YY_YY_PARSER_TAB_HH_INCLUDED
-# define YY_YY_PARSER_TAB_HH_INCLUDED
+#ifndef YY_YY_Y_TAB_HH_INCLUDED
+# define YY_YY_Y_TAB_HH_INCLUDED
 // "%code requires" blocks.
 #line 15 "mini_l.yy"
 
@@ -76,7 +76,7 @@ static bool errorCheck = false;
 static vector<string> reservedWords = {"FUNCTION", "BEGIN_PARAMS", "END_PARAMS", "BEGIN_LOCALS", "END_LOCALS", "BEGIN_BODY", "END_BODY", "INTEGER", "ARRAY", "OF", "IF", "THEN", "ENDIF", "ELSE", "WHILE", "DO", "FOR", "BEGINLOOP", "ENDLOOP", "CONTINUE", "READ", "WRITE", "TRUE", "FALSE", "RETURN", "SEMICOLON", "COLON", "COMMA", "L_PAREN", "R_PAREN", "L_SQUARE_BRACKET", "R_SQUARE_BRACKET", "ASSIGN", "IDENT", "NUMBER", "ERROR", "IDENT", "NUMBER", "ASSIGN", "OR", "AND", "NOT", "LT", "LTE", "GT", "GTE", "EQ", "NEQ", "ADD", "SUB", "MULT", "DIV", "MOD", "UMINUS", "L_SQUARE_BRACKET", "R_SQUARE_BRACKET", "L_PAREN", "R_PAREN", "function", "begin_params", "end_params", "begin_locals", "end_locals", "begin_body", "end_body", "integer", "array", "of", "if", "then", "endif", "else", "while", "do", "for", "beginloop", "endloop", "continue", "read", "write", "true", "false", "return", "semicolon", "colon", "comma", "l_paren", "r_paren", "l_square_bracket", "r_square_bracket", "assign", "ident", "number", "error", "ident", "number", "assign", "or", "and", "not", "lt", "lte", "gt", "gte", "eq", "neq", "add", "sub", "mult", "div", "mod", "uminus", "l_square_bracket", "r_square_bracket", "l_paren", "r_paren"};
 
 
-#line 80 "parser.tab.hh"
+#line 80 "y.tab.hh"
 
 
 # include <cstdlib> // std::abort
@@ -210,7 +210,7 @@ static vector<string> reservedWords = {"FUNCTION", "BEGIN_PARAMS", "END_PARAMS",
 #endif
 
 namespace yy {
-#line 214 "parser.tab.hh"
+#line 214 "y.tab.hh"
 
 
 
@@ -2222,10 +2222,10 @@ switch (yytype)
   }
 
 } // yy
-#line 2226 "parser.tab.hh"
+#line 2226 "y.tab.hh"
 
 
 
 
 
-#endif // !YY_YY_PARSER_TAB_HH_INCLUDED
+#endif // !YY_YY_Y_TAB_HH_INCLUDED

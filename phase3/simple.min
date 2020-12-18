@@ -1,0 +1,11 @@
+function main;
+beginparams
+endparams
+beginlocals
+    b : integer;
+endlocals
+beginbody
+    read b;
+    write b;
+endbody
+

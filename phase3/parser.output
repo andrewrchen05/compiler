@@ -165,7 +165,7 @@ Nonterminals, with rules where they appear
     declaration <dec_type> (59)
         on left: 7 8 9
         on right: 6
-    identifiers <list<string>> (60)
+    identifiers <vector<string>> (60)
         on left: 10 11
         on right: 7 8 9 11
     ident <string> (61)
@@ -201,10 +201,10 @@ Nonterminals, with rules where they appear
     expressions <exp_type> (71)
         on left: 57 58
         on right: 56 58
-    var <string> (72)
+    var <var_type> (72)
         on left: 59 60
         on right: 15 20 50 53 61 62
-    vars <list<string>> (73)
+    vars <var_type> (73)
         on left: 61 62
         on right: 21 22 62
 

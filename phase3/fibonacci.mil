@@ -1,7 +1,12 @@
+<<<<<<< HEAD
 
 func fibonacci
 . k
 
+=======
+func fibonacci
+. k
+>>>>>>> origin/main
 = k, $0
 . P1
 <= P1,  ___temp___1,  ___temp___2
@@ -12,6 +17,7 @@ func fibonacci
  ___temp___3
 :L2
 
+<<<<<<< HEAD
  ___temp___14
 endfunc
 func main
@@ -26,3 +32,15 @@ nparam  ___temp___16
 =  ___temp___17, fib_n
 >. fib_n
 endfunc
+=======
+ ___temp___10
+endfunc
+func main
+. n
+. fib_n
+.< n
+= fib_n, 
+.> fib_n
+endfunc
+
+>>>>>>> origin/main
