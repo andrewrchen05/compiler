@@ -1,0 +1,16 @@
+function main;
+beginparams
+endparams
+
+beginlocals
+
+n : integer;
+i: integer;
+
+endlocals
+
+beginbody
+while i <= n beginloop
+       i := i + 1;
+   endloop;
+endbody

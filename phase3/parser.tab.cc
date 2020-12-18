@@ -1959,6 +1959,7 @@ void checkVariables(string checkVar, int bitCheck) {
 			break;
 		}
 	}
+	
 	if(check) { // reserved word is used as variable
 		errorCheck = true;
 		cout << "Error line " << currLine << ": variable name \"" << checkVar << "\" cannot be same as reserved keywords.\n";

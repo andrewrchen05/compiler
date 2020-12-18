@@ -1,0 +1,13 @@
+
+func main
+. n
+
+. fib_n
+
+.< n
+fibonacci ___temp___2.  ___temp___2
+.  ___temp___1
+nparam  ___temp___2
+=  ___temp___3, fib_n
+>. fib_n
+endfunc
