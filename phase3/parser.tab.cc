@@ -48,7 +48,7 @@ extern int currPos;
 
 
 // Unqualified %code blocks.
-#line 44 "mini_l.yy"
+#line 46 "mini_l.yy"
 
 #include "parser.tab.hh"
 struct tests
@@ -762,7 +762,7 @@ namespace yy {
           switch (yyn)
             {
   case 2:
-#line 159 "mini_l.yy"
+#line 161 "mini_l.yy"
                                         {
 							string temp = yystack_[0].value.as < string > ();
 							checkVariables("main", 3);
@@ -775,19 +775,19 @@ namespace yy {
     break;
 
   case 3:
-#line 169 "mini_l.yy"
+#line 171 "mini_l.yy"
                                                     {yylhs.value.as < string > () = "";}
 #line 781 "parser.tab.cc"
     break;
 
   case 4:
-#line 170 "mini_l.yy"
+#line 172 "mini_l.yy"
                                                                    {yylhs.value.as < string > () = yystack_[1].value.as < string > () + "\n" + yystack_[0].value.as < string > ();}
 #line 787 "parser.tab.cc"
     break;
 
   case 5:
-#line 173 "mini_l.yy"
+#line 175 "mini_l.yy"
                                                                                                                                                                           {
 							variables.push_back(yystack_[10].value.as < string > ());
 							yylhs.value.as < string > () = "func " + yystack_[10].value.as < string > () + "\n";
@@ -805,7 +805,7 @@ namespace yy {
     break;
 
   case 6:
-#line 188 "mini_l.yy"
+#line 190 "mini_l.yy"
                                             {
 							yylhs.value.as < dec_type > ().code = "";
 							yylhs.value.as < dec_type > ().ids = list<string>();
@@ -814,7 +814,7 @@ namespace yy {
     break;
 
   case 7:
-#line 192 "mini_l.yy"
+#line 194 "mini_l.yy"
                                                                                      {
 							yylhs.value.as < dec_type > ().code = yystack_[2].value.as < dec_type > ().code + "\n" + yystack_[0].value.as < dec_type > ().code;
 							yylhs.value.as < dec_type > ().ids = yystack_[2].value.as < dec_type > ().ids;
@@ -826,7 +826,7 @@ namespace yy {
     break;
 
   case 8:
-#line 201 "mini_l.yy"
+#line 203 "mini_l.yy"
                                                           {
 							for(list<string>::iterator it = yystack_[2].value.as < list<string> > ().begin(); it != yystack_[2].value.as < list<string> > ().end(); it++){
 								yylhs.value.as < dec_type > ().code += ". " + *it + "\n";
@@ -838,7 +838,7 @@ namespace yy {
     break;
 
   case 9:
-#line 208 "mini_l.yy"
+#line 210 "mini_l.yy"
                                                                                                                               {
 							for(list<string>::iterator it = yystack_[7].value.as < list<string> > ().begin(); it != yystack_[7].value.as < list<string> > ().end(); it++) {
 								if(yystack_[3].value.as < int > () <= 0) {
@@ -854,7 +854,7 @@ namespace yy {
     break;
 
   case 10:
-#line 219 "mini_l.yy"
+#line 221 "mini_l.yy"
                                                                                                                                                                        {
 							for(list<string>::iterator it = yystack_[10].value.as < list<string> > ().begin(); it != yystack_[10].value.as < list<string> > ().end(); it++) {
 								if(yystack_[6].value.as < int > () <= 0 || yystack_[3].value.as < int > () <= 0) {
@@ -869,7 +869,7 @@ namespace yy {
     break;
 
   case 11:
-#line 231 "mini_l.yy"
+#line 233 "mini_l.yy"
                                       {
 							checkVariables(yystack_[0].value.as < string > (), 1);
 							yylhs.value.as < list<string> > ().push_back(yystack_[0].value.as < string > ());
@@ -878,7 +878,7 @@ namespace yy {
     break;
 
   case 12:
-#line 235 "mini_l.yy"
+#line 237 "mini_l.yy"
                                                                           {
 							yylhs.value.as < list<string> > () = yystack_[0].value.as < list<string> > ();
 							yylhs.value.as < list<string> > ().push_front(yystack_[2].value.as < string > ());
@@ -887,13 +887,13 @@ namespace yy {
     break;
 
   case 13:
-#line 241 "mini_l.yy"
+#line 243 "mini_l.yy"
                                               {yylhs.value.as < string > () = yystack_[0].value.as < string > ();}
 #line 893 "parser.tab.cc"
     break;
 
   case 14:
-#line 244 "mini_l.yy"
+#line 246 "mini_l.yy"
                                               {
 			 				yylhs.value.as < string > () = "";
 						}
@@ -901,7 +901,7 @@ namespace yy {
     break;
 
   case 15:
-#line 247 "mini_l.yy"
+#line 249 "mini_l.yy"
                                                                                  {
 							yylhs.value.as < string > () = yystack_[2].value.as < string > () + "\n" + yystack_[0].value.as < string > ();
 						}
@@ -909,7 +909,7 @@ namespace yy {
     break;
 
   case 16:
-#line 252 "mini_l.yy"
+#line 254 "mini_l.yy"
                                                               {
 							yylhs.value.as < string > () += yystack_[0].value.as < exp_type > ().code;
 							yylhs.value.as < string > () += "= " + yystack_[0].value.as < exp_type > ().id + ", " + yystack_[2].value.as < string > ();
@@ -918,7 +918,7 @@ namespace yy {
     break;
 
   case 17:
-#line 256 "mini_l.yy"
+#line 258 "mini_l.yy"
                                                                                      {
 							std::string lab1 = newLabel();
 							std::string lab2 = newLabel();
@@ -933,7 +933,7 @@ namespace yy {
     break;
 
   case 18:
-#line 266 "mini_l.yy"
+#line 268 "mini_l.yy"
                                                                                                      {
 							std::string lab1 = newLabel();
                                                         std::string lab2 = newLabel();
@@ -949,7 +949,7 @@ namespace yy {
     break;
 
   case 19:
-#line 277 "mini_l.yy"
+#line 279 "mini_l.yy"
                                                                                                {
 							std::string lab1 = newLabel();
                                                         std::string lab2 = newLabel();
@@ -979,7 +979,7 @@ namespace yy {
     break;
 
   case 20:
-#line 302 "mini_l.yy"
+#line 304 "mini_l.yy"
                                                                                                   {
 							std::string lab1 = newLabel();
                                                         std::string lab2 = newLabel();
@@ -1004,7 +1004,7 @@ namespace yy {
     break;
 
   case 21:
-#line 322 "mini_l.yy"
+#line 324 "mini_l.yy"
                                                                                                                                                          {
 							std::string lab1 = newLabel();
                                                         std::string lab2 = newLabel();
@@ -1050,7 +1050,7 @@ namespace yy {
     break;
 
   case 22:
-#line 363 "mini_l.yy"
+#line 365 "mini_l.yy"
                                                             {
 							for(list<string>::iterator it = yystack_[0].value.as < list<string> > ().begin(); it != yystack_[0].value.as < list<string> > ().end(); it++) {
 								yylhs.value.as < string > () += ".< " + *it;
@@ -1060,7 +1060,7 @@ namespace yy {
     break;
 
   case 23:
-#line 368 "mini_l.yy"
+#line 370 "mini_l.yy"
                                                              {
 							for(list<string>::iterator it = yystack_[0].value.as < list<string> > ().begin(); it != yystack_[0].value.as < list<string> > ().end(); it++) {
                                                                 yylhs.value.as < string > () += ">. " + *it;
@@ -1070,7 +1070,7 @@ namespace yy {
     break;
 
   case 24:
-#line 373 "mini_l.yy"
+#line 375 "mini_l.yy"
                                                            {
 							yylhs.value.as < string > () += "continue";
 						}
@@ -1078,7 +1078,7 @@ namespace yy {
     break;
 
   case 25:
-#line 376 "mini_l.yy"
+#line 378 "mini_l.yy"
                                                                     {
 							yylhs.value.as < string > () += yystack_[0].value.as < exp_type > ().id;
 						}
@@ -1086,7 +1086,7 @@ namespace yy {
     break;
 
   case 26:
-#line 381 "mini_l.yy"
+#line 383 "mini_l.yy"
                                                           {
 						yylhs.value.as < exp_type > () = yystack_[0].value.as < exp_type > ();
 						}
@@ -1094,7 +1094,7 @@ namespace yy {
     break;
 
   case 27:
-#line 384 "mini_l.yy"
+#line 386 "mini_l.yy"
                                                                                  {
 							yylhs.value.as < exp_type > ().id = newCond();
 							yylhs.value.as < exp_type > ().code += ". " + yylhs.value.as < exp_type > ().id + "\n";
@@ -1105,7 +1105,7 @@ namespace yy {
     break;
 
   case 28:
-#line 392 "mini_l.yy"
+#line 394 "mini_l.yy"
                                               {
 							yylhs.value.as < exp_type > () = yystack_[0].value.as < exp_type > ();
 						}
@@ -1113,7 +1113,7 @@ namespace yy {
     break;
 
   case 29:
-#line 395 "mini_l.yy"
+#line 397 "mini_l.yy"
                                                                                       {
 							yylhs.value.as < exp_type > ().id = newCond();
 							yylhs.value.as < exp_type > ().code += ". " + yylhs.value.as < exp_type > ().id + "\n";
@@ -1124,7 +1124,7 @@ namespace yy {
     break;
 
   case 30:
-#line 403 "mini_l.yy"
+#line 405 "mini_l.yy"
                                                                {
 							yylhs.value.as < exp_type > ().id = newCond();
 							yylhs.value.as < exp_type > ().code += ". " + yylhs.value.as < exp_type > ().id + "\n";
@@ -1134,7 +1134,7 @@ namespace yy {
     break;
 
   case 31:
-#line 408 "mini_l.yy"
+#line 410 "mini_l.yy"
                                                            {
 							yylhs.value.as < exp_type > ().id = newCond();
 							yylhs.value.as < exp_type > ().code += "";
@@ -1143,7 +1143,7 @@ namespace yy {
     break;
 
   case 32:
-#line 412 "mini_l.yy"
+#line 414 "mini_l.yy"
                                                             {
 							yylhs.value.as < exp_type > ().id = newCond();
                                                         yylhs.value.as < exp_type > ().code += "";
@@ -1152,7 +1152,7 @@ namespace yy {
     break;
 
   case 33:
-#line 416 "mini_l.yy"
+#line 418 "mini_l.yy"
                                                                                 {
 							yylhs.value.as < exp_type > () = yystack_[1].value.as < exp_type > ();	
 						}
@@ -1160,7 +1160,7 @@ namespace yy {
     break;
 
   case 34:
-#line 419 "mini_l.yy"
+#line 421 "mini_l.yy"
                                                                              {
 							yylhs.value.as < exp_type > ().id = newCond();
 							yylhs.value.as < exp_type > ().code += ". " + yylhs.value.as < exp_type > ().id + "\n";
@@ -1170,7 +1170,7 @@ namespace yy {
     break;
 
   case 35:
-#line 424 "mini_l.yy"
+#line 426 "mini_l.yy"
                                                        {
 							yylhs.value.as < exp_type > ().id = newCond();
                                                         yylhs.value.as < exp_type > ().code += "";
@@ -1179,7 +1179,7 @@ namespace yy {
     break;
 
   case 36:
-#line 428 "mini_l.yy"
+#line 430 "mini_l.yy"
                                                         {
 							yylhs.value.as < exp_type > ().id = newCond();
                                                         yylhs.value.as < exp_type > ().code += "";
@@ -1188,7 +1188,7 @@ namespace yy {
     break;
 
   case 37:
-#line 432 "mini_l.yy"
+#line 434 "mini_l.yy"
                                                                             {
 							yylhs.value.as < exp_type > () = yystack_[1].value.as < exp_type > ();
 						}
@@ -1196,7 +1196,7 @@ namespace yy {
     break;
 
   case 38:
-#line 437 "mini_l.yy"
+#line 439 "mini_l.yy"
                                            {
 							yylhs.value.as < string > () = "==";
 						}
@@ -1204,7 +1204,7 @@ namespace yy {
     break;
 
   case 39:
-#line 440 "mini_l.yy"
+#line 442 "mini_l.yy"
                                                       {
 							yylhs.value.as < string > () = "!=";
 						}
@@ -1212,7 +1212,7 @@ namespace yy {
     break;
 
   case 40:
-#line 443 "mini_l.yy"
+#line 445 "mini_l.yy"
                                                      {
 							yylhs.value.as < string > () = "<";
 						}
@@ -1220,7 +1220,7 @@ namespace yy {
     break;
 
   case 41:
-#line 446 "mini_l.yy"
+#line 448 "mini_l.yy"
                                                      {
 							yylhs.value.as < string > () = ">";
 						}
@@ -1228,7 +1228,7 @@ namespace yy {
     break;
 
   case 42:
-#line 449 "mini_l.yy"
+#line 451 "mini_l.yy"
                                                       {
 							yylhs.value.as < string > () = "<=";	
 						}
@@ -1236,7 +1236,7 @@ namespace yy {
     break;
 
   case 43:
-#line 452 "mini_l.yy"
+#line 454 "mini_l.yy"
                                                       {
 							yylhs.value.as < string > () = ">=";
 						}
@@ -1244,7 +1244,7 @@ namespace yy {
     break;
 
   case 44:
-#line 457 "mini_l.yy"
+#line 459 "mini_l.yy"
                                                     {
 							//$$.push_back($1);
 							yylhs.value.as < exp_type > () = yystack_[0].value.as < exp_type > ();	
@@ -1253,7 +1253,7 @@ namespace yy {
     break;
 
   case 45:
-#line 461 "mini_l.yy"
+#line 463 "mini_l.yy"
                                                                                      {
 							yylhs.value.as < exp_type > ().id = newTemp();
 							yylhs.value.as < exp_type > ().code += ". " + yylhs.value.as < exp_type > ().id + "\n";
@@ -1263,7 +1263,7 @@ namespace yy {
     break;
 
   case 46:
-#line 466 "mini_l.yy"
+#line 468 "mini_l.yy"
                                                                                      {
 							yylhs.value.as < exp_type > ().id = newTemp();
 							yylhs.value.as < exp_type > ().code += ". " + yylhs.value.as < exp_type > ().id + "\n";
@@ -1273,7 +1273,7 @@ namespace yy {
     break;
 
   case 47:
-#line 473 "mini_l.yy"
+#line 475 "mini_l.yy"
                              {
 							yylhs.value.as < exp_type > () = yystack_[0].value.as < exp_type > ();
 						}
@@ -1281,7 +1281,7 @@ namespace yy {
     break;
 
   case 48:
-#line 476 "mini_l.yy"
+#line 478 "mini_l.yy"
                                                                                 {
 							yylhs.value.as < exp_type > ().id = newTemp();
 							yylhs.value.as < exp_type > ().code += ". " + yylhs.value.as < exp_type > ().id + "\n";
@@ -1292,7 +1292,7 @@ namespace yy {
     break;
 
   case 49:
-#line 482 "mini_l.yy"
+#line 484 "mini_l.yy"
                                                                                {
 							yylhs.value.as < exp_type > ().id = newTemp();
 							yylhs.value.as < exp_type > ().code += ". " + yylhs.value.as < exp_type > ().id + "\n";
@@ -1302,7 +1302,7 @@ namespace yy {
     break;
 
   case 50:
-#line 487 "mini_l.yy"
+#line 489 "mini_l.yy"
                                                                                {
 							yylhs.value.as < exp_type > ().id = newTemp();
                                                         yylhs.value.as < exp_type > ().code += ". " + yylhs.value.as < exp_type > ().id + "\n";
@@ -1312,7 +1312,7 @@ namespace yy {
     break;
 
   case 51:
-#line 494 "mini_l.yy"
+#line 496 "mini_l.yy"
                                                              {
 							yylhs.value.as < exp_type > ().id = newTemp();
 							yylhs.value.as < exp_type > ().code += ". " + yylhs.value.as < exp_type > ().id + "\n";
@@ -1323,7 +1323,7 @@ namespace yy {
     break;
 
   case 52:
-#line 500 "mini_l.yy"
+#line 502 "mini_l.yy"
                                                                           {
 							yylhs.value.as < exp_type > ().id = newTemp();
 							yylhs.value.as < exp_type > ().code += ". " + yylhs.value.as < exp_type > ().id + "\n";
@@ -1335,7 +1335,7 @@ namespace yy {
     break;
 
   case 53:
-#line 507 "mini_l.yy"
+#line 509 "mini_l.yy"
                                                                                  {
 							yylhs.value.as < exp_type > ().id = newTemp();
 							yylhs.value.as < exp_type > ().code += ". " + yylhs.value.as < exp_type > ().id + "\n";
@@ -1345,7 +1345,7 @@ namespace yy {
     break;
 
   case 54:
-#line 512 "mini_l.yy"
+#line 514 "mini_l.yy"
                                                       {
 							yylhs.value.as < exp_type > ().id = newTemp();
 							yylhs.value.as < exp_type > ().code += ". " + yylhs.value.as < exp_type > ().id + "\n";
@@ -1355,7 +1355,7 @@ namespace yy {
     break;
 
   case 55:
-#line 517 "mini_l.yy"
+#line 519 "mini_l.yy"
                                                          {
 							yylhs.value.as < exp_type > ().id = newTemp();
 							yylhs.value.as < exp_type > ().code += ". " + yylhs.value.as < exp_type > ().id + "\n";
@@ -1365,7 +1365,7 @@ namespace yy {
     break;
 
   case 56:
-#line 522 "mini_l.yy"
+#line 524 "mini_l.yy"
                                                                              {
 							yylhs.value.as < exp_type > ().id = newTemp();
 							yylhs.value.as < exp_type > ().code += ". " + yylhs.value.as < exp_type > ().id + "\n";
@@ -1375,7 +1375,7 @@ namespace yy {
     break;
 
   case 57:
-#line 527 "mini_l.yy"
+#line 529 "mini_l.yy"
                                                                                     {
 							yylhs.value.as < exp_type > ().id = newTemp();
 							yylhs.value.as < exp_type > ().code += ". " + yylhs.value.as < exp_type > ().id + "\n";
@@ -1385,7 +1385,7 @@ namespace yy {
     break;
 
   case 58:
-#line 534 "mini_l.yy"
+#line 536 "mini_l.yy"
                                            {
 							yylhs.value.as < exp_type > ().id = newTemp();
 							yylhs.value.as < exp_type > ().code += ". " + yylhs.value.as < exp_type > ().id + "\n";
@@ -1396,7 +1396,7 @@ namespace yy {
     break;
 
   case 59:
-#line 540 "mini_l.yy"
+#line 542 "mini_l.yy"
                                                                                {
 							yylhs.value.as < exp_type > ().id = newTemp();
 							yylhs.value.as < exp_type > ().code += ". " + yylhs.value.as < exp_type > ().id + "\n";
@@ -1407,7 +1407,7 @@ namespace yy {
     break;
 
   case 60:
-#line 548 "mini_l.yy"
+#line 550 "mini_l.yy"
                                               {
 							yylhs.value.as < string > () = yystack_[0].value.as < string > ();
 							checkVariables(yystack_[0].value.as < string > (), 0);
@@ -1416,7 +1416,7 @@ namespace yy {
     break;
 
   case 61:
-#line 552 "mini_l.yy"
+#line 554 "mini_l.yy"
                                                                                                      {
 							yylhs.value.as < string > () += yystack_[1].value.as < exp_type > ().code;
 							yylhs.value.as < string > () = yystack_[3].value.as < string > () + "[" + yystack_[1].value.as < exp_type > ().id + "]\n";
@@ -1426,7 +1426,7 @@ namespace yy {
     break;
 
   case 62:
-#line 559 "mini_l.yy"
+#line 561 "mini_l.yy"
                                             {
 							yylhs.value.as < list<string> > ().push_back(yystack_[0].value.as < string > ());
 						}
@@ -1434,7 +1434,7 @@ namespace yy {
     break;
 
   case 63:
-#line 562 "mini_l.yy"
+#line 564 "mini_l.yy"
                                                                  {
 							yylhs.value.as < list<string> > () = yystack_[0].value.as < list<string> > ();
                             				yylhs.value.as < list<string> > ().push_front(yystack_[2].value.as < string > ());
@@ -1887,13 +1887,13 @@ namespace yy {
   const short
   parser::yyrline_[] =
   {
-       0,   159,   159,   169,   170,   173,   188,   192,   201,   208,
-     219,   231,   235,   241,   244,   247,   252,   256,   266,   277,
-     302,   322,   363,   368,   373,   376,   381,   384,   392,   395,
-     403,   408,   412,   416,   419,   424,   428,   432,   437,   440,
-     443,   446,   449,   452,   457,   461,   466,   473,   476,   482,
-     487,   494,   500,   507,   512,   517,   522,   527,   534,   540,
-     548,   552,   559,   562
+       0,   161,   161,   171,   172,   175,   190,   194,   203,   210,
+     221,   233,   237,   243,   246,   249,   254,   258,   268,   279,
+     304,   324,   365,   370,   375,   378,   383,   386,   394,   397,
+     405,   410,   414,   418,   421,   426,   430,   434,   439,   442,
+     445,   448,   451,   454,   459,   463,   468,   475,   478,   484,
+     489,   496,   502,   509,   514,   519,   524,   529,   536,   542,
+     550,   554,   561,   564
   };
 
   // Print the state stack on the debug stream.
@@ -1929,7 +1929,7 @@ namespace yy {
 } // yy
 #line 1931 "parser.tab.cc"
 
-#line 568 "mini_l.yy"
+#line 570 "mini_l.yy"
 
 
 string newTemp() {
@@ -1952,6 +1952,19 @@ string newCond() {
 
 void checkVariables(string checkVar, int bitCheck) {
 	bool check = false;
+
+	for(int j = 0; j < reservedWords.size(); j++) {
+		if(reservedWords.at(j) == checkVar) {
+			check = true;
+			break;
+		}
+	}
+	if(check) { // reserved word is used as variable
+		errorCheck = true;
+		cout << "Error line " << currLine << ": variable name \"" << checkVar << "\" cannot be same as reserved keywords.\n";
+		return;
+	}
+
 	for(int i = 0; i < variables.size(); i++) {
 		if(variables.at(i) == checkVar) {
 			check = true;

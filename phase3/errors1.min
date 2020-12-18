@@ -5,6 +5,7 @@ beginlocals
 	n : integer;
 	r : array [10] of integer;
 	n : array [10] of integer;
+	comma : integer;
 	p : array [0] of integer;
 endlocals
 beginbody
