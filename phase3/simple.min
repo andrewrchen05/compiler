@@ -1,0 +1,15 @@
+function sum;
+beginparams
+endparams
+beginlocals
+    a,b,c,d : integer;
+    t : array [20] of integer;
+endlocals
+beginbody
+    b := 4;
+    a := 4;
+    d := 5;
+
+    write a;
+
+endbody
