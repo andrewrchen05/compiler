@@ -35,7 +35,7 @@ struct exp_type{
 /*	bool mult;*/
 };
 	/* end the structures for non-terminal types */
-
+static vector<string> variables;
 
 }
 
@@ -62,7 +62,6 @@ void yyerror(const char *msg);		/*declaration given by TA*/
 
 	/* define your symbol table, global variables,
 	 * list of keywords or any function you may need here */
-	
  	/* end of your code */
 }
 
@@ -165,6 +164,7 @@ program: 				/*epsilon*/ {$$ = "";}
 						;
 
 function: 				FUNCTION ident SEMICOLON BEGIN_PARAMS declarations END_PARAMS BEGIN_LOCALS declarations END_LOCALS BEGIN_BODY statements END_BODY {
+							variables.push_back($2);
 							$$ = "func " + $2 + "\n";
 							$$ += $5.code;
 							int i = 0;
@@ -195,18 +195,30 @@ declaration:			identifiers COLON INTEGER {
 							for(list<string>::iterator it = $1.begin(); it != $1.end(); it++){
 								$$.code += ". " + *it + "\n";
 								$$.ids.push_back(*it);
+								variables.push_back(*it);
 							}
 						}
 						| identifiers COLON ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER {
 							for(list<string>::iterator it = $1.begin(); it != $1.end(); it++) {
+								if($5 <= 0) {
+									cout << "Error line " << currLine << ": cannot declare array of size 0\n";
+									break;
+								}
 								$$.code += ".[] " + *it + ", " + to_string($5) +"\n";
 								$$.ids.push_back(*it);
-							}	
+								variables.push_back(*it);
+							}
+
 						}
 						| identifiers COLON ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER {
 							for(list<string>::iterator it = $1.begin(); it != $1.end(); it++) {
+								if($5 <= 0 || $8 <= 0) {
+									cout << "Error line " << currLine << ": cannot declare array of size 0\n";
+									break;
+								}
 								$$.code += ".[] " + *it + ", " + to_string($5 * $8);
-								$$.ids.push_back(*it);		
+								$$.ids.push_back(*it);	
+								variables.push_back(*it);	
 							}
 						}
 						;
@@ -451,7 +463,7 @@ expression: 			multiplicative_expr {
 						;
 
 multiplicative_expr:	term {
-				$$ = $1;
+							$$ = $1;
 						}
 						| multiplicative_expr MULT term {
 							$$.id = newTemp();
@@ -527,6 +539,7 @@ expressions: 			expression {
 
 var: 					ident {
 							$$ = $1;
+							checkVariables($1);
 						}
    						| ident L_SQUARE_BRACKET expression R_SQUARE_BRACKET {
 							$$ += $3.code;
@@ -564,6 +577,22 @@ string newCond() {
         return var;
 }
 
+void checkVariables(string checkVar) {
+	bool check = false;
+	for(int i = 0; i < variables.size(); i++) {
+		if(variables.at(i) == checkVar) {
+			check = true;
+			break;
+		}
+	}
+	if(check) {
+		return;
+	}
+	else {
+		cout << "Error line " << currLine << ": used variable \"" << checkVar << "\" was not previously declared.\n";
+	}
+}
+
 int main(int argc, char *argv[])
 {
 	yy::parser p;
@@ -574,3 +603,4 @@ void yy::parser::error(const yy::location& l, const std::string& m)
 {
 	std::cerr << l << ": " << m << std::endl;
 }
+

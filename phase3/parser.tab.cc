@@ -1,8 +1,8 @@
-// A Bison parser, made by GNU Bison 3.0.4.
+// A Bison parser, made by GNU Bison 3.5.1.
 
 // Skeleton implementation for Bison LALR(1) parsers in C++
 
-// Copyright (C) 2002-2015 Free Software Foundation, Inc.
+// Copyright (C) 2002-2015, 2018-2020 Free Software Foundation, Inc.
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -30,30 +30,25 @@
 // This special exception was added by the Free Software Foundation in
 // version 2.2 of Bison.
 
+// Undocumented macros, especially those whose name start with YY_,
+// are private implementation details.  Do not rely on them.
 
-// First part of user declarations.
-#line 1 "mini_l.yy" // lalr1.cc:404
+
+
+// First part of user prologue.
+#line 1 "mini_l.yy"
 
 extern int currLine;
 extern int currPos;
 
-#line 41 "parser.tab.cc" // lalr1.cc:404
+#line 45 "parser.tab.cc"
 
-# ifndef YY_NULLPTR
-#  if defined __cplusplus && 201103L <= __cplusplus
-#   define YY_NULLPTR nullptr
-#  else
-#   define YY_NULLPTR 0
-#  endif
-# endif
 
 #include "parser.tab.hh"
 
-// User implementation prologue.
 
-#line 55 "parser.tab.cc" // lalr1.cc:412
 // Unqualified %code blocks.
-#line 44 "mini_l.yy" // lalr1.cc:413
+#line 44 "mini_l.yy"
 
 #include "parser.tab.hh"
 struct tests
@@ -75,10 +70,9 @@ void yyerror(const char *msg);		/*declaration given by TA*/
 
 	/* define your symbol table, global variables,
 	 * list of keywords or any function you may need here */
-	
  	/* end of your code */
 
-#line 82 "parser.tab.cc" // lalr1.cc:413
+#line 76 "parser.tab.cc"
 
 
 #ifndef YY_
@@ -90,6 +84,15 @@ void yyerror(const char *msg);		/*declaration given by TA*/
 # endif
 # ifndef YY_
 #  define YY_(msgid) msgid
+# endif
+#endif
+
+// Whether we are compiled with exception support.
+#ifndef YY_EXCEPTIONS
+# if defined __GNUC__ && !defined __EXCEPTIONS
+#  define YY_EXCEPTIONS 0
+# else
+#  define YY_EXCEPTIONS 1
 # endif
 #endif
 
@@ -110,12 +113,9 @@ void yyerror(const char *msg);		/*declaration given by TA*/
         {                                                               \
           (Current).begin = (Current).end = YYRHSLOC (Rhs, 0).end;      \
         }                                                               \
-    while (/*CONSTCOND*/ false)
+    while (false)
 # endif
 
-
-// Suppress unused-variable warnings by "using" E.
-#define YYUSE(E) ((void) (E))
 
 // Enable debugging if requested.
 #if YYDEBUG
@@ -129,7 +129,7 @@ void yyerror(const char *msg);		/*declaration given by TA*/
     {                                           \
       *yycdebug_ << Title << ' ';               \
       yy_print_ (*yycdebug_, Symbol);           \
-      *yycdebug_ << std::endl;                  \
+      *yycdebug_ << '\n';                       \
     }                                           \
   } while (false)
 
@@ -148,9 +148,9 @@ void yyerror(const char *msg);		/*declaration given by TA*/
 #else // !YYDEBUG
 
 # define YYCDEBUG if (false) std::cerr
-# define YY_SYMBOL_PRINT(Title, Symbol)  YYUSE(Symbol)
-# define YY_REDUCE_PRINT(Rule)           static_cast<void>(0)
-# define YY_STACK_PRINT()                static_cast<void>(0)
+# define YY_SYMBOL_PRINT(Title, Symbol)  YYUSE (Symbol)
+# define YY_REDUCE_PRINT(Rule)           static_cast<void> (0)
+# define YY_STACK_PRINT()                static_cast<void> (0)
 
 #endif // !YYDEBUG
 
@@ -162,9 +162,9 @@ void yyerror(const char *msg);		/*declaration given by TA*/
 #define YYERROR         goto yyerrorlab
 #define YYRECOVERING()  (!!yyerrstatus_)
 
-
 namespace yy {
-#line 168 "parser.tab.cc" // lalr1.cc:479
+#line 167 "parser.tab.cc"
+
 
   /* Return YYSTR after stripping away unnecessary quotes and
      backslashes, so that it's suitable for yyerror.  The heuristic is
@@ -176,7 +176,7 @@ namespace yy {
   {
     if (*yystr == '"')
       {
-        std::string yyr = "";
+        std::string yyr;
         char const *yyp = yystr;
 
         for (;;)
@@ -189,7 +189,10 @@ namespace yy {
             case '\\':
               if (*++yyp != '\\')
                 goto do_not_strip_quotes;
-              // Fall through.
+              else
+                goto append;
+
+            append:
             default:
               yyr += *yyp;
               break;
@@ -207,14 +210,18 @@ namespace yy {
   /// Build a parser object.
   parser::parser ()
 #if YYDEBUG
-     :yydebug_ (false),
+    : yydebug_ (false),
       yycdebug_ (&std::cerr)
+#else
+
 #endif
   {}
 
   parser::~parser ()
   {}
 
+  parser::syntax_error::~syntax_error () YY_NOEXCEPT YY_NOTHROW
+  {}
 
   /*---------------.
   | Symbol types.  |
@@ -223,24 +230,20 @@ namespace yy {
 
 
   // by_state.
-  inline
-  parser::by_state::by_state ()
+  parser::by_state::by_state () YY_NOEXCEPT
     : state (empty_state)
   {}
 
-  inline
-  parser::by_state::by_state (const by_state& other)
-    : state (other.state)
+  parser::by_state::by_state (const by_state& that) YY_NOEXCEPT
+    : state (that.state)
   {}
 
-  inline
   void
-  parser::by_state::clear ()
+  parser::by_state::clear () YY_NOEXCEPT
   {
     state = empty_state;
   }
 
-  inline
   void
   parser::by_state::move (by_state& that)
   {
@@ -248,50 +251,49 @@ namespace yy {
     that.clear ();
   }
 
-  inline
-  parser::by_state::by_state (state_type s)
+  parser::by_state::by_state (state_type s) YY_NOEXCEPT
     : state (s)
   {}
 
-  inline
   parser::symbol_number_type
-  parser::by_state::type_get () const
+  parser::by_state::type_get () const YY_NOEXCEPT
   {
     if (state == empty_state)
       return empty_symbol;
     else
-      return yystos_[state];
+      return yystos_[+state];
   }
 
-  inline
   parser::stack_symbol_type::stack_symbol_type ()
   {}
 
-
-  inline
-  parser::stack_symbol_type::stack_symbol_type (state_type s, symbol_type& that)
-    : super_type (s, that.location)
+  parser::stack_symbol_type::stack_symbol_type (YY_RVREF (stack_symbol_type) that)
+    : super_type (YY_MOVE (that.state), YY_MOVE (that.location))
   {
-      switch (that.type_get ())
+    switch (that.type_get ())
     {
       case 58: // declarations
       case 59: // declaration
-        value.move< dec_type > (that.value);
+        value.YY_MOVE_OR_COPY< dec_type > (YY_MOVE (that.value));
         break;
 
+      case 64: // bool_expr
+      case 65: // relation_and_expr
+      case 66: // relation_expr
       case 68: // expression
       case 69: // multiplicative_expr
       case 70: // term
-        value.move< exp_type > (that.value);
+      case 71: // expressions
+        value.YY_MOVE_OR_COPY< exp_type > (YY_MOVE (that.value));
         break;
 
       case 51: // NUMBER
-        value.move< int > (that.value);
+        value.YY_MOVE_OR_COPY< int > (YY_MOVE (that.value));
         break;
 
       case 60: // identifiers
       case 73: // vars
-        value.move< list<string> > (that.value);
+        value.YY_MOVE_OR_COPY< list<string> > (YY_MOVE (that.value));
         break;
 
       case 50: // IDENT
@@ -302,11 +304,57 @@ namespace yy {
       case 63: // statement
       case 67: // comp
       case 72: // var
-        value.move< string > (that.value);
+        value.YY_MOVE_OR_COPY< string > (YY_MOVE (that.value));
         break;
 
+      default:
+        break;
+    }
+
+#if 201103L <= YY_CPLUSPLUS
+    // that is emptied.
+    that.state = empty_state;
+#endif
+  }
+
+  parser::stack_symbol_type::stack_symbol_type (state_type s, YY_MOVE_REF (symbol_type) that)
+    : super_type (s, YY_MOVE (that.location))
+  {
+    switch (that.type_get ())
+    {
+      case 58: // declarations
+      case 59: // declaration
+        value.move< dec_type > (YY_MOVE (that.value));
+        break;
+
+      case 64: // bool_expr
+      case 65: // relation_and_expr
+      case 66: // relation_expr
+      case 68: // expression
+      case 69: // multiplicative_expr
+      case 70: // term
       case 71: // expressions
-        value.move< vector<vector<exp_type>> > (that.value);
+        value.move< exp_type > (YY_MOVE (that.value));
+        break;
+
+      case 51: // NUMBER
+        value.move< int > (YY_MOVE (that.value));
+        break;
+
+      case 60: // identifiers
+      case 73: // vars
+        value.move< list<string> > (YY_MOVE (that.value));
+        break;
+
+      case 50: // IDENT
+      case 56: // program
+      case 57: // function
+      case 61: // ident
+      case 62: // statements
+      case 63: // statement
+      case 67: // comp
+      case 72: // var
+        value.move< string > (YY_MOVE (that.value));
         break;
 
       default:
@@ -317,21 +365,25 @@ namespace yy {
     that.type = empty_symbol;
   }
 
-  inline
+#if YY_CPLUSPLUS < 201103L
   parser::stack_symbol_type&
   parser::stack_symbol_type::operator= (const stack_symbol_type& that)
   {
     state = that.state;
-      switch (that.type_get ())
+    switch (that.type_get ())
     {
       case 58: // declarations
       case 59: // declaration
         value.copy< dec_type > (that.value);
         break;
 
+      case 64: // bool_expr
+      case 65: // relation_and_expr
+      case 66: // relation_expr
       case 68: // expression
       case 69: // multiplicative_expr
       case 70: // term
+      case 71: // expressions
         value.copy< exp_type > (that.value);
         break;
 
@@ -355,10 +407,6 @@ namespace yy {
         value.copy< string > (that.value);
         break;
 
-      case 71: // expressions
-        value.copy< vector<vector<exp_type>> > (that.value);
-        break;
-
       default:
         break;
     }
@@ -367,9 +415,59 @@ namespace yy {
     return *this;
   }
 
+  parser::stack_symbol_type&
+  parser::stack_symbol_type::operator= (stack_symbol_type& that)
+  {
+    state = that.state;
+    switch (that.type_get ())
+    {
+      case 58: // declarations
+      case 59: // declaration
+        value.move< dec_type > (that.value);
+        break;
+
+      case 64: // bool_expr
+      case 65: // relation_and_expr
+      case 66: // relation_expr
+      case 68: // expression
+      case 69: // multiplicative_expr
+      case 70: // term
+      case 71: // expressions
+        value.move< exp_type > (that.value);
+        break;
+
+      case 51: // NUMBER
+        value.move< int > (that.value);
+        break;
+
+      case 60: // identifiers
+      case 73: // vars
+        value.move< list<string> > (that.value);
+        break;
+
+      case 50: // IDENT
+      case 56: // program
+      case 57: // function
+      case 61: // ident
+      case 62: // statements
+      case 63: // statement
+      case 67: // comp
+      case 72: // var
+        value.move< string > (that.value);
+        break;
+
+      default:
+        break;
+    }
+
+    location = that.location;
+    // that is emptied.
+    that.state = empty_state;
+    return *this;
+  }
+#endif
 
   template <typename Base>
-  inline
   void
   parser::yy_destroy_ (const char* yymsg, basic_symbol<Base>& yysym) const
   {
@@ -386,10 +484,12 @@ namespace yy {
     std::ostream& yyoutput = yyo;
     YYUSE (yyoutput);
     symbol_number_type yytype = yysym.type_get ();
+#if defined __GNUC__ && ! defined __clang__ && ! defined __ICC && __GNUC__ * 100 + __GNUC_MINOR__ <= 408
     // Avoid a (spurious) G++ 4.8 warning about "array subscript is
     // below array bounds".
     if (yysym.empty ())
       std::abort ();
+#endif
     yyo << (yytype < yyntokens_ ? "token" : "nterm")
         << ' ' << yytname_[yytype] << " ("
         << yysym.location << ": ";
@@ -398,26 +498,27 @@ namespace yy {
   }
 #endif
 
-  inline
   void
-  parser::yypush_ (const char* m, state_type s, symbol_type& sym)
-  {
-    stack_symbol_type t (s, sym);
-    yypush_ (m, t);
-  }
-
-  inline
-  void
-  parser::yypush_ (const char* m, stack_symbol_type& s)
+  parser::yypush_ (const char* m, YY_MOVE_REF (stack_symbol_type) sym)
   {
     if (m)
-      YY_SYMBOL_PRINT (m, s);
-    yystack_.push (s);
+      YY_SYMBOL_PRINT (m, sym);
+    yystack_.push (YY_MOVE (sym));
   }
 
-  inline
   void
-  parser::yypop_ (unsigned int n)
+  parser::yypush_ (const char* m, state_type s, YY_MOVE_REF (symbol_type) sym)
+  {
+#if 201103L <= YY_CPLUSPLUS
+    yypush_ (m, stack_symbol_type (s, std::move (sym)));
+#else
+    stack_symbol_type ss (s, sym);
+    yypush_ (m, ss);
+#endif
+  }
+
+  void
+  parser::yypop_ (int n)
   {
     yystack_.pop (n);
   }
@@ -449,7 +550,7 @@ namespace yy {
   }
 #endif // YYDEBUG
 
-  inline parser::state_type
+  parser::state_type
   parser::yy_lr_goto_state_ (state_type yystate, int yysym)
   {
     int yyr = yypgoto_[yysym - yyntokens_] + yystate;
@@ -459,22 +560,27 @@ namespace yy {
       return yydefgoto_[yysym - yyntokens_];
   }
 
-  inline bool
+  bool
   parser::yy_pact_value_is_default_ (int yyvalue)
   {
     return yyvalue == yypact_ninf_;
   }
 
-  inline bool
+  bool
   parser::yy_table_value_is_error_ (int yyvalue)
   {
     return yyvalue == yytable_ninf_;
   }
 
   int
+  parser::operator() ()
+  {
+    return parse ();
+  }
+
+  int
   parser::parse ()
   {
-    // State.
     int yyn;
     /// Length of the RHS of the rule being reduced.
     int yylen = 0;
@@ -492,11 +598,11 @@ namespace yy {
     /// The return value of parse ().
     int yyresult;
 
-    // FIXME: This shoud be completely indented.  It is not yet to
-    // avoid gratuitous conflicts when merging into the master branch.
+#if YY_EXCEPTIONS
     try
+#endif // YY_EXCEPTIONS
       {
-    YYCDEBUG << "Starting parse" << std::endl;
+    YYCDEBUG << "Starting parse\n";
 
 
     /* Initialize the stack.  The initial state will be set in
@@ -504,23 +610,27 @@ namespace yy {
        location values to have been already stored, initialize these
        stacks with a primary value.  */
     yystack_.clear ();
-    yypush_ (YY_NULLPTR, 0, yyla);
+    yypush_ (YY_NULLPTR, 0, YY_MOVE (yyla));
 
-    // A new symbol was pushed on the stack.
+  /*-----------------------------------------------.
+  | yynewstate -- push a new symbol on the stack.  |
+  `-----------------------------------------------*/
   yynewstate:
-    YYCDEBUG << "Entering state " << yystack_[0].state << std::endl;
+    YYCDEBUG << "Entering state " << int (yystack_[0].state) << '\n';
 
     // Accept?
     if (yystack_[0].state == yyfinal_)
-      goto yyacceptlab;
+      YYACCEPT;
 
     goto yybackup;
 
-    // Backup.
-  yybackup:
 
+  /*-----------.
+  | yybackup.  |
+  `-----------*/
+  yybackup:
     // Try to take a decision without lookahead.
-    yyn = yypact_[yystack_[0].state];
+    yyn = yypact_[+yystack_[0].state];
     if (yy_pact_value_is_default_ (yyn))
       goto yydefault;
 
@@ -528,16 +638,21 @@ namespace yy {
     if (yyla.empty ())
       {
         YYCDEBUG << "Reading a token: ";
+#if YY_EXCEPTIONS
         try
+#endif // YY_EXCEPTIONS
           {
             symbol_type yylookahead (yylex ());
             yyla.move (yylookahead);
           }
+#if YY_EXCEPTIONS
         catch (const syntax_error& yyexc)
           {
+            YYCDEBUG << "Caught exception: " << yyexc.what() << '\n';
             error (yyexc);
             goto yyerrlab1;
           }
+#endif // YY_EXCEPTIONS
       }
     YY_SYMBOL_PRINT ("Next token is", yyla);
 
@@ -545,7 +660,9 @@ namespace yy {
        to detect an error, take that action.  */
     yyn += yyla.type_get ();
     if (yyn < 0 || yylast_ < yyn || yycheck_[yyn] != yyla.type_get ())
-      goto yydefault;
+      {
+        goto yydefault;
+      }
 
     // Reduce or error.
     yyn = yytable_[yyn];
@@ -562,49 +679,55 @@ namespace yy {
       --yyerrstatus_;
 
     // Shift the lookahead token.
-    yypush_ ("Shifting", yyn, yyla);
+    yypush_ ("Shifting", state_type (yyn), YY_MOVE (yyla));
     goto yynewstate;
+
 
   /*-----------------------------------------------------------.
   | yydefault -- do the default action for the current state.  |
   `-----------------------------------------------------------*/
   yydefault:
-    yyn = yydefact_[yystack_[0].state];
+    yyn = yydefact_[+yystack_[0].state];
     if (yyn == 0)
       goto yyerrlab;
     goto yyreduce;
 
+
   /*-----------------------------.
-  | yyreduce -- Do a reduction.  |
+  | yyreduce -- do a reduction.  |
   `-----------------------------*/
   yyreduce:
     yylen = yyr2_[yyn];
     {
       stack_symbol_type yylhs;
-      yylhs.state = yy_lr_goto_state_(yystack_[yylen].state, yyr1_[yyn]);
+      yylhs.state = yy_lr_goto_state_ (yystack_[yylen].state, yyr1_[yyn]);
       /* Variants are always initialized to an empty instance of the
          correct type. The default '$$ = $1' action is NOT applied
          when using variants.  */
-        switch (yyr1_[yyn])
+      switch (yyr1_[yyn])
     {
       case 58: // declarations
       case 59: // declaration
-        yylhs.value.build< dec_type > ();
+        yylhs.value.emplace< dec_type > ();
         break;
 
+      case 64: // bool_expr
+      case 65: // relation_and_expr
+      case 66: // relation_expr
       case 68: // expression
       case 69: // multiplicative_expr
       case 70: // term
-        yylhs.value.build< exp_type > ();
+      case 71: // expressions
+        yylhs.value.emplace< exp_type > ();
         break;
 
       case 51: // NUMBER
-        yylhs.value.build< int > ();
+        yylhs.value.emplace< int > ();
         break;
 
       case 60: // identifiers
       case 73: // vars
-        yylhs.value.build< list<string> > ();
+        yylhs.value.emplace< list<string> > ();
         break;
 
       case 50: // IDENT
@@ -615,11 +738,7 @@ namespace yy {
       case 63: // statement
       case 67: // comp
       case 72: // var
-        yylhs.value.build< string > ();
-        break;
-
-      case 71: // expressions
-        yylhs.value.build< vector<vector<exp_type>> > ();
+        yylhs.value.emplace< string > ();
         break;
 
       default:
@@ -627,588 +746,719 @@ namespace yy {
     }
 
 
-      // Compute the default @$.
+      // Default location.
       {
-        slice<stack_symbol_type, stack_type> slice (yystack_, yylen);
-        YYLLOC_DEFAULT (yylhs.location, slice, yylen);
+        stack_type::slice range (yystack_, yylen);
+        YYLLOC_DEFAULT (yylhs.location, range, yylen);
+        yyerror_range[1].location = yylhs.location;
       }
 
       // Perform the reduction.
       YY_REDUCE_PRINT (yyn);
+#if YY_EXCEPTIONS
       try
+#endif // YY_EXCEPTIONS
         {
           switch (yyn)
             {
   case 2:
-#line 161 "mini_l.yy" // lalr1.cc:859
-    {cout << yystack_[0].value.as< string > () << endl;}
-#line 646 "parser.tab.cc" // lalr1.cc:859
+#line 159 "mini_l.yy"
+                                        {cout << yystack_[0].value.as < string > () << endl;}
+#line 768 "parser.tab.cc"
     break;
 
   case 3:
-#line 164 "mini_l.yy" // lalr1.cc:859
-    {yylhs.value.as< string > () = "";}
-#line 652 "parser.tab.cc" // lalr1.cc:859
+#line 162 "mini_l.yy"
+                                                    {yylhs.value.as < string > () = "";}
+#line 774 "parser.tab.cc"
     break;
 
   case 4:
-#line 165 "mini_l.yy" // lalr1.cc:859
-    {yylhs.value.as< string > () = yystack_[1].value.as< string > () + "\n" + yystack_[0].value.as< string > ();}
-#line 658 "parser.tab.cc" // lalr1.cc:859
+#line 163 "mini_l.yy"
+                                                                   {yylhs.value.as < string > () = yystack_[1].value.as < string > () + "\n" + yystack_[0].value.as < string > ();}
+#line 780 "parser.tab.cc"
     break;
 
   case 5:
-#line 168 "mini_l.yy" // lalr1.cc:859
-    {
-							yylhs.value.as< string > () = "func " + yystack_[10].value.as< string > () + "\n";
-							yylhs.value.as< string > () += yystack_[7].value.as< dec_type > ().code;
+#line 166 "mini_l.yy"
+                                                                                                                                                                          {
+							variables.push_back(yystack_[10].value.as < string > ());
+							yylhs.value.as < string > () = "func " + yystack_[10].value.as < string > () + "\n";
+							yylhs.value.as < string > () += yystack_[7].value.as < dec_type > ().code;
 							int i = 0;
-							for(list<string>::iterator it = yystack_[7].value.as< dec_type > ().ids.begin(); it != yystack_[7].value.as< dec_type > ().ids.end(); it++){
-								yylhs.value.as< string > () += *it + " $" + to_string(i) + "\n";
+							for(list<string>::iterator it = yystack_[7].value.as < dec_type > ().ids.begin(); it != yystack_[7].value.as < dec_type > ().ids.end(); it++){
+								yylhs.value.as < string > () += "= "  +  *it + ", $" + to_string(i) + "\n";
 								i++;
 							}
-							yylhs.value.as< string > () += yystack_[4].value.as< dec_type > ().code;
-							yylhs.value.as< string > () += yystack_[1].value.as< string > ();
-							yylhs.value.as< string > () += "endfunc";
+							yylhs.value.as < string > () += yystack_[4].value.as < dec_type > ().code;
+							yylhs.value.as < string > () += yystack_[1].value.as < string > ();
+							yylhs.value.as < string > () += "endfunc";
 						}
-#line 675 "parser.tab.cc" // lalr1.cc:859
+#line 798 "parser.tab.cc"
     break;
 
   case 6:
-#line 182 "mini_l.yy" // lalr1.cc:859
-    {
-							yylhs.value.as< dec_type > ().code = "";
-							yylhs.value.as< dec_type > ().ids = list<string>();
+#line 181 "mini_l.yy"
+                                            {
+							yylhs.value.as < dec_type > ().code = "";
+							yylhs.value.as < dec_type > ().ids = list<string>();
 						}
-#line 684 "parser.tab.cc" // lalr1.cc:859
+#line 807 "parser.tab.cc"
     break;
 
   case 7:
-#line 186 "mini_l.yy" // lalr1.cc:859
-    {
-							yylhs.value.as< dec_type > ().code = yystack_[2].value.as< dec_type > ().code + "\n" + yystack_[0].value.as< dec_type > ().code;
-							yylhs.value.as< dec_type > ().ids = yystack_[2].value.as< dec_type > ().ids;
-							for(list<string>::iterator it = yystack_[0].value.as< dec_type > ().ids.begin(); it != yystack_[0].value.as< dec_type > ().ids.end(); it++){
-								yylhs.value.as< dec_type > ().ids.push_back(*it);
+#line 185 "mini_l.yy"
+                                                                                     {
+							yylhs.value.as < dec_type > ().code = yystack_[2].value.as < dec_type > ().code + "\n" + yystack_[0].value.as < dec_type > ().code;
+							yylhs.value.as < dec_type > ().ids = yystack_[2].value.as < dec_type > ().ids;
+							for(list<string>::iterator it = yystack_[0].value.as < dec_type > ().ids.begin(); it != yystack_[0].value.as < dec_type > ().ids.end(); it++){
+								yylhs.value.as < dec_type > ().ids.push_back(*it);
 							}
 						}
-#line 696 "parser.tab.cc" // lalr1.cc:859
+#line 819 "parser.tab.cc"
     break;
 
   case 8:
-#line 195 "mini_l.yy" // lalr1.cc:859
-    {	
-							for(list<string>::iterator it = yystack_[2].value.as< list<string> > ().begin(); it != yystack_[2].value.as< list<string> > ().end(); it++){
-								yylhs.value.as< dec_type > ().code += ". " + *it + "\n";
-								yylhs.value.as< dec_type > ().ids.push_back(*it);
+#line 194 "mini_l.yy"
+                                                          {	
+							for(list<string>::iterator it = yystack_[2].value.as < list<string> > ().begin(); it != yystack_[2].value.as < list<string> > ().end(); it++){
+								yylhs.value.as < dec_type > ().code += ". " + *it + "\n";
+								yylhs.value.as < dec_type > ().ids.push_back(*it);
+								variables.push_back(*it);
 							}
 						}
-#line 707 "parser.tab.cc" // lalr1.cc:859
+#line 831 "parser.tab.cc"
     break;
 
   case 9:
-#line 201 "mini_l.yy" // lalr1.cc:859
-    {
-							for(list<string>::iterator it = yystack_[7].value.as< list<string> > ().begin(); it != yystack_[7].value.as< list<string> > ().end(); it++) {
-								yylhs.value.as< dec_type > ().code += ".[] " + *it + ", " + to_string(yystack_[3].value.as< int > ()) +"\n";
-								yylhs.value.as< dec_type > ().ids.push_back(*it);
-							}	
+#line 201 "mini_l.yy"
+                                                                                                                              {
+							for(list<string>::iterator it = yystack_[7].value.as < list<string> > ().begin(); it != yystack_[7].value.as < list<string> > ().end(); it++) {
+								if(yystack_[3].value.as < int > () <= 0) {
+									cout << "Error line " << currLine << ": cannot declare arry of size 0\n";
+									break;
+								}
+								yylhs.value.as < dec_type > ().code += ".[] " + *it + ", " + to_string(yystack_[3].value.as < int > ()) +"\n";
+								yylhs.value.as < dec_type > ().ids.push_back(*it);
+								variables.push_back(*it);
+							}
+
 						}
-#line 718 "parser.tab.cc" // lalr1.cc:859
+#line 848 "parser.tab.cc"
     break;
 
   case 10:
-#line 207 "mini_l.yy" // lalr1.cc:859
-    {
-							for(list<string>::iterator it = yystack_[10].value.as< list<string> > ().begin(); it != yystack_[10].value.as< list<string> > ().end(); it++) {
-								yylhs.value.as< dec_type > ().code += ".[] " + *it + ", " + to_string(yystack_[6].value.as< int > () * yystack_[3].value.as< int > ()) +"\n";
-								yylhs.value.as< dec_type > ().ids.push_back(*it);		
+#line 213 "mini_l.yy"
+                                                                                                                                                                       {
+							for(list<string>::iterator it = yystack_[10].value.as < list<string> > ().begin(); it != yystack_[10].value.as < list<string> > ().end(); it++) {
+								if(yystack_[6].value.as < int > () <= 0 || yystack_[3].value.as < int > () <= 0) {
+									cout << "Error line " << currLine << ": cannot declare arry of size 0\n";
+									break;
+								}
+								yylhs.value.as < dec_type > ().code += ".[] " + *it + ", " + to_string(yystack_[6].value.as < int > () * yystack_[3].value.as < int > ());
+								yylhs.value.as < dec_type > ().ids.push_back(*it);	
+								variables.push_back(*it);	
 							}
 						}
-#line 729 "parser.tab.cc" // lalr1.cc:859
+#line 864 "parser.tab.cc"
     break;
 
   case 11:
-#line 215 "mini_l.yy" // lalr1.cc:859
-    {yylhs.value.as< list<string> > ().push_back(yystack_[0].value.as< string > ());}
-#line 735 "parser.tab.cc" // lalr1.cc:859
+#line 226 "mini_l.yy"
+                                      {yylhs.value.as < list<string> > ().push_back(yystack_[0].value.as < string > ());}
+#line 870 "parser.tab.cc"
     break;
 
   case 12:
-#line 216 "mini_l.yy" // lalr1.cc:859
-    {
-							yylhs.value.as< list<string> > () = yystack_[0].value.as< list<string> > ();
-							yylhs.value.as< list<string> > ().push_front(yystack_[2].value.as< string > ());
+#line 227 "mini_l.yy"
+                                                                          {
+							yylhs.value.as < list<string> > () = yystack_[0].value.as < list<string> > ();
+							yylhs.value.as < list<string> > ().push_front(yystack_[2].value.as < string > ());
 						}
-#line 744 "parser.tab.cc" // lalr1.cc:859
+#line 879 "parser.tab.cc"
     break;
 
   case 13:
-#line 222 "mini_l.yy" // lalr1.cc:859
-    {yylhs.value.as< string > () = yystack_[0].value.as< string > ();}
-#line 750 "parser.tab.cc" // lalr1.cc:859
+#line 233 "mini_l.yy"
+                                              {yylhs.value.as < string > () = yystack_[0].value.as < string > ();}
+#line 885 "parser.tab.cc"
     break;
 
   case 14:
-#line 225 "mini_l.yy" // lalr1.cc:859
-    {
-			 				yylhs.value.as< string > () = "";
+#line 236 "mini_l.yy"
+                                              {
+			 				yylhs.value.as < string > () = "";
 						}
-#line 758 "parser.tab.cc" // lalr1.cc:859
+#line 893 "parser.tab.cc"
     break;
 
   case 15:
-#line 228 "mini_l.yy" // lalr1.cc:859
-    {
-							yylhs.value.as< string > () = yystack_[2].value.as< string > () + "\n" + yystack_[0].value.as< string > ();
+#line 239 "mini_l.yy"
+                                                                                 {
+							yylhs.value.as < string > () = yystack_[2].value.as < string > () + "\n" + yystack_[0].value.as < string > ();
 						}
-#line 766 "parser.tab.cc" // lalr1.cc:859
+#line 901 "parser.tab.cc"
     break;
 
   case 16:
-#line 233 "mini_l.yy" // lalr1.cc:859
-    {
-							/*for (int i = 0; i < $3.size(); ++i) {
-								$$ += "= " + $1 + $3.at(i).id + "\n";
-								$$ += $3.at(i).code;
-							}*/
-							yylhs.value.as< string > () += "= " + yystack_[2].value.as< string > () + yystack_[0].value.as< exp_type > ().id + "\n";
-							yylhs.value.as< string > () += yystack_[0].value.as< exp_type > ().code;
+#line 244 "mini_l.yy"
+                                                              {
+							yylhs.value.as < string > () += yystack_[0].value.as < exp_type > ().code;
+							yylhs.value.as < string > () += "= " + yystack_[0].value.as < exp_type > ().id + ", " + yystack_[2].value.as < string > ();
 						}
-#line 779 "parser.tab.cc" // lalr1.cc:859
+#line 910 "parser.tab.cc"
     break;
 
   case 17:
-#line 241 "mini_l.yy" // lalr1.cc:859
-    {
-
+#line 248 "mini_l.yy"
+                                                                                     {
+							std::string lab1 = newLabel();
+							std::string lab2 = newLabel();
+							yylhs.value.as < string > () += yystack_[3].value.as < exp_type > ().code;
+							yylhs.value.as < string > () += "?:= " + lab1 + ", " + yystack_[3].value.as < exp_type > ().id + "\n";
+                                                        yylhs.value.as < string > () += ":= " + lab2 + "\n";
+                                                        yylhs.value.as < string > () += "\n:" + lab1 + "\n";
+                                                        yylhs.value.as < string > () += yystack_[1].value.as < string > ();
+                                                        yylhs.value.as < string > () += ":" + lab2 + "\n";	
 						}
-#line 787 "parser.tab.cc" // lalr1.cc:859
+#line 925 "parser.tab.cc"
     break;
 
   case 18:
-#line 244 "mini_l.yy" // lalr1.cc:859
-    {
-
+#line 258 "mini_l.yy"
+                                                                                                     {
+							std::string lab1 = newLabel();
+                                                        std::string lab2 = newLabel();
+                                                        yylhs.value.as < string > () += yystack_[5].value.as < exp_type > ().code;
+							yylhs.value.as < string > () += "?:= " + lab1 + ", " + yystack_[5].value.as < exp_type > ().id + "\n";
+                                                        yylhs.value.as < string > () += yystack_[1].value.as < string > ();
+                                                        yylhs.value.as < string > () += ":= " + lab2 + "\n";
+                                                        yylhs.value.as < string > () += "\n:" + lab1 + "\n";
+							yylhs.value.as < string > () += yystack_[3].value.as < string > ();
+							yylhs.value.as < string > () += ":" + lab2 + "\n";
 						}
-#line 795 "parser.tab.cc" // lalr1.cc:859
+#line 941 "parser.tab.cc"
     break;
 
   case 19:
-#line 247 "mini_l.yy" // lalr1.cc:859
-    {
+#line 269 "mini_l.yy"
+                                                                                               {
+							std::string lab1 = newLabel();
+                                                        std::string lab2 = newLabel();
+							std::string lab3 = newLabel();
+							yylhs.value.as < string > () += ": " + lab3 + "\n";
+							yylhs.value.as < string > () += yystack_[3].value.as < exp_type > ().code;
+							yylhs.value.as < string > () += "?:= " + lab1 + ", " + yystack_[3].value.as < exp_type > ().id + "\n";
+							//continue?
+							yylhs.value.as < string > () += ":= " + lab2 + "\n";
+							yylhs.value.as < string > () += ": " + lab1 + "\n";
 
+							string statements = yystack_[1].value.as < string > ();
+							std::size_t found=statements.find("continue");
+							if (found!=std::string::npos) {
+								//cout << "Found at: " << found << endl;
+								yylhs.value.as < string > () += statements.substr(0, found-1) + "\n";
+								yylhs.value.as < string > () += ":= " + lab2;
+								yylhs.value.as < string > () += statements.substr(found + 8, statements.length() - 1);
+							} else {
+								yylhs.value.as < string > () += yystack_[1].value.as < string > ();
+							}
+							
+							yylhs.value.as < string > () += ":= " + lab3 + "\n";
+							yylhs.value.as < string > () += ": " + lab2 + "\n";	
 						}
-#line 803 "parser.tab.cc" // lalr1.cc:859
+#line 971 "parser.tab.cc"
     break;
 
   case 20:
-#line 250 "mini_l.yy" // lalr1.cc:859
-    {
-
+#line 294 "mini_l.yy"
+                                                                                                  {
+							std::string lab1 = newLabel();
+                                                        std::string lab2 = newLabel();
+							yylhs.value.as < string > () += ": " + lab2 + "\n";
+                                                        
+							string statements = yystack_[3].value.as < string > ();
+                                                        std::size_t found=statements.find("continue");
+                                                        if (found!=std::string::npos) {
+                                                                yylhs.value.as < string > () += statements.substr(0, found-1) + "\n";
+                                                                yylhs.value.as < string > () += ":= " + lab1 + "\n";
+                                                                yylhs.value.as < string > () += statements.substr(found, statements.length() - 1);
+                                                        } else {
+                                                                yylhs.value.as < string > () += yystack_[3].value.as < string > ();
+                                                        }
+							
+							yylhs.value.as < string > () += yystack_[0].value.as < exp_type > ().code;
+                                                        yylhs.value.as < string > () += "?:= " + lab2 + ", " + yystack_[0].value.as < exp_type > ().id + "\n";
+                                                        yylhs.value.as < string > () += ":= " + lab1 + "\n";
+                                                        yylhs.value.as < string > () += ": " + lab1 + "\n";
 						}
-#line 811 "parser.tab.cc" // lalr1.cc:859
+#line 996 "parser.tab.cc"
     break;
 
   case 21:
-#line 253 "mini_l.yy" // lalr1.cc:859
-    {
+#line 314 "mini_l.yy"
+                                                                                                                                                         {
+							std::string lab1 = newLabel();
+                                                        std::string lab2 = newLabel();
+							std::string lab3 = newLabel();
+                                                        //std::string lab4 = newLabel();
+								
+							string temp = newTemp();
+                                                        yylhs.value.as < string > () += ". " + temp + "\n";
+							yylhs.value.as < string > () += "= " + temp + ", " + yystack_[11].value.as < string > () + "\n";
 
+							yylhs.value.as < string > () += ": " + lab1 + "\n";
+							yylhs.value.as < string > () += yystack_[7].value.as < exp_type > ().code;
+							
+							yylhs.value.as < string > () += "?:= " + lab2 + ", " + yystack_[7].value.as < exp_type > ().id + "\n";
+							yylhs.value.as < string > () += ":= " + lab3 + "\n";
+
+
+							yylhs.value.as < string > () += ": " + lab2 + "\n";
+							
+							temp = newTemp();
+                                                        yylhs.value.as < string > () += ". " + temp + "\n";
+								
+							yylhs.value.as < string > () += "= " + temp + ", " + yystack_[5].value.as < string > () + "\n";
+							yylhs.value.as < string > () += yystack_[3].value.as < exp_type > ().code;
+						
+							string statements = yystack_[1].value.as < string > ();
+                                                        std::size_t found=statements.find("continue");	
+							if (found!=std::string::npos) {
+                                                                yylhs.value.as < string > () += statements.substr(0, found-1) + "\n";
+                                                                //$$ += ":= " + lab3 + "\n";
+                                                                yylhs.value.as < string > () += ":= " + lab3;
+								yylhs.value.as < string > () += statements.substr(found+8, statements.length() - 1);
+                                                        } else {
+                                                                yylhs.value.as < string > () += yystack_[1].value.as < string > ();
+                                                        }
+
+							yylhs.value.as < string > () += ":= " + lab1 + "\n";
+							
+							yylhs.value.as < string > () += ": " + lab3 + "\n"; 
+							
 						}
-#line 819 "parser.tab.cc" // lalr1.cc:859
+#line 1042 "parser.tab.cc"
     break;
 
   case 22:
-#line 256 "mini_l.yy" // lalr1.cc:859
-    {
-							for(list<string>::iterator it = yystack_[0].value.as< list<string> > ().begin(); it != yystack_[0].value.as< list<string> > ().end(); it++) {
-								yylhs.value.as< string > () += ".< " + *it + "\n";
+#line 355 "mini_l.yy"
+                                                            {
+							for(list<string>::iterator it = yystack_[0].value.as < list<string> > ().begin(); it != yystack_[0].value.as < list<string> > ().end(); it++) {
+								yylhs.value.as < string > () += ".< " + *it;
 							}
 						}
-#line 829 "parser.tab.cc" // lalr1.cc:859
+#line 1052 "parser.tab.cc"
     break;
 
   case 23:
-#line 261 "mini_l.yy" // lalr1.cc:859
-    {
-							for(list<string>::iterator it = yystack_[0].value.as< list<string> > ().begin(); it != yystack_[0].value.as< list<string> > ().end(); it++) {
-                                                                yylhs.value.as< string > () += ">. " + *it + "\n";
+#line 360 "mini_l.yy"
+                                                             {
+							for(list<string>::iterator it = yystack_[0].value.as < list<string> > ().begin(); it != yystack_[0].value.as < list<string> > ().end(); it++) {
+                                                                yylhs.value.as < string > () += ">. " + *it;
                                                         }
 						}
-#line 839 "parser.tab.cc" // lalr1.cc:859
+#line 1062 "parser.tab.cc"
     break;
 
   case 24:
-#line 266 "mini_l.yy" // lalr1.cc:859
-    {
+#line 365 "mini_l.yy"
+                                                           {
+							yylhs.value.as < string > () += "continue";
 						}
-#line 846 "parser.tab.cc" // lalr1.cc:859
+#line 1070 "parser.tab.cc"
     break;
 
   case 25:
-#line 268 "mini_l.yy" // lalr1.cc:859
-    {
-
+#line 368 "mini_l.yy"
+                                                                    {
+							yylhs.value.as < string > () += yystack_[0].value.as < exp_type > ().id;
 						}
-#line 854 "parser.tab.cc" // lalr1.cc:859
+#line 1078 "parser.tab.cc"
     break;
 
   case 26:
-#line 273 "mini_l.yy" // lalr1.cc:859
-    {
+#line 373 "mini_l.yy"
+                                                          {
+						yylhs.value.as < exp_type > () = yystack_[0].value.as < exp_type > ();
 						}
-#line 861 "parser.tab.cc" // lalr1.cc:859
+#line 1086 "parser.tab.cc"
     break;
 
   case 27:
-#line 275 "mini_l.yy" // lalr1.cc:859
-    {
-
+#line 376 "mini_l.yy"
+                                                                                 {
+							yylhs.value.as < exp_type > ().id = newCond();
+							yylhs.value.as < exp_type > ().code += ". " + yylhs.value.as < exp_type > ().id + "\n";
+							yylhs.value.as < exp_type > ().code += yystack_[2].value.as < exp_type > ().code + yystack_[0].value.as < exp_type > ().code;
+							yylhs.value.as < exp_type > ().code += yylhs.value.as < exp_type > ().code = "|| " + yylhs.value.as < exp_type > ().id + ", " + yystack_[2].value.as < exp_type > ().id + ", " + yystack_[0].value.as < exp_type > ().id + "\n";
 						}
-#line 869 "parser.tab.cc" // lalr1.cc:859
+#line 1097 "parser.tab.cc"
     break;
 
   case 28:
-#line 280 "mini_l.yy" // lalr1.cc:859
-    {
-
+#line 384 "mini_l.yy"
+                                              {
+							yylhs.value.as < exp_type > () = yystack_[0].value.as < exp_type > ();
 						}
-#line 877 "parser.tab.cc" // lalr1.cc:859
+#line 1105 "parser.tab.cc"
     break;
 
   case 29:
-#line 283 "mini_l.yy" // lalr1.cc:859
-    {
-							
+#line 387 "mini_l.yy"
+                                                                                      {
+							yylhs.value.as < exp_type > ().id = newCond();
+							yylhs.value.as < exp_type > ().code += ". " + yylhs.value.as < exp_type > ().id + "\n";
+							yylhs.value.as < exp_type > ().code += yystack_[2].value.as < exp_type > ().code + yystack_[0].value.as < exp_type > ().code;
+							yylhs.value.as < exp_type > ().code += "&& " + yylhs.value.as < exp_type > ().id + ", " + yystack_[2].value.as < exp_type > ().id + ", " + yystack_[0].value.as < exp_type > ().id + "\n";
 						}
-#line 885 "parser.tab.cc" // lalr1.cc:859
+#line 1116 "parser.tab.cc"
     break;
 
   case 30:
-#line 288 "mini_l.yy" // lalr1.cc:859
-    {
-
+#line 395 "mini_l.yy"
+                                                               {
+							yylhs.value.as < exp_type > ().id = newCond();
+							yylhs.value.as < exp_type > ().code += ". " + yylhs.value.as < exp_type > ().id + "\n";
+							yylhs.value.as < exp_type > ().code += yystack_[1].value.as < string > () + " " + yylhs.value.as < exp_type > ().id + ", " + yystack_[2].value.as < exp_type > ().id + ", " + yystack_[0].value.as < exp_type > ().id + "\n";
 						}
-#line 893 "parser.tab.cc" // lalr1.cc:859
+#line 1126 "parser.tab.cc"
     break;
 
   case 31:
-#line 291 "mini_l.yy" // lalr1.cc:859
-    {
-
+#line 400 "mini_l.yy"
+                                                           {
+							yylhs.value.as < exp_type > ().id = newCond();
+							yylhs.value.as < exp_type > ().code += "";
 						}
-#line 901 "parser.tab.cc" // lalr1.cc:859
+#line 1135 "parser.tab.cc"
     break;
 
   case 32:
-#line 294 "mini_l.yy" // lalr1.cc:859
-    {
-
+#line 404 "mini_l.yy"
+                                                            {
+							yylhs.value.as < exp_type > ().id = newCond();
+                                                        yylhs.value.as < exp_type > ().code += "";
 						}
-#line 909 "parser.tab.cc" // lalr1.cc:859
+#line 1144 "parser.tab.cc"
     break;
 
   case 33:
-#line 297 "mini_l.yy" // lalr1.cc:859
-    {
-
+#line 408 "mini_l.yy"
+                                                                                {
+							yylhs.value.as < exp_type > () = yystack_[1].value.as < exp_type > ();	
 						}
-#line 917 "parser.tab.cc" // lalr1.cc:859
+#line 1152 "parser.tab.cc"
     break;
 
   case 34:
-#line 300 "mini_l.yy" // lalr1.cc:859
-    {
-
+#line 411 "mini_l.yy"
+                                                                             {
+							yylhs.value.as < exp_type > ().id = newCond();
+							yylhs.value.as < exp_type > ().code += ". " + yylhs.value.as < exp_type > ().id + "\n";
+							yylhs.value.as < exp_type > ().code += yystack_[1].value.as < string > () + " " + yylhs.value.as < exp_type > ().id + ", " + yystack_[2].value.as < exp_type > ().id + ", " + yystack_[0].value.as < exp_type > ().id + "\n";
 						}
-#line 925 "parser.tab.cc" // lalr1.cc:859
+#line 1162 "parser.tab.cc"
     break;
 
   case 35:
-#line 303 "mini_l.yy" // lalr1.cc:859
-    {
-
+#line 416 "mini_l.yy"
+                                                       {
+							yylhs.value.as < exp_type > ().id = newCond();
+                                                        yylhs.value.as < exp_type > ().code += "";
 						}
-#line 933 "parser.tab.cc" // lalr1.cc:859
+#line 1171 "parser.tab.cc"
     break;
 
   case 36:
-#line 306 "mini_l.yy" // lalr1.cc:859
-    {
-
+#line 420 "mini_l.yy"
+                                                        {
+							yylhs.value.as < exp_type > ().id = newCond();
+                                                        yylhs.value.as < exp_type > ().code += "";
 						}
-#line 941 "parser.tab.cc" // lalr1.cc:859
+#line 1180 "parser.tab.cc"
     break;
 
   case 37:
-#line 309 "mini_l.yy" // lalr1.cc:859
-    {
-
+#line 424 "mini_l.yy"
+                                                                            {
+							yylhs.value.as < exp_type > () = yystack_[1].value.as < exp_type > ();
 						}
-#line 949 "parser.tab.cc" // lalr1.cc:859
+#line 1188 "parser.tab.cc"
     break;
 
   case 38:
-#line 314 "mini_l.yy" // lalr1.cc:859
-    {
-
+#line 429 "mini_l.yy"
+                                           {
+							yylhs.value.as < string > () = "==";
 						}
-#line 957 "parser.tab.cc" // lalr1.cc:859
+#line 1196 "parser.tab.cc"
     break;
 
   case 39:
-#line 317 "mini_l.yy" // lalr1.cc:859
-    {
-
+#line 432 "mini_l.yy"
+                                                      {
+							yylhs.value.as < string > () = "!=";
 						}
-#line 965 "parser.tab.cc" // lalr1.cc:859
+#line 1204 "parser.tab.cc"
     break;
 
   case 40:
-#line 320 "mini_l.yy" // lalr1.cc:859
-    {
-
+#line 435 "mini_l.yy"
+                                                     {
+							yylhs.value.as < string > () = "<";
 						}
-#line 973 "parser.tab.cc" // lalr1.cc:859
+#line 1212 "parser.tab.cc"
     break;
 
   case 41:
-#line 323 "mini_l.yy" // lalr1.cc:859
-    {
-
+#line 438 "mini_l.yy"
+                                                     {
+							yylhs.value.as < string > () = ">";
 						}
-#line 981 "parser.tab.cc" // lalr1.cc:859
+#line 1220 "parser.tab.cc"
     break;
 
   case 42:
-#line 326 "mini_l.yy" // lalr1.cc:859
-    {
-
+#line 441 "mini_l.yy"
+                                                      {
+							yylhs.value.as < string > () = "<=";	
 						}
-#line 989 "parser.tab.cc" // lalr1.cc:859
+#line 1228 "parser.tab.cc"
     break;
 
   case 43:
-#line 329 "mini_l.yy" // lalr1.cc:859
-    {
-
+#line 444 "mini_l.yy"
+                                                      {
+							yylhs.value.as < string > () = ">=";
 						}
-#line 997 "parser.tab.cc" // lalr1.cc:859
+#line 1236 "parser.tab.cc"
     break;
 
   case 44:
-#line 334 "mini_l.yy" // lalr1.cc:859
-    {
+#line 449 "mini_l.yy"
+                                                    {
 							//$$.push_back($1);
-							yylhs.value.as< exp_type > () = yystack_[0].value.as< exp_type > ();	
+							yylhs.value.as < exp_type > () = yystack_[0].value.as < exp_type > ();	
 						}
-#line 1006 "parser.tab.cc" // lalr1.cc:859
+#line 1245 "parser.tab.cc"
     break;
 
   case 45:
-#line 338 "mini_l.yy" // lalr1.cc:859
-    {
-
-							/*for (int i = 0; i < $1.size(); ++i) {
-								exp_type newobj;
-                                                         	newobj.id = newTemp();
-                                                         	newobj.code = "";
-
-								newobj.code = "+ " + newobj.id + ", " + $1.at(i).id + ", " + $3.id  + "\n";	
-								
-								$$.push_back(newobj);
-							
-							}*/
-							yylhs.value.as< exp_type > ().id = newTemp();
-                                                        yylhs.value.as< exp_type > ().code = " " + yylhs.value.as< exp_type > ().id + ", " + yystack_[2].value.as< exp_type > ().id + ", " + yystack_[0].value.as< exp_type > ().id + "\n";
+#line 453 "mini_l.yy"
+                                                                                     {
+							yylhs.value.as < exp_type > ().id = newTemp();
+							yylhs.value.as < exp_type > ().code += ". " + yylhs.value.as < exp_type > ().id + "\n";
+                                                        yylhs.value.as < exp_type > ().code += "+ " + yylhs.value.as < exp_type > ().id + ", " + yystack_[2].value.as < exp_type > ().id + ", " + yystack_[0].value.as < exp_type > ().id + "\n";
 						}
-#line 1026 "parser.tab.cc" // lalr1.cc:859
+#line 1255 "parser.tab.cc"
     break;
 
   case 46:
-#line 353 "mini_l.yy" // lalr1.cc:859
-    {
-							/*for (int i = 0; i < $1.size(); ++i) {
-                                                                 exp_type newobj;
-                                                                 newobj.id = newTemp();
-                                                                 newobj.code = "";
-                                                                 newobj.code = "- " + newobj.id + ", " + $1.at(i).id + ", " + $3.id     + "\n";
-                                                            	 $$.push_back(newobj);
-                                                         }*/
+#line 458 "mini_l.yy"
+                                                                                     {
+							yylhs.value.as < exp_type > ().id = newTemp();
+							yylhs.value.as < exp_type > ().code += ". " + yylhs.value.as < exp_type > ().id + "\n";
+                                                        yylhs.value.as < exp_type > ().code += "- " + yylhs.value.as < exp_type > ().id + ", " + yystack_[2].value.as < exp_type > ().id + ", " + yystack_[0].value.as < exp_type > ().id + "\n";
 						}
-#line 1040 "parser.tab.cc" // lalr1.cc:859
+#line 1265 "parser.tab.cc"
     break;
 
   case 47:
-#line 364 "mini_l.yy" // lalr1.cc:859
-    {
-				//$$.push_back($1);
-				yylhs.value.as< exp_type > () = yystack_[0].value.as< exp_type > ();
+#line 465 "mini_l.yy"
+                             {
+							yylhs.value.as < exp_type > () = yystack_[0].value.as < exp_type > ();
 						}
-#line 1049 "parser.tab.cc" // lalr1.cc:859
+#line 1273 "parser.tab.cc"
     break;
 
   case 48:
-#line 368 "mini_l.yy" // lalr1.cc:859
-    {
-							yylhs.value.as< exp_type > ().id = newTemp();
-							yylhs.value.as< exp_type > ().code = "* " + yylhs.value.as< exp_type > ().id + ", " + yystack_[2].value.as< exp_type > ().id + ", " + yystack_[0].value.as< exp_type > ().id + "\n";
-							
+#line 468 "mini_l.yy"
+                                                                                {
+							yylhs.value.as < exp_type > ().id = newTemp();
+							yylhs.value.as < exp_type > ().code += ". " + yylhs.value.as < exp_type > ().id + "\n";
+							yylhs.value.as < exp_type > ().code += "* " + yylhs.value.as < exp_type > ().id + ", " + yystack_[2].value.as < exp_type > ().id + ", " + yystack_[0].value.as < exp_type > ().id + "\n";
 							
 						}
-#line 1060 "parser.tab.cc" // lalr1.cc:859
+#line 1284 "parser.tab.cc"
     break;
 
   case 49:
-#line 374 "mini_l.yy" // lalr1.cc:859
-    {
-							yylhs.value.as< exp_type > ().id = newTemp();
-                                                        yylhs.value.as< exp_type > ().code = "/ " + yylhs.value.as< exp_type > ().id + ", " + yystack_[2].value.as< exp_type > ().id + ", " + yystack_[0].value.as< exp_type > ().id + "\n";		
+#line 474 "mini_l.yy"
+                                                                               {
+							yylhs.value.as < exp_type > ().id = newTemp();
+							yylhs.value.as < exp_type > ().code += ". " + yylhs.value.as < exp_type > ().id + "\n";
+                                                        yylhs.value.as < exp_type > ().code += "/ " + yylhs.value.as < exp_type > ().id + ", " + yystack_[2].value.as < exp_type > ().id + ", " + yystack_[0].value.as < exp_type > ().id + "\n";		
 						}
-#line 1069 "parser.tab.cc" // lalr1.cc:859
+#line 1294 "parser.tab.cc"
     break;
 
   case 50:
-#line 378 "mini_l.yy" // lalr1.cc:859
-    {
-							yylhs.value.as< exp_type > ().id = newTemp();
-                                                        yylhs.value.as< exp_type > ().code = "% " + yylhs.value.as< exp_type > ().id + ", " + yystack_[2].value.as< exp_type > ().id + ", " + yystack_[0].value.as< exp_type > ().id + "\n";	
+#line 479 "mini_l.yy"
+                                                                               {
+							yylhs.value.as < exp_type > ().id = newTemp();
+                                                        yylhs.value.as < exp_type > ().code += ". " + yylhs.value.as < exp_type > ().id + "\n";
+							yylhs.value.as < exp_type > ().code += "% " + yylhs.value.as < exp_type > ().id + ", " + yystack_[2].value.as < exp_type > ().id + ", " + yystack_[0].value.as < exp_type > ().id + "\n";	
 						}
-#line 1078 "parser.tab.cc" // lalr1.cc:859
+#line 1304 "parser.tab.cc"
     break;
 
   case 51:
-#line 384 "mini_l.yy" // lalr1.cc:859
-    {
-
+#line 486 "mini_l.yy"
+                                                             {
+							yylhs.value.as < exp_type > ().id = newTemp();
+							yylhs.value.as < exp_type > ().code += ". " + yylhs.value.as < exp_type > ().id + "\n";
+							//$$.code = "-1* " + $2 + "\n";
+							
 						}
-#line 1086 "parser.tab.cc" // lalr1.cc:859
+#line 1315 "parser.tab.cc"
     break;
 
   case 52:
-#line 387 "mini_l.yy" // lalr1.cc:859
-    {
-
+#line 492 "mini_l.yy"
+                                                                          {
+							yylhs.value.as < exp_type > ().id = newTemp();
+							yylhs.value.as < exp_type > ().code += ". " + yylhs.value.as < exp_type > ().id + "\n";
+							yylhs.value.as < exp_type > ().code = "-1 * ";
+							yylhs.value.as < exp_type > ().code += yystack_[0].value.as < int > ();
+							yylhs.value.as < exp_type > ().code += "\n";
 						}
-#line 1094 "parser.tab.cc" // lalr1.cc:859
+#line 1327 "parser.tab.cc"
     break;
 
   case 53:
-#line 390 "mini_l.yy" // lalr1.cc:859
-    {
-
+#line 499 "mini_l.yy"
+                                                                                 {
+							yylhs.value.as < exp_type > ().id = newTemp();
+							yylhs.value.as < exp_type > ().code += ". " + yylhs.value.as < exp_type > ().id + "\n";
+							yylhs.value.as < exp_type > ().code = "(" + yystack_[1].value.as < exp_type > ().id + ")" + "\n" + yystack_[1].value.as < exp_type > ().code;
 						}
-#line 1102 "parser.tab.cc" // lalr1.cc:859
+#line 1337 "parser.tab.cc"
     break;
 
   case 54:
-#line 393 "mini_l.yy" // lalr1.cc:859
-    {
-							yylhs.value.as< exp_type > ().id = newTemp();
-							yylhs.value.as< exp_type > ().code = yystack_[0].value.as< string > ();
+#line 504 "mini_l.yy"
+                                                      {
+							yylhs.value.as < exp_type > ().id = newTemp();
+							yylhs.value.as < exp_type > ().code += ". " + yylhs.value.as < exp_type > ().id + "\n";
+							yylhs.value.as < exp_type > ().code += yystack_[0].value.as < string > ();
 						}
-#line 1111 "parser.tab.cc" // lalr1.cc:859
+#line 1347 "parser.tab.cc"
     break;
 
   case 55:
-#line 397 "mini_l.yy" // lalr1.cc:859
-    {
-							yylhs.value.as< exp_type > ().id = newTemp();
-							yylhs.value.as< exp_type > ().code = yystack_[0].value.as< int > ();
+#line 509 "mini_l.yy"
+                                                         {
+							yylhs.value.as < exp_type > ().id = newTemp();
+							yylhs.value.as < exp_type > ().code += ". " + yylhs.value.as < exp_type > ().id + "\n";
+							yylhs.value.as < exp_type > ().code += yystack_[0].value.as < int > ();
 						}
-#line 1120 "parser.tab.cc" // lalr1.cc:859
+#line 1357 "parser.tab.cc"
     break;
 
   case 56:
-#line 401 "mini_l.yy" // lalr1.cc:859
-    {
-							
+#line 514 "mini_l.yy"
+                                                                             {
+							yylhs.value.as < exp_type > ().id = newTemp();
+							yylhs.value.as < exp_type > ().code += ". " + yylhs.value.as < exp_type > ().id + "\n";
+							yylhs.value.as < exp_type > ().code += yystack_[1].value.as < exp_type > ().code;
 						}
-#line 1128 "parser.tab.cc" // lalr1.cc:859
+#line 1367 "parser.tab.cc"
     break;
 
   case 57:
-#line 404 "mini_l.yy" // lalr1.cc:859
-    {
-
+#line 519 "mini_l.yy"
+                                                                                    {
+							yylhs.value.as < exp_type > ().id = newTemp();
+							yylhs.value.as < exp_type > ().code += ". " + yylhs.value.as < exp_type > ().id + "\n";
+							yylhs.value.as < exp_type > ().code = yystack_[3].value.as < string > () + yystack_[1].value.as < exp_type > ().id + yystack_[1].value.as < exp_type > ().code;
 						}
-#line 1136 "parser.tab.cc" // lalr1.cc:859
+#line 1377 "parser.tab.cc"
     break;
 
   case 58:
-#line 409 "mini_l.yy" // lalr1.cc:859
-    {
-					//$$	
+#line 526 "mini_l.yy"
+                                           {
+							yylhs.value.as < exp_type > ().id = newTemp();
+							yylhs.value.as < exp_type > ().code += ". " + yylhs.value.as < exp_type > ().id + "\n";
+							yylhs.value.as < exp_type > ().code += yystack_[0].value.as < exp_type > ().code;
+							yylhs.value.as < exp_type > ().code += "param " + yylhs.value.as < exp_type > ().id + "\n";
 						}
-#line 1144 "parser.tab.cc" // lalr1.cc:859
+#line 1388 "parser.tab.cc"
     break;
 
   case 59:
-#line 412 "mini_l.yy" // lalr1.cc:859
-    {
-							/*$$.code = $1.code + "\n" + $3.code;
-							$$.ids = $1.ids;
-							for(list<string>::iterator it = $3.ids.begin(); it != $3.ids.end(); it++){
-								$$.ids.push_back(*it);
-							}*/
+#line 532 "mini_l.yy"
+                                                                               {
+							yylhs.value.as < exp_type > ().id = newTemp();
+							yylhs.value.as < exp_type > ().code += ". " + yylhs.value.as < exp_type > ().id + "\n";
+							yylhs.value.as < exp_type > ().code += yystack_[2].value.as < exp_type > ().code + "\n" + yystack_[0].value.as < exp_type > ().code;
+							yylhs.value.as < exp_type > ().code += "param " + yylhs.value.as < exp_type > ().id + "\n";	
 						}
-#line 1156 "parser.tab.cc" // lalr1.cc:859
+#line 1399 "parser.tab.cc"
     break;
 
   case 60:
-#line 421 "mini_l.yy" // lalr1.cc:859
-    {
-							yylhs.value.as< string > () = yystack_[0].value.as< string > ();
+#line 540 "mini_l.yy"
+                                              {
+							yylhs.value.as < string > () = yystack_[0].value.as < string > ();
+							checkVariables(yystack_[0].value.as < string > ());
 						}
-#line 1164 "parser.tab.cc" // lalr1.cc:859
+#line 1408 "parser.tab.cc"
     break;
 
   case 61:
-#line 424 "mini_l.yy" // lalr1.cc:859
-    {
-							//$$ = $3;
-							//$$.push_front($1);
+#line 544 "mini_l.yy"
+                                                                                                     {
+							yylhs.value.as < string > () += yystack_[1].value.as < exp_type > ().code;
+							yylhs.value.as < string > () = yystack_[3].value.as < string > () + "[" + yystack_[1].value.as < exp_type > ().id + "]\n";
+							
 						}
-#line 1173 "parser.tab.cc" // lalr1.cc:859
+#line 1418 "parser.tab.cc"
     break;
 
   case 62:
-#line 430 "mini_l.yy" // lalr1.cc:859
-    {
-						yylhs.value.as< list<string> > ().push_back(yystack_[0].value.as< string > ());
+#line 551 "mini_l.yy"
+                                            {
+							yylhs.value.as < list<string> > ().push_back(yystack_[0].value.as < string > ());
 						}
-#line 1181 "parser.tab.cc" // lalr1.cc:859
+#line 1426 "parser.tab.cc"
     break;
 
   case 63:
-#line 433 "mini_l.yy" // lalr1.cc:859
-    {
-							yylhs.value.as< list<string> > () = yystack_[0].value.as< list<string> > ();
-                                                        yylhs.value.as< list<string> > ().push_front(yystack_[2].value.as< string > ());
+#line 554 "mini_l.yy"
+                                                                 {
+							yylhs.value.as < list<string> > () = yystack_[0].value.as < list<string> > ();
+                            				yylhs.value.as < list<string> > ().push_front(yystack_[2].value.as < string > ());
 						}
-#line 1190 "parser.tab.cc" // lalr1.cc:859
+#line 1435 "parser.tab.cc"
     break;
 
 
-#line 1194 "parser.tab.cc" // lalr1.cc:859
+#line 1439 "parser.tab.cc"
+
             default:
               break;
             }
         }
+#if YY_EXCEPTIONS
       catch (const syntax_error& yyexc)
         {
+          YYCDEBUG << "Caught exception: " << yyexc.what() << '\n';
           error (yyexc);
           YYERROR;
         }
+#endif // YY_EXCEPTIONS
       YY_SYMBOL_PRINT ("-> $$ =", yylhs);
       yypop_ (yylen);
       yylen = 0;
       YY_STACK_PRINT ();
 
       // Shift the result of the reduction.
-      yypush_ (YY_NULLPTR, yylhs);
+      yypush_ (YY_NULLPTR, YY_MOVE (yylhs));
     }
     goto yynewstate;
+
 
   /*--------------------------------------.
   | yyerrlab -- here on detecting error.  |
@@ -1246,18 +1496,17 @@ namespace yy {
   | yyerrorlab -- error raised explicitly by YYERROR.  |
   `---------------------------------------------------*/
   yyerrorlab:
-
-    /* Pacify compilers like GCC when the user code never invokes
-       YYERROR and the label yyerrorlab therefore never appears in user
-       code.  */
+    /* Pacify compilers when the user code never invokes YYERROR and
+       the label yyerrorlab therefore never appears in user code.  */
     if (false)
-      goto yyerrorlab;
-    yyerror_range[1].location = yystack_[yylen - 1].location;
+      YYERROR;
+
     /* Do not reclaim the symbols of the rule whose action triggered
        this YYERROR.  */
     yypop_ (yylen);
     yylen = 0;
     goto yyerrlab1;
+
 
   /*-------------------------------------------------------------.
   | yyerrlab1 -- common code for both syntax error and YYERROR.  |
@@ -1268,11 +1517,11 @@ namespace yy {
       stack_symbol_type error_token;
       for (;;)
         {
-          yyn = yypact_[yystack_[0].state];
+          yyn = yypact_[+yystack_[0].state];
           if (!yy_pact_value_is_default_ (yyn))
             {
-              yyn += yyterror_;
-              if (0 <= yyn && yyn <= yylast_ && yycheck_[yyn] == yyterror_)
+              yyn += yy_error_token_;
+              if (0 <= yyn && yyn <= yylast_ && yycheck_[yyn] == yy_error_token_)
                 {
                   yyn = yytable_[yyn];
                   if (0 < yyn)
@@ -1294,21 +1543,31 @@ namespace yy {
       YYLLOC_DEFAULT (error_token.location, yyerror_range, 2);
 
       // Shift the error token.
-      error_token.state = yyn;
-      yypush_ ("Shifting", error_token);
+      error_token.state = state_type (yyn);
+      yypush_ ("Shifting", YY_MOVE (error_token));
     }
     goto yynewstate;
 
-    // Accept.
+
+  /*-------------------------------------.
+  | yyacceptlab -- YYACCEPT comes here.  |
+  `-------------------------------------*/
   yyacceptlab:
     yyresult = 0;
     goto yyreturn;
 
-    // Abort.
+
+  /*-----------------------------------.
+  | yyabortlab -- YYABORT comes here.  |
+  `-----------------------------------*/
   yyabortlab:
     yyresult = 1;
     goto yyreturn;
 
+
+  /*-----------------------------------------------------.
+  | yyreturn -- parsing is finished, return the result.  |
+  `-----------------------------------------------------*/
   yyreturn:
     if (!yyla.empty ())
       yy_destroy_ ("Cleanup: discarding lookahead", yyla);
@@ -1324,12 +1583,12 @@ namespace yy {
 
     return yyresult;
   }
+#if YY_EXCEPTIONS
     catch (...)
       {
-        YYCDEBUG << "Exception caught: cleaning lookahead and stack"
-                 << std::endl;
+        YYCDEBUG << "Exception caught: cleaning lookahead and stack\n";
         // Do not try to display the values of the reclaimed symbols,
-        // as their printer might throw an exception.
+        // as their printers might throw an exception.
         if (!yyla.empty ())
           yy_destroy_ (YY_NULLPTR, yyla);
 
@@ -1340,12 +1599,13 @@ namespace yy {
           }
         throw;
       }
+#endif // YY_EXCEPTIONS
   }
 
   void
   parser::error (const syntax_error& yyexc)
   {
-    error (yyexc.location, yyexc.what());
+    error (yyexc.location, yyexc.what ());
   }
 
   // Generate an error message.
@@ -1354,7 +1614,7 @@ namespace yy {
   {
     // Number of reported tokens (one for the "unexpected", one per
     // "expected").
-    size_t yycount = 0;
+    std::ptrdiff_t yycount = 0;
     // Its maximum.
     enum { YYERROR_VERBOSE_ARGS_MAXIMUM = 5 };
     // Arguments of yyformat.
@@ -1378,18 +1638,18 @@ namespace yy {
        - Of course, the expected token list depends on states to have
          correct lookahead information, and it depends on the parser not
          to perform extra reductions after fetching a lookahead from the
-         scanner and before detecting a syntax error.  Thus, state
-         merging (from LALR or IELR) and default reductions corrupt the
-         expected token list.  However, the list is correct for
-         canonical LR with one exception: it will still contain any
-         token that will not be accepted due to an error action in a
-         later state.
+         scanner and before detecting a syntax error.  Thus, state merging
+         (from LALR or IELR) and default reductions corrupt the expected
+         token list.  However, the list is correct for canonical LR with
+         one exception: it will still contain any token that will not be
+         accepted due to an error action in a later state.
     */
     if (!yyla.empty ())
       {
-        int yytoken = yyla.type_get ();
+        symbol_number_type yytoken = yyla.type_get ();
         yyarg[yycount++] = yytname_[yytoken];
-        int yyn = yypact_[yystate];
+
+        int yyn = yypact_[+yystate];
         if (!yy_pact_value_is_default_ (yyn))
           {
             /* Start YYX at -YYN if negative to avoid negative indexes in
@@ -1400,7 +1660,7 @@ namespace yy {
             int yychecklim = yylast_ - yyn + 1;
             int yyxend = yychecklim < yyntokens_ ? yychecklim : yyntokens_;
             for (int yyx = yyxbegin; yyx < yyxend; ++yyx)
-              if (yycheck_[yyx + yyn] == yyx && yyx != yyterror_
+              if (yycheck_[yyx + yyn] == yyx && yyx != yy_error_token_
                   && !yy_table_value_is_error_ (yytable_[yyx + yyn]))
                 {
                   if (yycount == YYERROR_VERBOSE_ARGS_MAXIMUM)
@@ -1421,18 +1681,19 @@ namespace yy {
         case N:                               \
           yyformat = S;                       \
         break
-        YYCASE_(0, YY_("syntax error"));
-        YYCASE_(1, YY_("syntax error, unexpected %s"));
-        YYCASE_(2, YY_("syntax error, unexpected %s, expecting %s"));
-        YYCASE_(3, YY_("syntax error, unexpected %s, expecting %s or %s"));
-        YYCASE_(4, YY_("syntax error, unexpected %s, expecting %s or %s or %s"));
-        YYCASE_(5, YY_("syntax error, unexpected %s, expecting %s or %s or %s or %s"));
+      default: // Avoid compiler warnings.
+        YYCASE_ (0, YY_("syntax error"));
+        YYCASE_ (1, YY_("syntax error, unexpected %s"));
+        YYCASE_ (2, YY_("syntax error, unexpected %s, expecting %s"));
+        YYCASE_ (3, YY_("syntax error, unexpected %s, expecting %s or %s"));
+        YYCASE_ (4, YY_("syntax error, unexpected %s, expecting %s or %s or %s"));
+        YYCASE_ (5, YY_("syntax error, unexpected %s, expecting %s or %s or %s or %s"));
 #undef YYCASE_
       }
 
     std::string yyres;
     // Argument number.
-    size_t yyi = 0;
+    std::ptrdiff_t yyi = 0;
     for (char const* yyp = yyformat; *yyp; ++yyp)
       if (yyp[0] == '%' && yyp[1] == 's' && yyi < yycount)
         {
@@ -1449,7 +1710,7 @@ namespace yy {
 
   const signed char parser::yytable_ninf_ = -1;
 
-  const short int
+  const short
   parser::yypact_[] =
   {
      -56,    16,    31,   -56,   -14,   -56,   -56,    22,    38,   -14,
@@ -1469,7 +1730,7 @@ namespace yy {
      -56,   123,   -56,   -14,   117,     8,    24,    64,   146,   -56
   };
 
-  const unsigned char
+  const signed char
   parser::yydefact_[] =
   {
        3,     0,     2,     1,     0,     4,    13,     0,     0,     6,
@@ -1489,7 +1750,7 @@ namespace yy {
       20,     0,    18,     0,     0,     0,     0,    14,     0,    21
   };
 
-  const short int
+  const short
   parser::yypgoto_[] =
   {
      -56,   -56,   -56,   -56,     0,   -56,   151,     5,   -55,   -56,
@@ -1526,7 +1787,7 @@ namespace yy {
      138,     0,     0,   106
   };
 
-  const short int
+  const short
   parser::yycheck_[] =
   {
       27,    35,    12,    58,    30,    32,    36,    34,    35,     4,
@@ -1549,7 +1810,7 @@ namespace yy {
      130,    -1,    -1,    74
   };
 
-  const unsigned char
+  const signed char
   parser::yystos_[] =
   {
        0,    55,    56,     0,     3,    57,    50,    61,    42,     4,
@@ -1569,7 +1830,7 @@ namespace yy {
       64,    64,    15,    42,    72,    49,    68,    20,    62,    21
   };
 
-  const unsigned char
+  const signed char
   parser::yyr1_[] =
   {
        0,    54,    55,    56,    56,    57,    58,    58,    59,    59,
@@ -1581,7 +1842,7 @@ namespace yy {
       72,    72,    73,    73
   };
 
-  const unsigned char
+  const signed char
   parser::yyr2_[] =
   {
        0,     2,     1,     0,     2,    12,     0,     3,     3,     8,
@@ -1615,16 +1876,16 @@ namespace yy {
   };
 
 #if YYDEBUG
-  const unsigned short int
+  const short
   parser::yyrline_[] =
   {
-       0,   161,   161,   164,   165,   168,   182,   186,   195,   201,
-     207,   215,   216,   222,   225,   228,   233,   241,   244,   247,
-     250,   253,   256,   261,   266,   268,   273,   275,   280,   283,
-     288,   291,   294,   297,   300,   303,   306,   309,   314,   317,
-     320,   323,   326,   329,   334,   338,   353,   364,   368,   374,
-     378,   384,   387,   390,   393,   397,   401,   404,   409,   412,
-     421,   424,   430,   433
+       0,   159,   159,   162,   163,   166,   181,   185,   194,   201,
+     213,   226,   227,   233,   236,   239,   244,   248,   258,   269,
+     294,   314,   355,   360,   365,   368,   373,   376,   384,   387,
+     395,   400,   404,   408,   411,   416,   420,   424,   429,   432,
+     435,   438,   441,   444,   449,   453,   458,   465,   468,   474,
+     479,   486,   492,   499,   504,   509,   514,   519,   526,   532,
+     540,   544,   551,   554
   };
 
   // Print the state stack on the debug stream.
@@ -1636,19 +1897,19 @@ namespace yy {
            i = yystack_.begin (),
            i_end = yystack_.end ();
          i != i_end; ++i)
-      *yycdebug_ << ' ' << i->state;
-    *yycdebug_ << std::endl;
+      *yycdebug_ << ' ' << int (i->state);
+    *yycdebug_ << '\n';
   }
 
   // Report on the debug stream that the rule \a yyrule is going to be reduced.
   void
   parser::yy_reduce_print_ (int yyrule)
   {
-    unsigned int yylno = yyrline_[yyrule];
+    int yylno = yyrline_[yyrule];
     int yynrhs = yyr2_[yyrule];
     // Print the symbols being reduced, and their result.
     *yycdebug_ << "Reducing stack by rule " << yyrule - 1
-               << " (line " << yylno << "):" << std::endl;
+               << " (line " << yylno << "):\n";
     // The symbols being reduced.
     for (int yyi = 0; yyi < yynrhs; yyi++)
       YY_SYMBOL_PRINT ("   $" << yyi + 1 << " =",
@@ -1657,16 +1918,44 @@ namespace yy {
 #endif // YYDEBUG
 
 
-
 } // yy
-#line 1663 "parser.tab.cc" // lalr1.cc:1167
-#line 439 "mini_l.yy" // lalr1.cc:1168
+#line 1923 "parser.tab.cc"
+
+#line 560 "mini_l.yy"
 
 
-std::string newTemp() {
+string newTemp() {
         static int count = 0;
-        std::string var = " ___temp___" + std::to_string(++count);
+        string var = " ___temp___" + to_string(++count);
         return var;
+}
+
+string newLabel() {
+	static int count = 0;
+	string var = "L" + to_string(++count);
+	return var;
+}
+
+string newCond() {
+	static int count = 0;
+        string var = "P" + to_string(++count);
+        return var;
+}
+
+void checkVariables(string checkVar) {
+	bool check = false;
+	for(int i = 0; i < variables.size(); i++) {
+		if(variables.at(i) == checkVar) {
+			check = true;
+			break;
+		}
+	}
+	if(check) {
+		return;
+	}
+	else {
+		cout << "Error line " << currLine << ": used variable \"" << checkVar << "\" was not previously declared.\n";
+	}
 }
 
 int main(int argc, char *argv[])
@@ -1679,3 +1968,4 @@ void yy::parser::error(const yy::location& l, const std::string& m)
 {
 	std::cerr << l << ": " << m << std::endl;
 }
+
