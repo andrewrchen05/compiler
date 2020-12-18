@@ -158,6 +158,7 @@ void yyerror(const char *msg);		/*declaration given by TA*/
 
 start_prog: 			program {
 							string temp = $1;
+							checkVariables("main", 3);
 							if(errorCheck) {}
 							else {
 								cout << temp << endl;
@@ -208,9 +209,7 @@ declaration:			identifiers COLON INTEGER {
 							for(list<string>::iterator it = $1.begin(); it != $1.end(); it++) {
 								if($5 <= 0) {
 									arraySizeZero();
-									break;
 								}
-
 								$$.code += ".[] " + *it + ", " + to_string($5) +"\n";
 								$$.ids.push_back(*it);
 								variables.push_back(*it);
@@ -221,7 +220,6 @@ declaration:			identifiers COLON INTEGER {
 							for(list<string>::iterator it = $1.begin(); it != $1.end(); it++) {
 								if($5 <= 0 || $8 <= 0) {
 									arraySizeZero();
-									break;
 								}
 								$$.code += ".[] " + *it + ", " + to_string($5 * $8);
 								$$.ids.push_back(*it);	
@@ -596,10 +594,10 @@ void checkVariables(string checkVar, int bitCheck) {
 		}
 	}
 
-	if(check && bitCheck == 0) { //bitCheck == 0 for undeclared
+	if(check && (bitCheck == 0 || bitCheck == 3)) { //bitCheck == 0 for undeclared; 3 for main function
 		return;
 	}
-	else if(bitCheck == 0) {
+	else if(bitCheck == 0) { //undeclared
 		errorCheck = true;
 		cout << "Error line " << currLine << ": used variable \"" << checkVar << "\" was not previously declared.\n";
 	}
@@ -607,6 +605,10 @@ void checkVariables(string checkVar, int bitCheck) {
 		errorCheck = true;
 		cout << "Error line " << currLine << ": symbol \"" << checkVar << "\" is multiply-defined.\n";
 	}
+	else if(bitCheck == 3) { //no main function
+		cout << "Error: main function undefined.\n";
+	}
+
 }
 
 void arraySizeZero() {
