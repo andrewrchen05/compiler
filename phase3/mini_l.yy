@@ -37,6 +37,12 @@ struct exp_type{
 	/*string no;
 	string arr;*/
 };
+
+struct var_type{
+	string val;
+	bool arrStatus;
+};
+	
 	/* end the structures for non-terminal types */
 static vector<string> variables;
 static bool errorCheck = false;
