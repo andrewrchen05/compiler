@@ -8,7 +8,7 @@
 std::string newTemp();
 std::string newLabel();
 std::string newCond();
-void checkVariables(std::string checkVar);
-//std::vector<std::string>variables;
+void checkVariables(std::string checkVar, int bitCheck);
+void arraySizeZero();
 
 #endif

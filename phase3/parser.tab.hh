@@ -69,7 +69,7 @@ struct exp_type{
 };
 	/* end the structures for non-terminal types */
 static vector<string> variables;
-
+static bool errorCheck = false;
 
 #line 75 "parser.tab.hh"
 

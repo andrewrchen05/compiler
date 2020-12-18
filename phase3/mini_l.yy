@@ -36,7 +36,7 @@ struct exp_type{
 };
 	/* end the structures for non-terminal types */
 static vector<string> variables;
-
+static bool errorCheck = false;
 }
 
 
@@ -156,7 +156,13 @@ void yyerror(const char *msg);		/*declaration given by TA*/
 
 %%
 
-start_prog: 			program {cout << $1 << endl;}
+start_prog: 			program {
+							string temp = $1;
+							if(errorCheck) {}
+							else {
+								cout << temp << endl;
+							}
+						}
 		  				;
 
 program: 				/*epsilon*/ {$$ = "";}
@@ -191,7 +197,7 @@ declarations: 			/*epsilon*/ {
 						}
 						;
 
-declaration:			identifiers COLON INTEGER {	
+declaration:			identifiers COLON INTEGER {
 							for(list<string>::iterator it = $1.begin(); it != $1.end(); it++){
 								$$.code += ". " + *it + "\n";
 								$$.ids.push_back(*it);
@@ -201,9 +207,10 @@ declaration:			identifiers COLON INTEGER {
 						| identifiers COLON ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER {
 							for(list<string>::iterator it = $1.begin(); it != $1.end(); it++) {
 								if($5 <= 0) {
-									cout << "Error line " << currLine << ": cannot declare array of size 0\n";
+									arraySizeZero();
 									break;
 								}
+
 								$$.code += ".[] " + *it + ", " + to_string($5) +"\n";
 								$$.ids.push_back(*it);
 								variables.push_back(*it);
@@ -213,7 +220,7 @@ declaration:			identifiers COLON INTEGER {
 						| identifiers COLON ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER {
 							for(list<string>::iterator it = $1.begin(); it != $1.end(); it++) {
 								if($5 <= 0 || $8 <= 0) {
-									cout << "Error line " << currLine << ": cannot declare array of size 0\n";
+									arraySizeZero();
 									break;
 								}
 								$$.code += ".[] " + *it + ", " + to_string($5 * $8);
@@ -223,7 +230,10 @@ declaration:			identifiers COLON INTEGER {
 						}
 						;
 						
-identifiers: 			ident {$$.push_back($1);}
+identifiers: 			ident {
+							checkVariables($1, 1);
+							$$.push_back($1);
+						}
 						| ident COMMA identifiers {
 							$$ = $3;
 							$$.push_front($1);
@@ -539,7 +549,7 @@ expressions: 			expression {
 
 var: 					ident {
 							$$ = $1;
-							checkVariables($1);
+							checkVariables($1, 0);
 						}
    						| ident L_SQUARE_BRACKET expression R_SQUARE_BRACKET {
 							$$ += $3.code;
@@ -577,7 +587,7 @@ string newCond() {
         return var;
 }
 
-void checkVariables(string checkVar) {
+void checkVariables(string checkVar, int bitCheck) {
 	bool check = false;
 	for(int i = 0; i < variables.size(); i++) {
 		if(variables.at(i) == checkVar) {
@@ -585,12 +595,23 @@ void checkVariables(string checkVar) {
 			break;
 		}
 	}
-	if(check) {
+
+	if(check && bitCheck == 0) { //bitCheck == 0 for undeclared
 		return;
 	}
-	else {
+	else if(bitCheck == 0) {
+		errorCheck = true;
 		cout << "Error line " << currLine << ": used variable \"" << checkVar << "\" was not previously declared.\n";
 	}
+	else if(check && bitCheck == 1) { //bitCheck for == 1 for redeclaration
+		errorCheck = true;
+		cout << "Error line " << currLine << ": symbol \"" << checkVar << "\" is multiply-defined.\n";
+	}
+}
+
+void arraySizeZero() {
+	errorCheck = true;
+	cout << "Error line " << currLine << ": cannot declare array of size 0\n";
 }
 
 int main(int argc, char *argv[])
